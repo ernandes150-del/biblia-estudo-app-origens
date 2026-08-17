@@ -228,6 +228,9 @@ export default function BibliaOrigensApp() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
+  // ESTADO DO MENU MOBILE
+  const [menuMobileAberto, setMenuMobileAberto] = useState(false);
+
   useEffect(() => {
     try {
       const defaultUser = { name: "Usuário de Teste", email: "teste@biblia.com" };
@@ -293,7 +296,7 @@ export default function BibliaOrigensApp() {
   const currentVerseKey = selectedVerse ? `${selectedBook}-${selectedChapter}-${selectedVerse}` : null;
   const currentVerseNote = currentVerseKey ? userData[currentVerseKey] || { favorite: false, highlighted: false, note: "", study: "" } : null;
 
-  // LÉXICO INTERLINEAR (COM IDENTIFICAÇÃO DAS PALAVRAS DE JESUS)
+  // LÉXICO INTERLINEAR
   const getInterlinearWords = (verseKey: string, text: string): InterlinearWord[] => {
     if (REAL_LEXICON[verseKey]) {
       return REAL_LEXICON[verseKey];
@@ -302,9 +305,8 @@ export default function BibliaOrigensApp() {
     const isOldTestament = currentBook?.testament !== "Novo Testamento";
     const words = text.split(" ");
     const sampleHebrewWords = ["דָּבָר", "אֱלֹהִים", "מֶלֶךְ", "אָרֶץ", "שָׁמַיִם", "יָם", "אָדָם", "חַיִּים", "קָדוֹשׁ", "בֵּן"];
-    const sampleGreekWords = ["λόγος", "θεός", "κύριος", "ἀγάπη", "ξωή", "φῶς", "κόσμος", "πνεῦμα", "χάρις", "υἱός"];
+    const sampleGreekWords = ["λόγος", "θεός", "κύριος", "ἀγάπη", "ξωή", "φῶς", "κόσμος", "πνεῦμα", "χάρις", "υἱός"];
 
-    // Verificação de falas de Jesus em livros do Novo Testamento
     const isGospel = ["Mateus", "Marcos", "Lucas", "João"].includes(selectedBook);
 
     return words.map((word, i) => {
@@ -317,7 +319,6 @@ export default function BibliaOrigensApp() {
         ? transliterateHebrew(originalWord) 
         : transliterateGreek(originalWord);
 
-      // Marcação genérica para fala de Jesus em contextos do Evangelho (editável por versículo)
       const isJesusWords = isGospel && (
         (selectedBook === "João" && selectedChapter === 3 && i >= 3) ||
         (selectedBook === "Mateus" && selectedChapter === 5)
@@ -405,6 +406,7 @@ export default function BibliaOrigensApp() {
     setSelectedChapter(chapter);
     setSelectedVerse(verse);
     setActiveTab("read");
+    setMenuMobileAberto(false);
     if (openStudy) setActiveSidePanel("study");
   };
 
@@ -441,7 +443,6 @@ export default function BibliaOrigensApp() {
     ];
   }, [selectedBook, selectedChapter, selectedVerse, typedReferencesData]);
 
-  // RENDERIZAÇÃO DE VERSÍCULOS COM DESTAQUE EM VERMELHO NAS PALAVRAS DE JESUS
   const renderVerseContent = (vKey: string, vText: string) => {
     const words = getInterlinearWords(vKey, vText);
 
@@ -504,101 +505,208 @@ export default function BibliaOrigensApp() {
         </div>
       )}
 
-      {/* HEADER PRINCIPAL */}
-      <header className="border-b border-[#E2E0D5] bg-[#F6F5F0]/95 backdrop-blur-md px-6 py-3 flex items-center justify-between shrink-0 z-20">
-        <div className="flex items-center gap-4">
-          <div onClick={() => setActiveTab("home")} className="flex items-center gap-3 cursor-pointer">
+      {/* HEADER PRINCIPAL RESPONSIVO */}
+      <header className="border-b border-[#E2E0D5] bg-[#F6F5F0]/95 backdrop-blur-md px-4 md:px-6 py-3 shrink-0 z-20">
+        <div className="flex items-center justify-between">
+          <div onClick={() => { setActiveTab("home"); setMenuMobileAberto(false); }} className="flex items-center gap-3 cursor-pointer">
             <OliveTreeLogo />
             <span className="font-serif text-lg font-bold tracking-tight text-[#2D3B32]">
               Bíblia Origens
             </span>
           </div>
 
-          <nav className="ml-6 flex items-center gap-1.5">
-            <button
-              onClick={() => setActiveTab("home")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                activeTab === "home" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
-              }`}
-            >
-              Início
-            </button>
-            <button
-              onClick={() => setActiveTab("read")}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                activeTab === "read" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
-              }`}
-            >
-              <BookOpenIcon /> Leitura
-            </button>
-            {user && (
+          {/* BOTÃO HAMBÚRGUER PARA CELULAR */}
+          <button
+            onClick={() => setMenuMobileAberto(!menuMobileAberto)}
+            className="md:hidden p-2 rounded-lg bg-[#EAE8DD] border border-[#D8D5C5] text-[#2D3B32] text-sm font-bold flex items-center gap-1.5"
+            aria-label="Abrir Menu"
+          >
+            {menuMobileAberto ? "✕" : "☰"}
+          </button>
+
+          {/* MENU DESKTOP (Sempre visível em telas médias/grandes) */}
+          <div className="hidden md:flex items-center justify-between flex-1 ml-6">
+            <nav className="flex items-center gap-1.5">
               <button
-                onClick={() => setActiveTab("studies")}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  activeTab === "studies" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
+                onClick={() => setActiveTab("home")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  activeTab === "home" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
                 }`}
               >
-                <AcademicCapIcon /> Meus Estudos ({savedStudiesList.length})
+                Início
               </button>
-            )}
-            <button
-              onClick={() => setActiveTab("search")}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                activeTab === "search" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
-              }`}
-            >
-              <SearchIcon /> Pesquisa
-            </button>
-          </nav>
-        </div>
+              <button
+                onClick={() => setActiveTab("read")}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  activeTab === "read" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
+                }`}
+              >
+                <BookOpenIcon /> Leitura
+              </button>
+              {user && (
+                <button
+                  onClick={() => setActiveTab("studies")}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    activeTab === "studies" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
+                  }`}
+                >
+                  <AcademicCapIcon /> Meus Estudos ({savedStudiesList.length})
+                </button>
+              )}
+              <button
+                onClick={() => setActiveTab("search")}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  activeTab === "search" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
+                }`}
+              >
+                <SearchIcon /> Pesquisa
+              </button>
+            </nav>
 
-        <div className="flex items-center gap-3">
-          {user ? (
             <div className="flex items-center gap-3">
-              <span className="text-xs text-[#526356]">Olá, <strong className="text-[#2D3B32]">{user.name}</strong></span>
-              <button onClick={handleLogout} className="text-xs font-semibold text-rose-700 hover:underline">Sair</button>
+              {user ? (
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-[#526356]">Olá, <strong className="text-[#2D3B32]">{user.name}</strong></span>
+                  <button onClick={handleLogout} className="text-xs font-semibold text-rose-700 hover:underline">Sair</button>
+                </div>
+              ) : (
+                <button onClick={() => setActiveTab("home")} className="text-xs bg-[#2D3B32] text-[#F6F5F0] px-3 py-1.5 rounded-lg font-medium">
+                  Entrar / Criar Conta
+                </button>
+              )}
+
+              {activeTab === "read" && (
+                <div className="flex items-center gap-2 ml-2">
+                  <select
+                    value={selectedVersion}
+                    onChange={(e) => setSelectedVersion(e.target.value as TranslationVersion)}
+                    className="bg-[#2D3B32] text-[#F6F5F0] text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer"
+                  >
+                    <option value="ORIGINAL">Interlinear (Original)</option>
+                    <option value="ARA">ARA (Almeida Revista e Atualizada)</option>
+                    <option value="NVI">NVI (Nova Versão Internacional)</option>
+                    <option value="NAA">NAA (Nova Almeida Atualizada)</option>
+                  </select>
+
+                  <select
+                    value={selectedBook}
+                    onChange={(e) => { setSelectedBook(e.target.value); setSelectedChapter(1); setSelectedVerse(1); }}
+                    className="bg-[#EAE8DD] border border-[#D8D5C5] text-[#1F2923] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none"
+                  >
+                    {Object.keys(typedBibleData.books).map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={selectedChapter}
+                    onChange={(e) => { setSelectedChapter(Number(e.target.value)); setSelectedVerse(1); }}
+                    className="bg-[#EAE8DD] border border-[#D8D5C5] text-[#1F2923] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none"
+                  >
+                    {Array.from({ length: totalChapters }, (_, i) => i + 1).map((ch) => (
+                      <option key={ch} value={ch}>{ch}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
-          ) : (
-            <button onClick={() => setActiveTab("home")} className="text-xs bg-[#2D3B32] text-[#F6F5F0] px-3 py-1.5 rounded-lg font-medium">
-              Entrar / Criar Conta
-            </button>
-          )}
-
-          {activeTab === "read" && (
-            <div className="flex items-center gap-2 ml-2">
-              <select
-                value={selectedVersion}
-                onChange={(e) => setSelectedVersion(e.target.value as TranslationVersion)}
-                className="bg-[#2D3B32] text-[#F6F5F0] text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer"
-              >
-                <option value="ORIGINAL">Interlinear (Original)</option>
-                <option value="ARA">ARA (Almeida Revista e Atualizada)</option>
-                <option value="NVI">NVI (Nova Versão Internacional)</option>
-                <option value="NAA">NAA (Nova Almeida Atualizada)</option>
-              </select>
-
-              <select
-                value={selectedBook}
-                onChange={(e) => { setSelectedBook(e.target.value); setSelectedChapter(1); setSelectedVerse(1); }}
-                className="bg-[#EAE8DD] border border-[#D8D5C5] text-[#1F2923] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none"
-              >
-                {Object.keys(typedBibleData.books).map((b) => (
-                  <option key={b} value={b}>{b}</option>
-                ))}
-              </select>
-
-              <select
-                value={selectedChapter}
-                onChange={(e) => { setSelectedChapter(Number(e.target.value)); setSelectedVerse(1); }}
-                className="bg-[#EAE8DD] border border-[#D8D5C5] text-[#1F2923] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none"
-              >
-                {Array.from({ length: totalChapters }, (_, i) => i + 1).map((ch) => (
-                  <option key={ch} value={ch}>{ch}</option>
-                ))}
-              </select>
-            </div>
-          )}
+          </div>
         </div>
+
+        {/* CONTAINER DO MENU MOBILE (Abre quando pressionado no celular) */}
+        {menuMobileAberto && (
+          <div className="md:hidden mt-3 pt-3 border-t border-[#E2E0D5] flex flex-col gap-3">
+            <nav className="flex flex-col gap-2">
+              <button
+                onClick={() => { setActiveTab("home"); setMenuMobileAberto(false); }}
+                className={`px-3 py-2 rounded-lg text-xs font-medium text-left ${
+                  activeTab === "home" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] bg-[#EAE8DD]"
+                }`}
+              >
+                Início
+              </button>
+              <button
+                onClick={() => { setActiveTab("read"); setMenuMobileAberto(false); }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-left ${
+                  activeTab === "read" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] bg-[#EAE8DD]"
+                }`}
+              >
+                <BookOpenIcon /> Leitura
+              </button>
+              {user && (
+                <button
+                  onClick={() => { setActiveTab("studies"); setMenuMobileAberto(false); }}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-left ${
+                    activeTab === "studies" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] bg-[#EAE8DD]"
+                  }`}
+                >
+                  <AcademicCapIcon /> Meus Estudos ({savedStudiesList.length})
+                </button>
+              )}
+              <button
+                onClick={() => { setActiveTab("search"); setMenuMobileAberto(false); }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-left ${
+                  activeTab === "search" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] bg-[#EAE8DD]"
+                }`}
+              >
+                <SearchIcon /> Pesquisa
+              </button>
+            </nav>
+
+            {/* SELETORES DE BÍBLIA NO MENU MOBILE */}
+            {activeTab === "read" && (
+              <div className="flex flex-col gap-2 pt-2 border-t border-[#E2E0D5]">
+                <label className="text-[10px] font-bold text-[#526356] uppercase">Versão, Livro e Capítulo:</label>
+                <select
+                  value={selectedVersion}
+                  onChange={(e) => setSelectedVersion(e.target.value as TranslationVersion)}
+                  className="bg-[#2D3B32] text-[#F6F5F0] text-xs font-bold rounded-lg p-2 focus:outline-none"
+                >
+                  <option value="ORIGINAL">Interlinear (Original)</option>
+                  <option value="ARA">ARA (Almeida Revista e Atualizada)</option>
+                  <option value="NVI">NVI (Nova Versão Internacional)</option>
+                  <option value="NAA">NAA (Nova Almeida Atualizada)</option>
+                </select>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <select
+                    value={selectedBook}
+                    onChange={(e) => { setSelectedBook(e.target.value); setSelectedChapter(1); setSelectedVerse(1); }}
+                    className="bg-[#EAE8DD] border border-[#D8D5C5] text-[#1F2923] text-xs font-medium rounded-lg p-2 focus:outline-none"
+                  >
+                    {Object.keys(typedBibleData.books).map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={selectedChapter}
+                    onChange={(e) => { setSelectedChapter(Number(e.target.value)); setSelectedVerse(1); }}
+                    className="bg-[#EAE8DD] border border-[#D8D5C5] text-[#1F2923] text-xs font-medium rounded-lg p-2 focus:outline-none"
+                  >
+                    {Array.from({ length: totalChapters }, (_, i) => i + 1).map((ch) => (
+                      <option key={ch} value={ch}>Capítulo {ch}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {/* USER LOGOUT MOBILE */}
+            <div className="pt-2 border-t border-[#E2E0D5] flex items-center justify-between">
+              {user ? (
+                <>
+                  <span className="text-xs text-[#526356]">Olá, <strong className="text-[#2D3B32]">{user.name}</strong></span>
+                  <button onClick={handleLogout} className="text-xs font-semibold text-rose-700">Sair</button>
+                </>
+              ) : (
+                <button onClick={() => { setActiveTab("home"); setMenuMobileAberto(false); }} className="w-full text-xs bg-[#2D3B32] text-[#F6F5F0] p-2 rounded-lg font-medium text-center">
+                  Entrar / Criar Conta
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       {/* ÁREA PRINCIPAL */}
@@ -606,283 +714,305 @@ export default function BibliaOrigensApp() {
         
         {/* TELA INICIAL */}
         {activeTab === "home" && (
-          <main className="flex-1 overflow-y-auto p-8 relative z-10">
-            <div className="max-w-4xl mx-auto space-y-10">
+          <main className="flex-1 overflow-y-auto p-4 md:p-8 relative z-10">
+            <div className="max-w-4xl mx-auto space-y-8 md:space-y-10">
               <div className="text-center space-y-4 pt-4">
                 <span className="text-xs font-bold tracking-widest uppercase text-[#425447] bg-[#EAE8DD] px-3 py-1 rounded-full border border-[#D8D5C5]">
                   Plataforma de Estudo Exegético
                 </span>
-                <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1F2923] leading-tight">
+                <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#1F2923] leading-tight">
                   Explore a Bíblia nas Suas Línguas Originais
                 </h1>
                 <p className="text-sm text-[#526356] max-w-2xl mx-auto leading-relaxed">
-                  Acesse o texto Hebraico e Grego versículo por versículo com análise morfológica, chaves Strong, referências cruzadas e destaques das palavras de Jesus em vermelho.
+                  Consulte os textos em Hebraico e Grego com análise gramatical interlinear, contexto histórico dos livros e caderno de estudos pessoal.
                 </p>
-              </div>
-
-              <div className="max-w-md mx-auto bg-[#EFECE1]/90 backdrop-blur-sm border border-[#E2E0D5] rounded-2xl p-6 shadow-sm">
-                {user ? (
-                  <div className="text-center space-y-4">
-                    <h3 className="font-serif font-bold text-xl text-[#2D3B32]">Bem-vindo de volta, {user.name}!</h3>
-                    <p className="text-xs text-[#526356]">Suas anotações e favoritos estão sincronizados nesta sessão.</p>
-                    <button onClick={() => setActiveTab("read")} className="w-full bg-[#2D3B32] text-[#F6F5F0] py-2.5 rounded-xl font-medium text-xs">
-                      Ir para Leitura Bíblica
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="flex border-b border-[#D8D5C5] mb-4">
-                      <button onClick={() => setAuthMode("login")} className={`flex-1 pb-2 text-xs font-bold text-center ${authMode === "login" ? "border-b-2 border-[#2D3B32] text-[#2D3B32]" : "text-[#526356]"}`}>Entrar</button>
-                      <button onClick={() => setAuthMode("register")} className={`flex-1 pb-2 text-xs font-bold text-center ${authMode === "register" ? "border-b-2 border-[#2D3B32] text-[#2D3B32]" : "text-[#526356]"}`}>Criar Conta</button>
-                    </div>
-
-                    <form onSubmit={handleAuth} className="space-y-3">
-                      {authMode === "register" && (
-                        <div>
-                          <label className="text-[11px] font-semibold text-[#526356] block mb-1">Nome Completo</label>
-                          <input type="text" required value={nameInput} onChange={(e) => setNameInput(e.target.value)} placeholder="Seu nome" className="w-full bg-[#F6F5F0] border border-[#D8D5C5] rounded-lg px-3 py-2 text-xs text-[#1F2923] focus:outline-none" />
-                        </div>
-                      )}
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#526356] block mb-1">E-mail</label>
-                        <input type="email" required value={emailInput} onChange={(e) => setEmailInput(e.target.value)} placeholder="seu@email.com" className="w-full bg-[#F6F5F0] border border-[#D8D5C5] rounded-lg px-3 py-2 text-xs text-[#1F2923] focus:outline-none" />
-                      </div>
-                      <div>
-                        <label className="text-[11px] font-semibold text-[#526356] block mb-1">Senha</label>
-                        <input type="password" required value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} placeholder="••••••••" className="w-full bg-[#F6F5F0] border border-[#D8D5C5] rounded-lg px-3 py-2 text-xs text-[#1F2923] focus:outline-none" />
-                      </div>
-                      <button type="submit" className="w-full bg-[#2D3B32] text-[#F6F5F0] py-2.5 rounded-xl font-medium text-xs mt-2">
-                        {authMode === "login" ? "Acessar Plataforma" : "Cadastrar e Começar"}
-                      </button>
-                    </form>
-                  </div>
-                )}
-              </div>
-
-              <div className="bg-[#EFECE1]/90 backdrop-blur-sm border border-[#E2E0D5] rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6">
-                <OliveTreeLogo />
-                <div className="space-y-1 text-center md:text-left">
-                  <span className="text-[10px] font-bold tracking-wider uppercase text-[#425447]">Desenvolvimento & Idealização</span>
-                  <h2 className="text-lg font-serif font-bold text-[#1F2923]">Ernandes Machado Arruda</h2>
-                  <p className="text-xs text-[#526356] leading-relaxed">
-                    Projeto desenvolvido com o objetivo de fornecer uma ferramenta exegética moderna, acessível e precisa para estudantes, pastores e pesquisadores da Bíblia Sagrada.
-                  </p>
+                
+                <div className="pt-2 flex justify-center gap-3">
+                  <button
+                    onClick={() => setActiveTab("read")}
+                    className="bg-[#2D3B32] text-[#F6F5F0] px-6 py-2.5 rounded-xl font-medium text-sm shadow-md hover:bg-[#3A4B40] transition-all"
+                  >
+                    Começar Leitura
+                  </button>
                 </div>
               </div>
+
+              {/* CARD DE LOGIN / CADASTRO */}
+              {!user && (
+                <div className="max-w-md mx-auto bg-[#EAE8DD]/60 border border-[#D8D5C5] rounded-2xl p-6 shadow-sm">
+                  <div className="flex items-center justify-between mb-4 border-b border-[#D8D5C5] pb-3">
+                    <h2 className="font-serif font-bold text-base text-[#2D3B32]">
+                      {authMode === "login" ? "Acessar Conta" : "Criar Nova Conta"}
+                    </h2>
+                    <button
+                      onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}
+                      className="text-xs text-[#425447] underline font-medium"
+                    >
+                      {authMode === "login" ? "Criar conta" : "Já tenho conta"}
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleAuth} className="space-y-3">
+                    {authMode === "register" && (
+                      <div>
+                        <label className="text-[11px] font-semibold text-[#526356] block mb-1">Nome completo</label>
+                        <input
+                          type="text"
+                          required
+                          value={nameInput}
+                          onChange={(e) => setNameInput(e.target.value)}
+                          placeholder="Seu nome"
+                          className="w-full bg-[#F6F5F0] border border-[#D8D5C5] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#2D3B32]"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <label className="text-[11px] font-semibold text-[#526356] block mb-1">E-mail</label>
+                      <input
+                        type="email"
+                        required
+                        value={emailInput}
+                        onChange={(e) => setEmailInput(e.target.value)}
+                        placeholder="seuemail@exemplo.com"
+                        className="w-full bg-[#F6F5F0] border border-[#D8D5C5] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#2D3B32]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-[#526356] block mb-1">Senha</label>
+                      <input
+                        type="password"
+                        required
+                        value={passwordInput}
+                        onChange={(e) => setPasswordInput(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full bg-[#F6F5F0] border border-[#D8D5C5] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#2D3B32]"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full bg-[#2D3B32] text-[#F6F5F0] font-semibold py-2 rounded-lg text-xs hover:bg-[#3A4B40] transition-colors mt-2"
+                    >
+                      {authMode === "login" ? "Entrar" : "Cadastrar"}
+                    </button>
+                  </form>
+                </div>
+              )}
             </div>
           </main>
         )}
 
         {/* TELA DE LEITURA */}
         {activeTab === "read" && (
-          <main className="flex-1 flex overflow-hidden">
-            <div className="flex-1 overflow-y-auto p-8">
-              <div className="max-w-4xl mx-auto">
-                <div className="mb-8 border-b border-[#E2E0D5] pb-4 flex justify-between items-end">
-                  <div>
-                    <p className="text-[10px] font-semibold tracking-wider uppercase text-[#425447]">
-                      {currentBook?.testament} · {currentBook?.category}
-                    </p>
-                    <h1 className="text-3xl font-serif font-bold text-[#1F2923]">
-                      {selectedBook} {selectedChapter} · <span className="text-emerald-800">{selectedVersion === "ORIGINAL" ? currentLanguage : selectedVersion}</span>
-                    </h1>
-                  </div>
+          <div className="flex-1 flex overflow-hidden">
+            {/* PAINEL DE VERSÍCULOS */}
+            <main className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
+              <div className="flex items-center justify-between border-b border-[#E2E0D5] pb-3">
+                <div>
+                  <h2 className="text-xl md:text-2xl font-serif font-bold text-[#2D3B32]">
+                    {selectedBook} {selectedChapter}
+                  </h2>
+                  <p className="text-xs text-[#526356] mt-0.5">
+                    Idioma original: <span className="font-semibold">{currentLanguage}</span>
+                  </p>
+                </div>
 
-                  <div className="flex gap-2">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setActiveSidePanel(activeSidePanel === "context" ? "none" : "context")}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
+                      activeSidePanel === "context" 
+                        ? "bg-[#2D3B32] text-[#F6F5F0] border-[#2D3B32]" 
+                        : "bg-[#EAE8DD] text-[#2D3B32] border-[#D8D5C5]"
+                    }`}
+                  >
+                    Contexto do Livro
+                  </button>
+                  {selectedVerse && (
                     <button
                       onClick={() => setActiveSidePanel(activeSidePanel === "references" ? "none" : "references")}
-                      className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors border ${
-                        activeSidePanel === "references" ? "bg-[#2D3B32] text-[#F6F5F0] border-[#2D3B32]" : "bg-[#EAE8DD] hover:bg-[#D8D5C5] text-[#2D3B32] border-[#D8D5C5]"
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
+                        activeSidePanel === "references" 
+                          ? "bg-[#2D3B32] text-[#F6F5F0] border-[#2D3B32]" 
+                          : "bg-[#EAE8DD] text-[#2D3B32] border-[#D8D5C5]"
                       }`}
                     >
                       Referências
                     </button>
-                    <button
-                      onClick={() => setActiveSidePanel(activeSidePanel === "context" ? "none" : "context")}
-                      className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors border ${
-                        activeSidePanel === "context" ? "bg-[#2D3B32] text-[#F6F5F0] border-[#2D3B32]" : "bg-[#EAE8DD] hover:bg-[#D8D5C5] text-[#2D3B32] border-[#D8D5C5]"
-                      }`}
-                    >
-                      Contexto Histórico
-                    </button>
-                  </div>
+                  )}
                 </div>
+              </div>
 
-                <div className="space-y-8">
-                  {Object.entries(currentChapterVerses).map(([vNumStr, vText]) => {
-                    const vNum = parseInt(vNumStr);
-                    const isSelected = selectedVerse === vNum;
-                    const vKey = `${selectedBook}-${selectedChapter}-${vNum}`;
-                    const vData = userData[vKey];
+              {/* LISTA DE VERSÍCULOS */}
+              <div className="space-y-3">
+                {Object.entries(currentChapterVerses).map(([vNumStr, vText]) => {
+                  const vNum = parseInt(vNumStr);
+                  const verseKey = `${selectedBook}-${selectedChapter}-${vNum}`;
+                  const isSelected = selectedVerse === vNum;
+                  const vNote = userData[verseKey];
 
-                    return (
-                      <div
-                        key={vNumStr}
-                        onClick={() => {
-                          setSelectedVerse(vNum);
-                          if (activeSidePanel === "none") setActiveSidePanel("study");
-                        }}
-                        className={`p-4 rounded-xl transition-all border ${
-                          isSelected
-                            ? "bg-[#EAE8DD] border-[#2D3B32]"
-                            : vData?.highlighted
-                            ? "bg-emerald-100/60 border-emerald-300"
-                            : "border-transparent hover:bg-[#EAE8DD]/50"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-full bg-[#2D3B32] text-[#F6F5F0] font-serif font-bold text-xs flex items-center justify-center">
-                              {vNum}
-                            </span>
-                            {vData?.favorite && <StarIcon filled />}
-                          </div>
+                  return (
+                    <div
+                      key={vNum}
+                      onClick={() => setSelectedVerse(vNum)}
+                      className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                        isSelected 
+                          ? "border-[#2D3B32] bg-[#EAE8DD]/80 shadow-sm" 
+                          : "border-[#E2E0D5] bg-[#F6F5F0] hover:border-[#D8D5C5]"
+                      } ${vNote?.highlighted ? "bg-amber-100/60 border-amber-300" : ""}`}
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <span className="font-bold text-xs text-[#425447] bg-[#D8D5C5] px-2 py-0.5 rounded-md">
+                          {vNum}
+                        </span>
 
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); toggleFavorite(vNum); }}
+                            className="p-1 hover:bg-[#D8D5C5] rounded"
+                            title="Favoritar"
+                          >
+                            <StarIcon filled={vNote?.favorite} />
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); toggleHighlight(vNum); }}
+                            className={`text-xs px-2 py-0.5 rounded border ${
+                              vNote?.highlighted 
+                                ? "bg-amber-300 border-amber-400 text-stone-900 font-bold" 
+                                : "border-[#D8D5C5] text-[#526356]"
+                            }`}
+                          >
+                            Destacar
+                          </button>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedVerse(vNum);
-                              setActiveSidePanel("references");
+                              setActiveSidePanel("study");
                             }}
-                            className="flex items-center gap-1.5 px-3 py-1 bg-[#2D3B32] hover:bg-[#1F2923] text-[#F6F5F0] rounded-lg text-xs font-medium transition-colors shadow-sm"
+                            className="text-xs bg-[#2D3B32] text-[#F6F5F0] px-2.5 py-0.5 rounded font-medium"
                           >
-                            <LinkIcon />
-                            <span>Referências</span>
+                            Estudar
                           </button>
                         </div>
-
-                        {renderVerseContent(vKey, vText)}
                       </div>
-                    );
-                  })}
-                </div>
+
+                      {renderVerseContent(verseKey, vText)}
+
+                      {vNote?.study && (
+                        <div className="mt-3 pt-2 border-t border-[#D8D5C5] text-xs text-[#425447] italic bg-[#EAE8DD]/50 p-2 rounded">
+                          <strong>Anotação de estudo:</strong> {vNote.study}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            </div>
+            </main>
 
-            {/* PAINEL LATERAL DE ESTUDO, CONTEXTO E REFERÊNCIAS */}
+            {/* PAINEL LATERAL DE DETALHES / ANÁLISE */}
             {activeSidePanel !== "none" && (
-              <aside className="w-96 bg-[#EFECE1] border-l border-[#E2E0D5] p-6 overflow-y-auto flex flex-col shrink-0">
-                <div className="flex items-center justify-between pb-4 border-b border-[#E2E0D5] mb-4">
-                  <h3 className="font-semibold text-[#1F2923] text-sm">
-                    {activeSidePanel === "study" && "Anotações do Versículo"}
-                    {activeSidePanel === "context" && "Introdução & Contexto Histórico"}
-                    {activeSidePanel === "references" && "Referências"}
+              <aside className="w-80 md:w-96 border-l border-[#E2E0D5] bg-[#EAE8DD]/40 p-4 overflow-y-auto shrink-0 hidden md:block">
+                <div className="flex items-center justify-between mb-4 border-b border-[#D8D5C5] pb-2">
+                  <h3 className="font-serif font-bold text-sm text-[#2D3B32] uppercase tracking-wide">
+                    {activeSidePanel === "context" && "Contexto do Livro"}
+                    {activeSidePanel === "study" && `Caderno de Estudo - ${selectedBook} ${selectedChapter}:${selectedVerse}`}
+                    {activeSidePanel === "references" && `Referências de ${selectedBook} ${selectedChapter}:${selectedVerse}`}
                   </h3>
-                  <button onClick={() => setActiveSidePanel("none")} className="text-xs text-[#526356] font-bold">✕ Fechar</button>
+                  <button onClick={() => setActiveSidePanel("none")} className="text-xs font-bold text-[#526356] hover:text-[#1F2923]">
+                    ✕ Fechar
+                  </button>
                 </div>
 
+                {/* PAINEL DE CONTEXTO */}
                 {activeSidePanel === "context" && (
                   <div className="space-y-4 text-xs text-[#1F2923]">
-                    <div className="bg-[#F6F5F0] p-3 rounded-lg border border-[#D8D5C5] space-y-1">
-                      <p><strong>Livro:</strong> {selectedBook}</p>
-                      <p><strong>Autor:</strong> {typedContextData[selectedBook]?.author || "Desconhecido"}</p>
-                      <p><strong>Data de Escrita:</strong> {typedContextData[selectedBook]?.date || "N/A"}</p>
-                      <p><strong>Tema Central:</strong> {typedContextData[selectedBook]?.theme || "N/A"}</p>
-                    </div>
-
-                    <div>
-                      <span className="font-bold block mb-1 text-[#2D3B32]">Introdução ao Livro:</span>
-                      <p className="leading-relaxed bg-[#F6F5F0] p-3 rounded-lg border border-[#D8D5C5]">
-                        {typedContextData[selectedBook]?.introduction || "Introdução não cadastrada."}
-                      </p>
-                    </div>
-
-                    <div>
-                      <span className="font-bold block mb-1 text-[#2D3B32]">Contexto Histórico & Cultural:</span>
-                      <p className="leading-relaxed bg-[#F6F5F0] p-3 rounded-lg border border-[#D8D5C5]">
-                        {typedContextData[selectedBook]?.historicalContext || typedContextData[selectedBook]?.summary || "Contexto histórico não disponível."}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* PAINEL DE REFERÊNCIAS */}
-                {activeSidePanel === "references" && (
-                  <div className="space-y-4">
-                    <div className="bg-[#2D3B32] text-[#F6F5F0] p-3 rounded-xl border border-[#425447]">
-                      <p className="text-xs font-bold">Passagens Paralelas</p>
-                      <p className="text-[11px] text-[#A8B6AB]">{selectedBook} {selectedChapter}:{selectedVerse || 1}</p>
-                    </div>
-
-                    <div className="space-y-3">
-                      {currentReferences.map((ref, i) => (
-                        <div key={i} className="p-3 bg-[#F6F5F0] border border-[#D8D5C5] rounded-xl text-xs text-[#1F2923] hover:border-[#2D3B32] transition-colors shadow-sm">
-                          <p className="font-bold text-[#2D3B32] mb-1 flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-emerald-600 inline-block"></span>
-                            {ref.passage}
-                          </p>
-                          <p className="text-[#526356] italic leading-relaxed">"{ref.text}"</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {activeSidePanel === "study" && selectedVerse && (
-                  <div className="space-y-4">
-                    <p className="text-xs font-semibold text-[#2D3B32]">{selectedBook} {selectedChapter}:{selectedVerse}</p>
-                    
-                    {!user ? (
-                      <div className="p-4 bg-[#EAE8DD] border border-[#D8D5C5] rounded-xl text-xs text-center space-y-3">
-                        <p className="text-[#2D3B32] font-semibold">🔒 Função restrita a usuários logados</p>
-                        <p className="text-[#526356] leading-relaxed">
-                          Para favoritar, destacar e escrever anotações teológicas personalizadas, por favor acesse sua conta.
-                        </p>
-                        <button onClick={() => setActiveTab("home")} className="bg-[#2D3B32] text-[#F6F5F0] px-4 py-1.5 rounded-lg text-xs font-medium">
-                          Fazer Login
-                        </button>
-                      </div>
-                    ) : (
+                    {typedContextData[selectedBook] ? (
                       <>
-                        <div className="flex gap-2">
-                          <button onClick={() => toggleFavorite(selectedVerse)} className="flex-1 py-1.5 bg-[#EAE8DD] rounded text-xs font-medium text-[#1F2923] border border-[#D8D5C5]">
-                            {currentVerseNote?.favorite ? "★ Favorito" : "☆ Favoritar"}
-                          </button>
-                          <button onClick={() => toggleHighlight(selectedVerse)} className="flex-1 py-1.5 bg-[#EAE8DD] rounded text-xs font-medium text-[#1F2923] border border-[#D8D5C5]">
-                            {currentVerseNote?.highlighted ? "Destacado" : "Destacar"}
-                          </button>
+                        <p><strong>Autor:</strong> {typedContextData[selectedBook].author}</p>
+                        <p><strong>Data aproximada:</strong> {typedContextData[selectedBook].date}</p>
+                        <p><strong>Tema principal:</strong> {typedContextData[selectedBook].theme}</p>
+                        <div className="pt-2 border-t border-[#D8D5C5]">
+                          <strong className="block mb-1">Introdução:</strong>
+                          <p className="leading-relaxed text-[#526356]">{typedContextData[selectedBook].introduction}</p>
                         </div>
-
-                        <textarea
-                          value={currentVerseNote?.study || ""}
-                          onChange={(e) => saveStudyText(e.target.value)}
-                          placeholder="Escreva suas anotações teológicas do versículo..."
-                          className="w-full h-48 bg-[#F6F5F0] border border-[#D8D5C5] rounded-xl p-3 text-xs focus:outline-none resize-none text-[#1F2923]"
-                        />
+                        <div className="pt-2 border-t border-[#D8D5C5]">
+                          <strong className="block mb-1">Contexto Histórico:</strong>
+                          <p className="leading-relaxed text-[#526356]">{typedContextData[selectedBook].historicalContext}</p>
+                        </div>
                       </>
+                    ) : (
+                      <p className="text-[#526356]">Informações contextuais detalhadas para {selectedBook} em catalogação exegética.</p>
                     )}
+                  </div>
+                )}
 
-                    <button onClick={() => setActiveSidePanel("references")} className="w-full py-2 bg-[#2D3B32] text-[#F6F5F0] font-medium text-xs rounded-lg border border-[#2D3B32]">
-                      Ver Referências
-                    </button>
+                {/* PAINEL DE ESTUDO DO VERSÍCULO */}
+                {activeSidePanel === "study" && (
+                  <div className="space-y-4">
+                    <p className="text-xs text-[#526356] italic border-b border-[#D8D5C5] pb-2">
+                      "{currentVerseKey && currentChapterVerses[selectedVerse || 1]}"
+                    </p>
+                    <div>
+                      <label className="text-xs font-bold text-[#2D3B32] block mb-1">Sua Anotação Exegética:</label>
+                      <textarea
+                        rows={8}
+                        value={currentVerseNote?.study || ""}
+                        onChange={(e) => saveStudyText(e.target.value)}
+                        placeholder="Escreva suas observações de estudo sobre o versículo..."
+                        className="w-full bg-[#F6F5F0] border border-[#D8D5C5] rounded-xl p-3 text-xs leading-relaxed focus:outline-none focus:border-[#2D3B32]"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* PAINEL DE REFERÊNCIAS CRUZADAS */}
+                {activeSidePanel === "references" && (
+                  <div className="space-y-3">
+                    {currentReferences.map((ref, i) => (
+                      <div key={i} className="p-3 bg-[#F6F5F0] border border-[#D8D5C5] rounded-xl text-xs space-y-1">
+                        <div className="flex items-center gap-1.5 font-bold text-[#2D3B32]">
+                          <LinkIcon /> {ref.passage}
+                        </div>
+                        <p className="text-[#526356] italic">{ref.text}</p>
+                      </div>
+                    ))}
                   </div>
                 )}
               </aside>
             )}
-          </main>
+          </div>
         )}
 
-        {/* TELA DE ESTUDOS SALVOS */}
-        {activeTab === "studies" && (
-          <main className="flex-1 p-8 overflow-y-auto">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-serif font-bold mb-6 text-[#1F2923]">Meus Estudos Salvos</h2>
-              {!user ? (
-                <p className="text-xs text-[#526356]">Faça login para visualizar seus estudos salvos.</p>
-              ) : savedStudiesList.length === 0 ? (
-                <p className="text-xs text-[#526356]">Nenhum estudo salvo até o momento.</p>
+        {/* TELA DE MEUS ESTUDOS */}
+        {activeTab === "studies" && user && (
+          <main className="flex-1 overflow-y-auto p-4 md:p-8">
+            <div className="max-w-4xl mx-auto space-y-6">
+              <h2 className="text-2xl font-serif font-bold text-[#2D3B32] border-b border-[#E2E0D5] pb-3">
+                Caderno Pessoal de Estudos
+              </h2>
+
+              {savedStudiesList.length === 0 ? (
+                <p className="text-xs text-[#526356]">Você ainda não salvou nenhuma anotação em versículos.</p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid gap-4">
                   {savedStudiesList.map((st) => (
-                    <div key={st.key} className="bg-[#EFECE1] border border-[#E2E0D5] p-4 rounded-xl flex flex-col justify-between">
-                      <div>
-                        <span className="text-xs font-bold text-[#2D3B32]">{st.book} {st.chapter}:{st.verse}</span>
-                        <p className="text-xs italic text-[#526356] my-2 bg-[#F6F5F0] p-2 rounded">"{st.verseText}"</p>
-                        <p className="text-xs text-[#1F2923]">{st.study}</p>
+                    <div
+                      key={st.key}
+                      onClick={() => navigateToVerse(st.book, st.chapter, st.verse, true)}
+                      className="p-4 bg-[#EAE8DD]/60 border border-[#D8D5C5] rounded-xl cursor-pointer hover:border-[#2D3B32] transition-colors"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-serif font-bold text-sm text-[#2D3B32]">
+                          {st.book} {st.chapter}:{st.verse}
+                        </span>
+                        <span className="text-[10px] bg-[#2D3B32] text-[#F6F5F0] px-2 py-0.5 rounded font-medium">
+                          Ver no texto
+                        </span>
                       </div>
-                      <button onClick={() => navigateToVerse(st.book, st.chapter, st.verse, true)} className="mt-4 text-xs font-semibold text-[#2D3B32] self-start">
-                        Continuar estudo →
-                      </button>
+                      <p className="text-xs text-[#526356] italic mb-2">"{st.verseText}"</p>
+                      <p className="text-xs text-[#1F2923] bg-[#F6F5F0] p-3 rounded-lg border border-[#D8D5C5]">
+                        {st.study}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -893,20 +1023,33 @@ export default function BibliaOrigensApp() {
 
         {/* TELA DE PESQUISA */}
         {activeTab === "search" && (
-          <main className="flex-1 p-8 overflow-y-auto">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-serif font-bold mb-6 text-[#1F2923]">Pesquisar na Bíblia</h2>
-              <SearchInput initialValue={searchTerm} onSearch={handleSearch} />
+          <main className="flex-1 overflow-y-auto p-4 md:p-8">
+            <div className="max-w-4xl mx-auto space-y-6">
+              <h2 className="text-2xl font-serif font-bold text-[#2D3B32] border-b border-[#E2E0D5] pb-3">
+                Pesquisa no Texto Bíblico
+              </h2>
 
-              <div className="mt-6 space-y-3">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  placeholder="Digite uma palavra ou termo (ex: 'princípio', 'amor')..."
+                  className="flex-1 bg-[#F6F5F0] border border-[#D8D5C5] rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#2D3B32]"
+                />
+              </div>
+
+              <div className="space-y-3">
                 {searchResults.map((res, i) => (
                   <div
                     key={i}
                     onClick={() => navigateToVerse(res.bookKey, parseInt(res.chapter), parseInt(res.verse))}
-                    className="bg-[#EFECE1] border border-[#E2E0D5] hover:border-[#2D3B32] p-4 rounded-xl cursor-pointer"
+                    className="p-3.5 bg-[#EAE8DD]/40 border border-[#D8D5C5] rounded-xl cursor-pointer hover:border-[#2D3B32] transition-colors"
                   >
-                    <p className="text-xs font-bold text-[#2D3B32] mb-1">{res.bookName} {res.chapter}:{res.verse}</p>
-                    <p className="text-xs text-[#1F2923]">{res.text}</p>
+                    <div className="font-serif font-bold text-xs text-[#2D3B32] mb-1">
+                      {res.bookName} {res.chapter}:{res.verse}
+                    </div>
+                    <p className="text-xs text-[#526356]">{res.text}</p>
                   </div>
                 ))}
               </div>
@@ -915,46 +1058,42 @@ export default function BibliaOrigensApp() {
         )}
       </div>
 
-      {/* MODAL LÉXICO DETALHADO */}
+      {/* MODAL DE PALAVRA DO LÉXICO */}
       {selectedWord && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-[#F6F5F0] border border-[#D8D5C5] rounded-2xl p-6 max-w-sm w-full shadow-xl relative">
-            <button onClick={() => setSelectedWord(null)} className="absolute top-4 right-4 text-xs font-bold text-[#526356]">✕</button>
-            <div className="border-b border-[#E2E0D5] pb-3 mb-3">
-              <div className="flex items-baseline justify-between">
-                <span className={`text-lg font-bold ${selectedWord.isJesusWords ? "text-[#B91C1C]" : "text-[#1F2923]"}`}>
-                  {selectedWord.translation}
+        <div 
+          onClick={() => setSelectedWord(null)} 
+          className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()} 
+            className="bg-[#F6F5F0] border border-[#D8D5C5] rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4"
+          >
+            <div className="flex items-start justify-between border-b border-[#D8D5C5] pb-3">
+              <div>
+                <span className="text-[10px] font-bold text-[#425447] bg-[#EAE8DD] px-2 py-0.5 rounded uppercase">
+                  {selectedWord.strong || "Léxico"}
                 </span>
-                <span className="text-[10px] font-semibold text-[#2D3B32] bg-[#EAE8DD] px-2 py-0.5 rounded border border-[#D8D5C5]">
-                  {selectedWord.strong}
-                </span>
+                <h3 className="text-xl font-serif font-bold text-[#2D3B32] mt-1">
+                  {selectedWord.original} ({selectedWord.translit})
+                </h3>
               </div>
-              <p className={`text-lg font-serif font-bold mt-1 ${selectedWord.isJesusWords ? "text-[#B91C1C]" : "text-[#2D3B32]"}`}>
-                {selectedWord.original} <span className="text-xs font-sans font-normal italic text-[#526356]">({selectedWord.translit})</span>
-              </p>
+              <button onClick={() => setSelectedWord(null)} className="text-xs font-bold text-[#526356]">
+                ✕
+              </button>
             </div>
-            <div className="space-y-2 text-xs text-[#1F2923]">
-              <p><strong>Classe Gramatical:</strong> {selectedWord.grammar}</p>
-              {selectedWord.morphology && <p><strong>Morfologia:</strong> {selectedWord.morphology}</p>}
-              <p><strong>Definição Exegética:</strong> {selectedWord.meaning}</p>
+
+            <div className="space-y-2 text-xs">
+              <p><strong>Tradução no contexto:</strong> {selectedWord.translation}</p>
+              <p><strong>Gramática:</strong> {selectedWord.grammar}</p>
+              <p><strong>Morfologia:</strong> {selectedWord.morphology}</p>
+              <div className="pt-2 border-t border-[#D8D5C5]">
+                <strong className="block mb-1">Significado Exegético:</strong>
+                <p className="text-[#526356] leading-relaxed">{selectedWord.meaning}</p>
+              </div>
             </div>
           </div>
         </div>
       )}
     </div>
-  );
-}
-
-function SearchInput({ initialValue, onSearch }: { initialValue: string; onSearch: (val: string) => void }) {
-  const [val, setVal] = useState(initialValue);
-  return (
-    <input
-      type="text"
-      value={val}
-      onChange={(e) => { setVal(e.target.value); onSearch(e.target.value); }}
-      placeholder="Digite um termo para pesquisar..."
-      className="w-full bg-[#EFECE1] border border-[#D8D5C5] rounded-xl px-4 py-3 text-xs text-[#1F2923] focus:outline-none"
-      autoFocus
-    />
   );
 }
