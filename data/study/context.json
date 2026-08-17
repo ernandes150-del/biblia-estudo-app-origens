@@ -1,0 +1,530 @@
+{
+  "Gênesis": {
+    "author": "Moisés",
+    "date": "c. 1440–1400 a.C.",
+    "theme": "Origens, Criação e Aliança Patriarcal",
+    "keywords": ["Criação", "Aliança", "Promessa", "Fé", "Patriarcas"],
+    "introduction": "Gênesis é o livro dos começos. Estabelece a criação do mundo, a queda da humanidade e o início da história da redenção através de Abraão.",
+    "historicalContext": "Escrito durante a peregrinação no deserto para ensinar Israel sobre a soberania do único Deus verdadeiro frente aos deuses pagãos do Egito e Canaã."
+  },
+  "Êxodo": {
+    "author": "Moisés",
+    "date": "c. 1440–1400 a.C.",
+    "theme": "Redenção, Libertação e a Lei Divina",
+    "keywords": ["Libertação", "Páscoa", "Lei", "Tabernáculo", "Aliança"],
+    "introduction": "Êxodo relata a libertação miraculosa de Israel da escravidão egípcia, a entrega dos Dez Mandamentos no Monte Sinai e o estabelecimento do Tabernáculo.",
+    "historicalContext": "Demonstra o cumprimento da promessa feita a Abraão e a constituição de Israel como uma nação teocrática sob a aliança com Javé."
+  },
+  "Levítico": {
+    "author": "Moisés",
+    "date": "c. 1440–1400 a.C.",
+    "theme": "Santidade, Sacrifício e Adoração",
+    "keywords": ["Santidade", "Sacrifício", "Expiação", "Sacerdócio", "Pureza"],
+    "introduction": "Levítico foca na santidade de Deus e nos meios instituídos para que um povo pecador possa habitar com um Deus santo por meio do sistema sacrificial.",
+    "historicalContext": "Manual para a tribo de Levi e todo o povo sobre leis de pureza, festas anuais e o Dia da Expiação (Yom Kippur)."
+  },
+  "Números": {
+    "author": "Moisés",
+    "date": "c. 1440–1400 a.C.",
+    "theme": "Peregrinação, Incredulidade e Fidelidade",
+    "keywords": ["Deserto", "Censo", "Murmuração", "Fidelidade", "Promessa"],
+    "introduction": "Registra a jornada de Israel desde o Sinai até as planícies de Moabe, destacando o fracasso da primeira geração por desobediência e a preparação da segunda geração.",
+    "historicalContext": "Abrange um período de aproximadamente 40 anos de peregrinação pelo deserto por causa da recusa em entrar em Canaã após o relato dos espias."
+  },
+  "Deuteronômio": {
+    "author": "Moisés",
+    "date": "c. 1406 a.C.",
+    "theme-[#2D3B32]": "Renovação da Aliança e Obediência",
+    "keywords": ["Shema", "Aliança", "Obediência", "Memória", "Benção"],
+    "introduction": "Composto por discursos de despedida de Moisés à nova geração antes de entrarem na Terra Prometida, reafirmando os mandamentos e a aliança com Deus.",
+    "historicalContext": "Proferido nas planícies de Moabe, do outro lado do rio Jordão, preparando o povo para conquistar e habitarem a terra de Canaã."
+  },
+  "Josué": {
+    "author": "Josué (com adições posteriores)",
+    "date": "c. 1380 a.C.",
+    "theme": "Conquista, Divisão da Terra e Fidelidade",
+    "keywords": ["Conquista", "Canaã", "Herança", "Fidelidade", "Coragem"],
+    "introduction": "Descreve a liderança de Josué na transposição do rio Jordão, as batalhas para a conquista de Canaã e a distribuição do território entre as doze tribos.",
+    "historicalContext": "Transição da peregrinação no deserto para o assentamento permanente na Terra Prometida."
+  },
+  "Juízes": {
+    "author": "Samuel (tradição)",
+    "date": "c. 1050–1000 a.C.",
+    "theme": "Declínio Espiritual, Ciclos de Aposta e Libertadores",
+    "keywords": ["Ciclo", "Libertador", "Pecado", "Arrependimento", "Opressão"],
+    "introduction": "Relata o período sombrio entre Josué e o surgimento da monarquia, marcado por um ciclo contínuo de apostasia, opressão estrangeira, clamor e libertação por juízes.",
+    "historicalContext": "Época de descentralização política e profunda degradação moral e espiritual em Israel ('cada um fazia o que parecia reto aos seus olhos')."
+  },
+  "Rute": {
+    "author": "Samuel (tradição)",
+    "date": "c. 1000 a.C.",
+    "theme": "Redenção, Lealdade e Providência Divina",
+    "keywords": ["Redentor", "Lealdade", "Providência", "Moabita", "Graça"],
+    "introduction": "Uma história de amor, fidelidade e redenção focada em Rute, uma moabita convertida, e Boaz, revelando a linhagem do Rei Davi e do Messias.",
+    "historicalContext": "Ocorre durante o conturbado período dos Juízes, mostrando que a graça e a providência de Deus permaneciam ativas no meio do povo."
+  },
+  "1 Samuel": {
+    "author": "Samuel, Gad, Natã",
+    "date": "c. 930 a.C.",
+    "theme": "Transição para a Monarquia e a Escolha do Rei",
+    "keywords": ["Rei", "Saul", "Davi", "Samuel", "Unção"],
+    "introduction": "Narra a transição da era dos Juízes para a Monarquia, registrando as vidas do profeta Samuel, a ascensão e queda do rei Saul e a unção de Davi.",
+    "historicalContext": "Israel exige um rei humano para ser como as nações vizinhas, resultando no reinado trágico de Saul e na escolha de Davi segundo o coração de Deus."
+  },
+  "2 Samuel": {
+    "author": "Gad, Natã",
+    "date": "c. 930 a.C.",
+    "theme": "O Reinado de Davi e a Aliança Davidica",
+    "keywords": ["Davi", "Jerusalém", "Aliança", "Arrependimento", "Reino"],
+    "introduction": "Foca no reinado de Davi sobre todo o Israel, a conquista de Jerusalém, o pacto de Deus com sua dinastia e as consequências trágicas do seu pecado com Bate-Seba.",
+    "historicalContext": "A consolidação do reino de Israel como potência regional e o estabelecimento de Jerusalém como capital política e espiritual."
+  },
+  "1 Reis": {
+    "author": "Jeremias (tradição)",
+    "date": "c. 560 a.C.",
+    "theme": "O Templo de Salomão e a Divisão do Reino",
+    "keywords": ["Salomão", "Templo", "Divisão", "Elias", "Idolatria"],
+    "introduction": "Cobre a glória do governo de Salomão, a construção do Primeiro Templo, a divisão de Israel em dois reinos (Norte e Sul) e o ministério do profeta Elias.",
+    "historicalContext": "A decadência espiritual liderada por reis idólatras leva o reino à cisão e ao início do julgamento profético."
+  },
+  "2 Reis": {
+    "author": "Jeremias (tradição)",
+    "date": "c. 560 a.C.",
+    "theme": "Declínio, Cativeiro e Julgamento Profético",
+    "keywords": ["Eliseu", "Exílio", "Assíria", "Babilônia", "Queda"],
+    "introduction": "Narra a continuação do declínio moral dos dois reinos, o ministério de Eliseu, a destruição do Reino do Norte pela Assíria e a queda de Jerusalém para a Babilônia.",
+    "historicalContext": "Escrito durante o Exílio Babilônico para explicar ao povo judaico por que o julgamento do cativeiro havia ocorrido."
+  },
+  "1 Crônicas": {
+    "author": "Esdras (tradição)",
+    "date": "c. 450–400 a.C.",
+    "theme": "Genealogia, Adoração e a Herança de Davi",
+    "keywords": ["Genealogia", "Davi", "Templo", "Adoração", "Louvor"],
+    "introduction": "Revisa a história de Israel desde Adão até Davi, com foco central no arranjo do culto no Templo, na adoração e na esperança messiânica.",
+    "historicalContext": "Redigido após o retorno do cativeiro babilônico para encorajar os remanescentes a reconstruírem sua identidade espiritual ao redor do Templo."
+  },
+  "2 Crônicas": {
+    "author": "Esdras (tradição)",
+    "date": "c. 450–400 a.C.",
+    "theme": "A Monarquia Judaica, Reformas e Restauração",
+    "keywords": ["Reforma", "Templo", "Judá", "Oração", "Despertamento"],
+    "introduction": "Registra a história dos reis de Judá (Reino do Sul), destacando reinados de reforma espiritual (como os de Ezequias e Josias) e o decreto de Ciro para a restauração.",
+    "historicalContext": "Enfatiza que a bênção da nação está diretamente ligada à fidelidade no culto a Deus no Templo restaurado."
+  },
+  "Esdras": {
+    "author": "Esdras",
+    "date": "c. 440 a.C.",
+    "theme": "Retorno do Exílio, Reconstrução do Templo e Reforma",
+    "keywords": ["Retorno", "Templo", "Lei", "Reconstrução", "Pureza"],
+    "introduction": "Relata o retorno dos exilados judeus da Babilônia em duas fases, a reconstrução do Templo sob Zorobabel e a reforma moral liderada pelo sacerdote Esdras.",
+    "historicalContext": "Acontece durante o governo do Império Persa, permitindo que os judeus retornassem à sua terra natal conforme profetizado por Jeremias."
+  },
+  "Neemias": {
+    "author": "Neemias",
+    "date": "c. 430 a.C.",
+    "theme": "Reconstrução dos Muros, Liderança e Renovação Espiritual",
+    "keywords": ["Muros", "Liderança", "Oração", "Restauração", "Trabalho"],
+    "introduction": "Narra a missão de Neemias ao retornar a Jerusalém para reconstruir as muralhas destruídas da cidade e reestabelecer a ordem social e espiritual.",
+    "historicalContext": "Sob o domínio persa de Artaxerxes I, Neemias enfrenta oposição externa e vícios internos para proteger a comunidade reconstruída."
+  },
+  "Ester": {
+    "author": "Desconhecido (Mardoqueu/Esdras)",
+    "date": "c. 460–400 a.C.",
+    "theme": "Providência Divina, Preservação e Coragem",
+    "keywords": ["Providência", "Purim", "Rainha", "Preservação", "Coragem"],
+    "introduction": "Conta como a rainha Ester e seu tio Mardoqueu salvaram o povo judeu de um genocídio planejado por Hamã no Império Persa, dando origem à festa de Purim.",
+    "historicalContext": "Ocorre na capital persa de Susã durante o reinado de Assuero (Xerxes I), destacando a ação invisível mas soberana de Deus."
+  },
+  "Jó": {
+    "author": "Desconhecido (tradição atribui a Moisés)",
+    "date": "Era Patriarcal (c. 2000–1800 a.C.)",
+    "theme": "Soberania de Deus, Sofrimento do Justo e Sabedoria",
+    "keywords": ["Sofrimento", "Soberania", "Justiça", "Fé", "Sabedoria"],
+    "introduction": "Aborda o mistério do sofrimento humano e a justiça de Deus através das provações de Jó, um homem íntegro que perde tudo, mas mantém a fé.",
+    "historicalContext": "Ambiente patriarcal na terra de Uz, tratando das inquietações universais sobre a razão de os justos sofrerem."
+  },
+  "Salmos": {
+    "author": "Davi, Asafe, Filhos de Corá, Moisés, Salomão e outros",
+    "date": "c. 1440–450 a.C.",
+    "theme": "Oração, Louvor, Lamento e Teologia Messiânica",
+    "keywords": ["Louvor", "Oração", "Adoração", "Lamento", "Messias"],
+    "introduction": "O livro de cânticos e orações de Israel. Expressa toda a gama das emoções humanas diante de Deus, combinando adoração, súplica e profecias sobre o Messias.",
+    "historicalContext": "Compilado ao longo de um milênio de história israelita para uso no culto coletivo e na devoção pessoal."
+  },
+  "Provérbios": {
+    "author": "Salomão, Agur, Lemuel",
+    "date": "c. 950–700 a.C.",
+    "theme": "Sabedoria Prática, Temor a Deus e Ética",
+    "keywords": ["Sabedoria", "Temor do Senhor", "Instrução", "Prudência", "Conselho"],
+    "introduction": "Coleção de ditados sábios projetados para ensinar a viver com sabedoria, discernimento moral e justiça no dia a dia.",
+    "historicalContext": "Instruções reais e populares para a formação de jovens e líderes baseadas na premissa de que o temor do Senhor é o princípio do saber."
+  },
+  "Eclesiastes": {
+    "author": "Salomão ('O Pregador')",
+    "date": "c. 935 a.C.",
+    "theme": "A Vaidade do Mundo e o Propósito da Vida",
+    "keywords": ["Vaidade", "Debaixo do Sol", "Propósito", "Tempo", "Temor"],
+    "introduction": "Examina o sentido da vida a partir de uma perspectiva terrena ('debaixo do sol'), concluindo que prazeres, riquezas e sabedoria humana são ilusórios sem Deus.",
+    "historicalContext": "Reflexões filosóficas de Salomão no fim de sua vida, apontando que o dever de todo homem é temer a Deus e guardar os seus mandamentos."
+  },
+  "Cântico dos Cânticos": {
+    "author": "Salomão",
+    "date": "c. 960 a.C.",
+    "theme": "O Amor Conjugal, Beleza e Fidelidade",
+    "keywords": ["Amor", "Casamento", "Noivo", "Beleza", "Afeição"],
+    "introduction": "Um poema lírico que celebra o amor puro, a atração física e a fidelidade dentro do pacto do casamento entre um noivo e sua amada.",
+    "historicalContext": "Poesia amorosa da época de Salomão, usada também allegoricamente pelos judeus e cristãos para ilustrar o amor de Deus pelo seu povo."
+  },
+  "Isaías": {
+    "author": "Isaías",
+    "date": "c. 740–680 a.C.",
+    "theme": "Julgamento, Redenção e o Servo Sofredor",
+    "keywords": ["Santo de Israel", "Servo Sofredor", "Messias", "Julgamento", "Consolo"],
+    "introduction": "O 'Evangelho do Antigo Testamento'. Profetiza o julgamento iminente de Judá, mas oferece visões sublimes da restauração futura através do Messias.",
+    "historicalContext": "Isaías profetizou em Jerusalém durante as ameaças da expansão do Império Assírio e prenunciou o exílio babilônico."
+  },
+  "Jeremias": {
+    "author": "Jeremias",
+    "date": "c. 627–580 a.C.",
+    "theme": "Julgamento de Judá, Arrependimento e a Nova Aliança",
+    "keywords": ["Choro", "Nova Aliança", "Julgamento", "Exílio", "Corrupção"],
+    "introduction": "Conhecido como o 'profeta chorão', Jeremias adverte incansavelmente Judá sobre o julgamento babilônico e promete uma futura Nova Aliança gravada no coração.",
+    "historicalContext": "Ministério exercido durante os anos finais de Judá, testemunhando a cerco e destruição de Jerusalém por Nabucodonosor."
+  },
+  "Lamentações": {
+    "author": "Jeremias",
+    "date": "c. 586 a.C.",
+    "theme": "Luto sobre Jerusalém, Misericórdia e Esperança",
+    "keywords": ["Lamento", "Jerusalém", "Misericórdia", "Fidelidade", "Choro"],
+    "introduction": "Coleção de cinco poemas acrósticos expressando profunda dor e luto pela queda de Jerusalém e destruição do Templo, enquanto afirma a misericórdia renovada de Deus.",
+    "historicalContext": "Escrito logo após o saque e incêndio de Jerusalém pelos babilônios em 586 a.C."
+  },
+  "Ezequiel": {
+    "author": "Ezequiel",
+    "date": "c. 593–571 a.C.",
+    "theme": "A Glória de Deus, Julgamento e Restauração Espiritual",
+    "keywords": ["Glória", "Visão", "Ossos Secos", "Restauração", "Templo Novo"],
+    "introduction": "Composto por visões impressionantes, Ezequiel demonstra a partida da glória de Deus do Templo poluído e a promessa de um coração novo e da restauração do povo.",
+    "historicalContext": "Ezequiel profetizou como exilado na Babilônia para a comunidade de judeus cativos às margens do rio Kebar."
+  },
+  "Daniel": {
+    "author": "Daniel",
+    "date": "c. 605–536 a.C.",
+    "theme": "A Soberania de Deus sobre os Reinos Humanos e Apocalipse",
+    "keywords": ["Soberania", "Reinos", "Fidelidade", "Visões", "Filho do Homem"],
+    "introduction": "Combina narrativas do livramento de Daniel e seus amigos fiéis com profecias apocalípticas detalhadas sobre os impérios mundiais e o Reino eterno de Deus.",
+    "historicalContext": "Escrito a partir da corte imperial da Babilônia e Pérsia, onde Daniel serviu como elevado estadista exilado."
+  },
+  "Oseias": {
+    "author": "Oseias",
+    "date": "c. 755–715 a.C.",
+    "theme": "O Amor Incondicional de Deus e o Infiel Israel",
+    "keywords": ["Amor", "Infidelidade", "Casamento", "Arrependimento", "Compaixão"],
+    "introduction": "A ordem dada a Oseias para se casar com uma mulher infiel serve como uma parábola viva do amor amoroso de Deus por Israel, apesar do adultério espiritual do povo.",
+    "historicalContext": "Profetizou no Reino do Norte (Israel/Efraim) em seus últimos anos de decadência antes da invasão assíria."
+  },
+  "Joel": {
+    "author": "Joel",
+    "date": "c. 835 ou 580 a.C.",
+    "theme": "O Dia do Senhor e o Derramamento do Espírito",
+    "keywords": ["Dia do Senhor", "Gafanhotos", "Espírito Santo", "Arrependimento", "Julgamento"],
+    "introduction": "Usa uma devastadora praga de gafanhotos como aviso sobre o iminente 'Dia do Senhor', convidando ao arrepender de coração e prometendo o derramamento do Espírito Santo.",
+    "historicalContext": "Dirigido a Judá após uma crise agrícola terrível que prenunciava um julgamento divino ainda maior."
+  },
+  "Amós": {
+    "author": "Amós",
+    "date": "c. 760 a.C.",
+    "theme": "Justiça Social e Julgamento da Hipocrisia",
+    "keywords": ["Justiça", "Injustiça", "Julgamento", "Retidão", "Hipocrisia"],
+    "introduction": "Um boiadeiro enviado para denunciar a exploração dos pobres, a corrupção da justiça e a religiosidade vazia das classes abastadas do Reino do Norte.",
+    "historicalContext": "Época de grande prosperidade material e superficialidade espiritual sob o reinado de Jeroboão II em Israel."
+  },
+  "Obadias": {
+    "author": "Obadias",
+    "date": "c. 586 a.C.",
+    "theme": "Julgamento contra Edom e Triunfo de Sião",
+    "keywords": ["Edom", "Orgulho", "Julgamento", "Irmão", "Soberania"],
+    "introduction": "O livro mais curto do Antigo Testamento. Pronuncia sentença contra a nação de Edom por ter se alegrado com a destruição de Jerusalém e se aproveitado de seus irmãos judeus.",
+    "historicalContext": "Profetizado na sequência imediata da queda de Jerusalém diante dos babilônios."
+  },
+  "Jonas": {
+    "author": "Jonas",
+    "date": "c. 760 a.C.",
+    "theme": "A Misericórdia de Deus para com as Nações Gentias",
+    "keywords": ["Nínive", "Misericórdia", "Desobediência", "Baleia", "Arrependimento"],
+    "introduction": "A história de um profeta relutante enviado para pregar o arrepender à temida cidade assíria de Nínive, revelando a compaixão universal de Deus.",
+    "historicalContext": "A Assíria era o império mais cruel e temido da época, o que explica a relutância de Jonas em ver aquela cidade salva."
+  },
+  "Miqueias": {
+    "author": "Miqueias",
+    "date": "c. 735–700 a.C.",
+    "theme": "Justiça, Verdadeira Religiosidade e o Rei nascido em Belém",
+    "keywords": ["Justiça", "Misericórdia", "Belém", "Praticar o Bem", "Liderança"],
+    "introduction": "Denuncia a corrupção dos líderes religiosos e políticos de Israel e Judá, apelando para o exercício da justiça, e profetiza o nascimento do Messias em Belém.",
+    "historicalContext": "Contemporâneo de Isaías, atuou no meio rural durante o avanço do poderio assírio."
+  },
+  "Naum": {
+    "author": "Naum",
+    "date": "c. 660–612 a.C.",
+    "theme": "O Julgamento Final da Cruel Nínive",
+    "keywords": ["Nínive", "Julgamento", "Justiça Divina", "Vingança", "Consolo"],
+    "introduction": "Profetiza a queda inevitável do cruel Império Assírio e de sua capital Nínive, trazendo alívio e consolo para o opresso povo de Judá.",
+    "historicalContext": "Escrito aproximadamente um século após o arrependimento do tempo de Jonas, quando Nínive voltou à extremada violência."
+  },
+  "Habacuque": {
+    "author": "Habacuque",
+    "date": "c. 605 a.C.",
+    "theme": "O Justo Viverá da Fé e as Inquietações da Fé",
+    "keywords": ["Fé", "Perguntas", "Babilônios", "Soberania", "Confiança"],
+    "introduction": "Apresenta um diálogo sincero onde o profeta questiona Deus sobre a tolerância ao pecado em Judá e o uso dos babilônios para o julgamento, concluindo em hino de fé.",
+    "historicalContext": "Escrito às vésperas das primeiras invasões de Nabucodonosor contra Jerusalém."
+  },
+  "Sofonias": {
+    "author": "Sofonias",
+    "date": "c. 630 a.C.",
+    "theme": "O Grande e Terrível Dia do Senhor e o Remanescente",
+    "keywords": ["Dia do Senhor", "Purificação", "Remanescente", "Cântico", "Julgamento"],
+    "introduction": "Adverte severamente sobre o iminente purificação do Dia do Senhor que virá sobre o mundo e Judá, prometendo salvação para um remanescente humilde.",
+    "historicalContext": "Profetizou no reinado de Josias, impulsionando os esforços iniciais de reforma espiritual antes da queda definitiva."
+  },
+  "Ageu": {
+    "author": "Ageu",
+    "date": "520 a.C.",
+    "theme": "Prioridades Espirituais e a Reconstrução do Templo",
+    "keywords": ["Templo", "Prioridades", "Despertamento", "Glória Futura", "Trabalho"],
+    "introduction": "Exorta com firmeza os exilados que retornaram da Babilônia a deixarem de lado suas casas luxuosas e terminarem de reconstruir a Casa de Deus.",
+    "historicalContext": "Após o retorno do exílio, a reconstrução do Templo havia sido paralisada por 16 anos devido à oposição e apatia."
+  },
+  "Zacarias": {
+    "author": "Zacarias",
+    "date": "520–480 a.C.",
+    "theme": "Visões Apocalípticas, O Rei Messias e Encorajamento",
+    "keywords": ["Visões", "Messias", "Restauração", "Rei Humilde", "Templo"],
+    "introduction": "Um livro apocalíptico e messiânico recheado de visões proféticas sobre o futuro Templo, o Rei entrando montado num jumentinho e a salvação de Jerusalém.",
+    "historicalContext": "Contemporâneo de Ageu, encorajou a comunidade pós-exílica a ver a glória futura de Sião."
+  },
+  "Malaquias": {
+    "author": "Malaquias",
+    "date": "c. 430 a.C.",
+    "theme": "Fidelidade na Aliança, Dízimos e o Mensageiro que Virá",
+    "keywords": ["Aliança", "Dízimos", "Mensageiro", "Elias", "Honra"],
+    "introduction": "O último livro do Antigo Testamento. Confronta a frieza espiritual, a negligência nos dízimos e o divórcio, anunciando o envio do mensageiro (João Batista).",
+    "historicalContext": "Escrito no tempo de Neemias; o entusiasmo inicial da reconstrução havia desaparecido, dando lugar ao formalismo desprovido de vida."
+  },
+  "Mateus": {
+    "author": "Mateus (Levi)",
+    "date": "c. 60–70 d.C.",
+    "theme": "Jesus como o Rei Messias e Cumprimento das Escrituras",
+    "keywords": ["Reino dos Céus", "Messias", "Cumprimento", "Sermão da Montanha", "Rei"],
+    "introduction": "Escrito com foco na audiência judaica, demonstra exaustivamente como Jesus cumpre as profecias do Antigo Testamento sobre o Rei descendente de Davi.",
+    "historicalContext": "Ponte perfeita entre os dois testamentos, destacando o Reino dos Céus e o ensino sistemático dos cinco grandes discursos de Jesus."
+  },
+  "Marcos": {
+    "author": "João Marcos",
+    "date": "c. 55–65 d.C.",
+    "theme": "Jesus como o Servo Sofredor e Filho de Deus",
+    "keywords": ["Logo", "Imediatamente", "Servo", "Milagres", "Ação"],
+    "introduction": "O Evangelho mais curto e dinâmico. Enfatiza as ações, autoridades e milagres de Jesus como o Servo de Deus que veio para dar sua vida em resgate de muitos.",
+    "historicalContext": "Dirigido primariamente aos cristãos em Roma submetidos à perseguição sob o império romano, destacando a ação imediata."
+  },
+  "Lucas": {
+    "author": "Lucas",
+    "date": "c. 60–62 d.C.",
+    "theme": "Jesus como o Filho do Homem e Salvador da Humanidade",
+    "keywords": ["Filho do Homem", "Misericórdia", "Pobres", "Espírito Santo", "Salvação"],
+    "introduction": "Escrito com precisão historiográfica por um médico gentio, apresenta Jesus como o Salvador perfeito que veio buscar e salvar o que se havia perdido.",
+    "historicalContext": "Dedicado a Teófilo e destinado ao mundo grego, dá destaque especial às mulheres, aos marginalizados e à oração."
+  },
+  "João": {
+    "author": "João Apóstolo",
+    "date": "c. 85–95 d.C.",
+    "theme": "A Divindade e Incarnação do Verbo",
+    "keywords": ["Verbo", "Luz", "Vida", "Crer", "Sinais", "Eu Sou"],
+    "introduction": "Evangelho teológico focado em revelar que Jesus é o Filho eterno de Deus que se fez carne, apresentando sete sinais e grandes declarações 'Eu Sou'.",
+    "historicalContext": "Escrito no final do primeiro século a partir de Éfeso para fortalecer as igrejas contra erros doutrinários sobre a natureza de Cristo."
+  },
+  "Atos dos Apóstolos": {
+    "author": "Lucas",
+    "date": "c. 62–64 d.C.",
+    "theme": "A Expansão da Igreja pelo Poder do Espírito Santo",
+    "keywords": ["Espírito Santo", "Testemunhas", "Igreja", "Missões", "Evangelho"],
+    "introduction": "A história do nascimento e da rápida expansão da Igreja Cristã desde Jerusalém até Roma através da capacitação do Espírito Santo e pregação dos apóstolos.",
+    "historicalContext": "Continuação do Evangelho de Lucas, documentando o progresso missionário de Pedro e Paulo no mundo greco-romano."
+  },
+  "Romanos": {
+    "author": "Paulo",
+    "date": "c. 57 d.C.",
+    "theme": "A Justificação pela Fé e a Teologia da Graça",
+    "keywords": ["Justificação", "Fé", "Graça", "Pecado", "Lei", "Salvação"],
+    "introduction": "A mais sistemática exposição teológica do Novo Testamento. Explica a culpa universal da humanidade, a salvação mediante a fé em Cristo e a vida no Espírito.",
+    "historicalContext": "Escrita de Corinto para a igreja de Roma antes de Paulo visitá-los, preparando campo para a unidade entre judeus e gentios crentes."
+  },
+  "1 Coríntios": {
+    "author": "Paulo",
+    "date": "c. 55 d.C.",
+    "theme": "Correção de Problemas na Igreja, Unidade e Amor",
+    "keywords": ["Unidade", "Dons", "Amor", "Ressurreição", "Santidade"],
+    "introduction": "Carta pastoral abordando divisões na igreja, imoralidade, processos judiciais, controvérsias nos cultos, dons espirituais e a doutrina da ressurreição.",
+    "historicalContext": "Corinto era uma próspera e extremamente imoral metrópole comercial, exercendo forte pressão cultural sobre a recém-formada igreja."
+  },
+  "2 Coríntios": {
+    "author": "Paulo",
+    "date": "c. 56 d.C.",
+    "theme": "Defesa do Apostolado, Consolo e Poder na Fraqueza",
+    "keywords": ["Consolo", "Fraqueza", "Ministério", "Graça", "Reconciliação"],
+    "introduction": "A epístola mais pessoal de Paulo, onde ele abre seu coração sobre os seus sofrimentos e defende a autoridade de seu ministério contra falsos apóstolos.",
+    "historicalContext": "Escrita da Macedônia após Paulo receber notícias de que a igreja em Corinto havia se arrependido e respondido às suas admoestações anteriores."
+  },
+  "Gálatas": {
+    "author": "Paulo",
+    "date": "c. 48–49 d.C.",
+    "theme": "Liberdade Cristã e a Defesa do Evangelho da Graça",
+    "keywords": ["Liberdade", "Graça", "Lei", "Fruto do Espírito", "Justificação"],
+    "introduction": "Uma defesa apaixonada da salvação exclusivamente pela graça, refutando falsos mestres judaizantes que exigiam a circuncisão e obras da lei.",
+    "historicalContext": "Dirigida às igrejas da Galácia do Sul que estavam sendo enganadas por mestres que distorciam o evangelho da graça."
+  },
+  "Efésios": {
+    "author": "Paulo",
+    "date": "c. 60–62 d.C.",
+    "theme": "A Igreja como Corpo de Cristo e a Armadura de Deus",
+    "keywords": ["Corpo", "Unidade", "Riquezas em Cristo", "Armadura", "Graça"],
+    "introduction": "Expõe as gloriosas bênçãos espirituais na união com Cristo, o mistério da Igreja unindo judeus e gentios e as instruções para a guerra espiritual.",
+    "historicalContext": "Uma das 'Epístolas da Prisão', escrita enquanto Paulo estava preso em Roma para edificar o andar digno das igrejas."
+  },
+  "Filipenses": {
+    "author": "Paulo",
+    "date": "c. 61 d.C.",
+    "theme": "A Alegria em Cristo e a Humildade da Encarnação",
+    "keywords": ["Alegria", "Regozijo", "Humildade", "Kênosis", "Paz"],
+    "introduction": "Uma carta calorosa de gratidão por apoio financeiro, encorajando a igreja a manter a alegria, a unidade e a mente humilde a exemplo de Cristo.",
+    "historicalContext": "Escrita da prisão romana para a primeira igreja fundada na Europa (Filipos), demonstrando alegria triunfante no meio das correntes."
+  },
+  "Colossenses": {
+    "author": "Paulo",
+    "date": "c. 60–62 d.C.",
+    "theme": "A Supremacia e Suficiência Absoluta de Cristo",
+    "keywords": ["Supremacia", "Plenitude", "Cristo", "Suficiência", "Sabedoria"],
+    "introduction": "Exalta Cristo como a imagem do Deus invisível e o Criador de tudo, combatendo heresias que misturavam filosofias humanas e ascetismo ao evangelho.",
+    "historicalContext": "Escrita para a igreja em Colossos (Ásia Menor) para combater ensinamentos heréticos emergentes que rebaixavam a pessoa de Cristo."
+  },
+  "1 Tessalonicenses": {
+    "author": "Paulo",
+    "date": "c. 51 d.C.",
+    "theme": "Esperança na Segunda Vinda de Cristo e Santificação",
+    "keywords": ["Segunda Vinda", "Santificação", "Esperança", "Arrebatamento", "Trabalho"],
+    "introduction": "Instrui uma igreja jovem sobre como viver de modo santo perante a perseguição e traz grande consolo doutrinário a respeito do retorno de Cristo.",
+    "historicalContext": "Uma das primeiras cartas escritas por Paulo, enviada de Corinto logo após ser forçado a deixar a cidade de Tessalônica devido a tumultos."
+  },
+  "2 Tessalonicenses": {
+    "author": "Paulo",
+    "date": "c. 51–52 d.C.",
+    "theme": "O Dia do Senhor, o Homem da Iniquidade e a Perseverança",
+    "keywords": ["Dia do Senhor", "Iniquidade", "Perseverança", "Trabalho", "Julgamento"],
+    "introduction": "Corrige mal-entendidos teológicos de que o Dia do Senhor já havia ocorrido e exorta contra a ociosidade, incentivando a perseverança firme.",
+    "historicalContext": "Enviada poucos meses após a primeira carta devido ao surgimento de falsos boatos proféticos entre os crentes da Tessalônica."
+  },
+  "1 Timóteo": {
+    "author": "Paulo",
+    "date": "c. 62–64 d.C.",
+    "theme": "Liderança na Igreja, Sã Doutrina e Ordem Pastoral",
+    "keywords": ["Pastoral", "Presbíteros", "Diáconos", "Sã Doutrina", "Ordem"],
+    "introduction": "Carta pastoral com orientações práticas para o jovem Timóteo sobre a administração da igreja local, qualificações de líderes e combate às falsas doutrinas.",
+    "historicalContext": "Escrita entre a primeira e a segunda prisão de Paulo em Roma, enquanto Timóteo liderava a desafiadora igreja em Éfeso."
+  },
+  "2 Timóteo": {
+    "author": "Paulo",
+    "date": "c. 66–67 d.C.",
+    "theme": "Fidelidade no Ministério e Encorajamento Final",
+    "keywords": ["Fidelidade", "Prega a Palavra", "Combate", "Escritura", "Perseverança"],
+    "introduction": "O testamento final de Paulo antes de seu martírio. Exorta Timóteo a permanecer fiel, pregar firmemente a Palavra e suportar as aflições.",
+    "historicalContext": "Escrita de uma fria e escura masmorra romana em tempos de terrível perseguição sob o imperador Nero."
+  },
+  "Tito": {
+    "author": "Paulo",
+    "date": "c. 62–64 d.C.",
+    "theme": "Organização de Igrejas e Boas Obras resultantes da Graça",
+    "keywords": ["Boas Obras", "Anciãos", "Creta", "Sã Doutrina", "Graça"],
+    "introduction": "Instruções ao obreiro Tito para nomear presbíteros qualificados na ilha de Creta, ordenar o ensino e incentivar os crentes a praticarem boas obras.",
+    "historicalContext": "Creta era famosa pela cultura de mentiras e desordem moral; a carta fornece o modelo de transformação pelo evangelho."
+  },
+  "Filemom": {
+    "author": "Paulo",
+    "date": "c. 60–62 d.C.",
+    "theme": "Perdão, Reconciliação e Irmandade Cristã",
+    "keywords": ["Perdão", "Escravo", "Reconciliação", "Irmão", "Intercessão"],
+    "introduction": "Apelo pessoal de Paulo a Filemom para que receba de volta o seu escravo fugitivo Onésimo, não mais como escravo, mas como um irmão amado em Cristo.",
+    "historicalContext": "Demonstra o poder prático do evangelho em nivelar barreiras sociais e transformar vidas no Império Romano."
+  },
+  "Hebreus": {
+    "author": "Desconhecido (Paulo, Apolo, Barnabé)",
+    "date": "c. 64–68 d.C.",
+    "theme": "A Superioridade de Cristo e o Novo Pacto",
+    "keywords": ["Superior", "Sacerdote", "Fé", "Melhor Aliança", "Perseverança"],
+    "introduction": "Demonstra a absoluta superioridade de Cristo sobre os anjos, Moisés e o antigo sistema sacrificial, exortando os judeus cristãos a não retrocederem.",
+    "historicalContext": "Escrito para crentes judeus tentados a abandonar a fé cristã e retornar ao judaísmo para escapar da perseguição."
+  },
+  "Tiago": {
+    "author": "Tiago (Irmão de Jesus)",
+    "date": "c. 45–48 d.C.",
+    "theme": "A Fé Prática demonstrada pelas Obras",
+    "keywords": ["Fé sem Obras", "Sabedoria", "Língua", "Provações", "Prática"],
+    "introduction": "Manual de sabedoria cristã prática. Enfatiza que a verdadeira fé saving é inevitavelmente evidenciada por boas obras, autocontrole da língua e imparcialidade.",
+    "historicalContext": "Acredita-se ser a primeira epístola do NT a ser redigida, enviada aos crentes judeus dispersos fora da Palestina."
+  },
+  "1 Pedro": {
+    "author": "Pedro",
+    "date": "c. 62–64 d.C.",
+    "theme": "Esperança Viva no Meio da Perseguição e Sofrimento",
+    "keywords": ["Sofrimento", "Esperança Viva", "Estrangeiros", "Santidade", "Graça"],
+    "introduction": "Fortalece os cristãos que sofriam severas perseguições por causa da fé, lembrando-os da sua herança incorruptível e chamando-os à santidade.",
+    "historicalContext": "Escrita de Roma ('Babilônia') para as igrejas espalhadas pelas províncias da Ásia Menor sob o aumento das hostilidades."
+  },
+  "2 Pedro": {
+    "author": "Pedro",
+    "date": "c. 65–67 d.C.",
+    "theme": "Alerta contra Falsos Mestres e o Conhecimento da Verdade",
+    "keywords": ["Conhecimento", "Falsos Profetas", "Novo Céu", "Crescimento", "Verdade"],
+    "introduction": "Advertência final de Pedro antes da sua morte contra heresias destruidoras e libertinagem, exortando ao crescimento no conhecimento de Cristo.",
+    "historicalContext": "Alertas proféticos sobre o surgimento interno de escarnecedores que duvidariam do retorno prometido de Cristo."
+  },
+  "1 João": {
+    "author": "João Apóstolo",
+    "date": "c. 85–90 d.C.",
+    "theme": "Certeza da Salvação, Amor Fraternal e Verdade",
+    "keywords": ["Amor", "Luz", "Certeza", "Conhecer", "Comunhão"],
+    "introduction": "Escrito para dar segurança de salvação aos crentes, oferecendo testes claros de fé verdadeira: obediência aos mandamentos, amor aos irmãos e doutrina correta.",
+    "historicalContext": "Enviado da cidade de Éfeso para refutar doutrinas proto-gnósticas que negavam a verdadeira humanidade de Jesus."
+  },
+  "2 João": {
+    "author": "João Apóstolo",
+    "date": "c. 85–90 d.C.",
+    "theme": "Andar na Verdade e Cuidado com Enganadores",
+    "keywords": ["Verdade", "Amor", "Hospitalidade", "Enganadores", "Permanecer"],
+    "introduction": "Carta curta enviada à 'senhora eleita' exortando a igreja local a andar em amor amoroso, mas recusando acolher mestres que negavam a encarnação.",
+    "historicalContext": "Numa época de pregadores itinerantes, adverte sobre o perigo de apoiar financeiramente falsos ensinos."
+  },
+  "3 João": {
+    "author": "João Apóstolo",
+    "date": "c. 85–90 d.C.",
+    "theme": "Hospitalidade Cristã e Liderança Orgulhosa",
+    "keywords": ["Gaio", "Diótrefes", "Hospitalidade", "Verdade", "Cooperação"],
+    "introduction": "Elogia o discípulo Gaio por sua generosa hospitalidade aos missionários fiéis e repreende Diótrefes por seu orgulho dominador na igreja.",
+    "historicalContext": "Carta pessoal que revela bastidores da liderança e das relações comunitárias nas igrejas no final do primeiro século."
+  },
+  "Judas": {
+    "author": "Judas (Irmão de Tiago e Jesus)",
+    "date": "c. 65–80 d.C.",
+    "theme": "Batalha pela Fé e Preservação no Deus Triuno",
+    "keywords": ["Batalhar pela Fé", "Apostasia", "Guardados", "Misericórdia", "Glória"],
+    "introduction": "Exorta energicamente os crentes a batalharem pela fé uma vez entregue aos santos, denunciando falsos mestres que transformavam a graça em libertinagem.",
+    "historicalContext": "Urgentemente redigido diante da infiltração de pessoas ímpias que pervertiam a liberdade cristã para praticar imoralidades."
+  },
+  "Apocalipse": {
+    "author": "João Apóstolo",
+    "date": "c. 95 d.C.",
+    "theme": "A Vitória Definitiva do Cordeiro e o Novo Céu e Nova Terra",
+    "keywords": ["Revelação", "Cordeiro", "Vitória", "Novo Céu", "Soberania"],
+    "introduction": "A revelação apocalíptica da consumação do Reino de Deus, o julgamento final do mal, a vitória de Cristo e a habitação eterna da Nova Jerusalém.",
+    "historicalContext": "Escrito da ilha de Patmos durante a severa perseguição do imperador Domiciano para encorajar as sete igrejas da Ásia Menor."
+  }
+}
