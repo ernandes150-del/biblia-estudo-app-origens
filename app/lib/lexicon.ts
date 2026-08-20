@@ -1,83 +1,68 @@
 import type { InterlinearWord } from "../types";
 
-// --- MOTORES DE TRANSLITERAÇÃO ---
-// Usados hoje apenas para gerar a transliteração de novas entradas de REAL_LEXICON
-// manualmente (ver histórico). Mantidos aqui para reaproveitamento quando o
-// léxico real for expandido (Fase 2).
-export const transliterateHebrew = (text: string): string => {
-  const map: Record<string, string> = {
-    'א': "'", 'ב': 'b', 'ג': 'g', 'ד': 'd', 'ה': 'h', 'ו': 'v', 'ז': 'z',
-    'ח': 'ch', 'ט': 't', 'י': 'y', 'כ': 'k', 'ך': 'k', 'ל': 'l', 'מ': 'm',
-    'ם': 'm', 'נ': 'n', 'ן': 'n', 'ס': 's', 'ע': 'a', 'פ': 'p', 'ף': 'p',
-    'צ': 'tz', 'ץ': 'tz', 'ק': 'q', 'ר': 'r', 'ש': 'sh', 'ת': 't',
-    'ָ': 'a', 'ַ': 'a', 'ֶ': 'e', 'ֵ': 'e', 'ִ': 'i', 'ֹ': 'o', 'ֻ': 'u', 'ְ': 'e'
-  };
-  return text.split('').map(char => map[char] || '').join('') || "dabar";
-};
+// --- LÉXICO INTERLINEAR REAL (Fase 2) ---
+// Dados de Strong's, gramática e morfologia de TODOS os 66 livros, gerados a
+// partir do STEPBible-Data (Tyndale House Cambridge / STEPBible.org), CC BY 4.0:
+// https://github.com/STEPBible/STEPBible-Data
+// - TAGNT (Translators Amalgamated Greek NT) para o Novo Testamento
+// - TAHOT (Translators Amalgamated Hebrew OT) para o Antigo Testamento
+// Cada livro é servido sob demanda de /public/lexicon/{Livro}.json e mantido em
+// cache em memória. Não fabricamos análise: um versículo sem entrada no arquivo
+// do livro simplesmente não tem interlinear (ver getInterlinearWords).
+//
+// Observação: a glosa de tradução de cada palavra (campo "translation") vem em
+// inglês, como fornecida pela fonte. Não a substituímos por uma tradução
+// palavra-por-palavra em português para não fabricar alinhamento que a fonte não
+// garante — a tradução em português de referência é a do próprio versículo
+// (Bíblia Livre), já exibida no restante do app.
 
-export const transliterateGreek = (text: string): string => {
-  const map: Record<string, string> = {
-    'α': 'a', 'β': 'b', 'γ': 'g', 'δ': 'd', 'ε': 'e', 'ζ': 'z', 'η': 'ē',
-    'θ': 'th', 'ι': 'i', 'κ': 'k', 'λ': 'l', 'μ': 'm', 'ν': 'n', 'ξ': 'x',
-    'ο': 'o', 'π': 'p', 'ρ': 'r', 'σ': 's', 'ς': 's', 'τ': 't', 'υ': 'y',
-    'φ': 'ph', 'χ': 'ch', 'ψ': 'ps', 'ω': 'ō'
-  };
-  return text.split('').map(char => map[char] || char).join('') || "logos";
-};
+type BookLexicon = Record<string, InterlinearWord[]>; // "capitulo-versiculo" -> palavras
 
-// --- BASE DE DADOS LÉXICA REAL ---
-// Cada chave é "Livro-Capítulo-Versículo". Só versículos cadastrados aqui recebem
-// análise interlinear (Strong's, gramática, morfologia). Não inventamos análise
-// para versículos fora desta lista — ver getInterlinearWords em app/page.tsx.
-export const REAL_LEXICON: Record<string, InterlinearWord[]> = {
-  "Gênesis-1-1": [
-    { translation: "No princípio", original: "בְּרֵאשִׁית", translit: "Bereshit", strong: "H7225", grammar: "Substantivo + Preposição", morphology: "Prep. בְּ (em) + Subst. fem. sing. constructo", meaning: "No início, no começo, a primeira parte de uma série temporal ou criação." },
-    { translation: "criou", original: "בָּרָא", translit: "Bara", strong: "H1254", grammar: "Verbo (Qal Perf. 3ms)", morphology: "Qal Perfeito, 3ª pessoa masc. singular", meaning: "Criar, moldar, fazer (criação divina ex nihilo)." },
-    { translation: "Deus", original: "אֱלֹהִים", translit: "Elohim", strong: "H430", grammar: "Substantivo Masculino Plural", morphology: "Subst. masc. plural majestático", meaning: "Deus Supremo, Criador e Juiz de toda a terra." },
-    { translation: "os", original: "אֵת", translit: "'Et", strong: "H853", grammar: "Partícula de Acusativo", morphology: "Sinal de objeto direto definido", meaning: "Marcador gramatical de objeto direto sem tradução literal." },
-    { translation: "céus", original: "הַשָּׁמַיִם", translit: "Hashamayim", strong: "H8064", grammar: "Substantivo Dual/Plural com Artigo", morphology: "Artigo הַ + Subst. masc. dual/plural", meaning: "Céus, firmamento, abóbada celeste e espaço." },
-    { translation: "e a", original: "וְאֵת", translit: "Ve'et", strong: "H853", grammar: "Conjunção + Acusativo", morphology: "Conj. וְ (e) + Marcador de acusativo", meaning: "E (conjunção aditiva com marcador de objeto)." },
-    { translation: "terra.", original: "הָאָרֶץ", translit: "Ha'aretz", strong: "H776", grammar: "Substantivo Feminino com Artigo", morphology: "Artigo הָ + Subst. fem. singular", meaning: "Terra, solo, mundo habitável, criação terrestre." }
-  ],
-  "João-1-1": [
-    { translation: "No", original: "Ἐν", translit: "En", strong: "G1722", grammar: "Preposição", morphology: "Prep. com caso Dativo", meaning: "Em, dentro de, no tempo de." },
-    { translation: "princípio", original: "ἀρχῇ", translit: "Archē", strong: "G746", grammar: "Substantivo Feminino Dativo", morphology: "Subst. fem. sing. dativo", meaning: "Princípio, origem, causa primária, a base do tempo." },
-    { translation: "era", original: "ἦν", translit: "ēn", strong: "G2258", grammar: "Verbo (Imperfeito Ativo)", morphology: "Imperfeito indicativo 3ª sing. (Eimi)", meaning: "Existia continuamente, permanência preexistente." },
-    { translation: "o", original: "ὁ", translit: "ho", strong: "G3588", grammar: "Artigo Definido", morphology: "Artigo masc. sing. nominativo", meaning: "O." },
-    { translation: "Verbo,", original: "Λόγος", translit: "Logos", strong: "G3056", grammar: "Substantivo Masculino Nominativo", morphology: "Subst. masc. sing. nominativo", meaning: "Palavra, expressão, revelação divinamente encarnada." },
-    { translation: "e", original: "καὶ", translit: "kai", strong: "G2532", grammar: "Conjunção", morphology: "Conjunção aditiva", meaning: "E, também, da mesma forma." },
-    { translation: "o", original: "ὁ", translit: "ho", strong: "G3588", grammar: "Artigo Definido", morphology: "Artigo masc. sing. nominativo", meaning: "O." },
-    { translation: "Verbo", original: "Λόγος", translit: "Logos", strong: "G3056", grammar: "Substantivo Masculino", morphology: "Subst. masc. sing. nominativo", meaning: "O Verbo, a segunda pessoa da Trindade." },
-    { translation: "estava", original: "ἦν", translit: "ēn", strong: "G2258", grammar: "Verbo", morphology: "Imperfeito indicativo 3ª sing.", meaning: "Estava em comunhão íntima com." },
-    { translation: "com", original: "πρὸς", translit: "pros", strong: "G4314", grammar: "Preposição Acusativo", morphology: "Prep. indicando orientação face a face", meaning: "Com, em direção a, face a face com." },
-    { translation: "Deus,", original: "τὸν Θεόν", translit: "ton Theon", strong: "G2316", grammar: "Substantivo Acusativo", morphology: "Artigo + Subst. masc. sing. acusativo", meaning: "Deus, o Pai." },
-    { translation: "e", original: "καὶ", translit: "kai", strong: "G2532", grammar: "Conjunção", morphology: "Conjunção", meaning: "E." },
-    { translation: "Deus", original: "Θεὸς", translit: "Theos", strong: "G2316", grammar: "Substantivo Nominativo Predicativo", morphology: "Subst. masc. sing. nominativo", meaning: "Deus em sua essência e natureza divina." },
-    { translation: "era", original: "ἦν", translit: "ēn", strong: "G2258", grammar: "Verbo", morphology: "Imperfeito indicativo 3ª sing.", meaning: "Era." },
-    { translation: "o", original: "ὁ", translit: "ho", strong: "G3588", grammar: "Artigo Definido", morphology: "Artigo", meaning: "O." },
-    { translation: "Verbo.", original: "Λόγος", translit: "Logos", strong: "G3056", grammar: "Substantivo Masculino", morphology: "Subst. masc. sing. nominativo", meaning: "O Verbo." }
-  ],
-  "Mateus-3-15": [
-    { translation: "Jesus,", original: "Ἰησοῦς", translit: "Iēsous", strong: "G2424", grammar: "Substantivo", morphology: "Subst. masc. sing.", meaning: "Jesus, o Salvador." },
-    { translation: "porém,", original: "δὲ", translit: "de", strong: "G1161", grammar: "Conjunção", morphology: "Conj. adversativa", meaning: "Mas, porém." },
-    { translation: "respondeu-lhe:", original: "ἀποκριθεὶς", translit: "apokritheis", strong: "G611", grammar: "Verbo Particípio", morphology: "Aoristo passivo nominativo", meaning: "Respondendo." },
-    { translation: "Deixa", original: "Ἄφες", translit: "Aphes", strong: "G863", grammar: "Verbo Imperativo", morphology: "Aoristo ativo 2ª sing.", meaning: "Permita, deixa agora.", isJesusWords: true },
-    { translation: "por", original: "ἄρτι", translit: "arti", strong: "G737", grammar: "Advérbio", morphology: "Adv. de tempo", meaning: "Agora, neste momento.", isJesusWords: true },
-    { translation: "enquanto,", original: "οὕτω", translit: "houtō", strong: "G3779", grammar: "Advérbio", morphology: "Adv. modo", meaning: "Assim.", isJesusWords: true },
-    { translation: "porque", original: "γὰρ", translit: "gar", strong: "G1063", grammar: "Conjunção", morphology: "Conj. explicativa", meaning: "Pois, porque.", isJesusWords: true },
-    { translation: "assim", original: "πρέπον", translit: "prepon", strong: "G4241", grammar: "Verbo Particípio", morphology: "Presente ativo neutro", meaning: "É conveniente, apropriado.", isJesusWords: true },
-    { translation: "nos", original: "ἡμῖν", translit: "hēmin", strong: "G2254", grammar: "Pronome Pessoal", morphology: "Dativo plural 1ª pessoa", meaning: "A nós.", isJesusWords: true },
-    { translation: "convém", original: "ἐστὶν", translit: "estin", strong: "G2076", grammar: "Verbo Indicativo", morphology: "Presente ativo 3ª sing.", meaning: "É.", isJesusWords: true },
-    { translation: "cumprir", original: "πληρῶσαι", translit: "plērōsai", strong: "G4137", grammar: "Verbo Infinitivo", morphology: "Aoristo ativo", meaning: "Preencher, cumprir plenamente.", isJesusWords: true },
-    { translation: "toda", original: "πᾶσαν", translit: "pasan", strong: "G3956", grammar: "Adjetivo", morphology: "Acusativo fem. sing.", meaning: "Toda a.", isJesusWords: true },
-    { translation: "a", original: "τὴν", translit: "tēn", strong: "G3588", grammar: "Artigo", morphology: "Acusativo fem. sing.", meaning: "A.", isJesusWords: true },
-    { translation: "justiça.", original: "δικαιοσύνην", translit: "dikaiosynēn", strong: "G1343", grammar: "Substantivo", morphology: "Acusativo fem. sing.", meaning: "Justiça, retidão divina.", isJesusWords: true }
-  ]
-};
+const bookCache = new Map<string, BookLexicon>();
+const loadingPromises = new Map<string, Promise<BookLexicon | null>>();
 
-// Retorna a análise palavra-por-palavra APENAS quando existe léxico real cadastrado
-// para o versículo. Não fabricamos números de Strong, gramática ou morfologia para
-// versículos sem dado real — isso induziria o usuário a erro num app de estudo exegético.
+// Dispara (ou reaproveita) o carregamento do léxico de um livro. Chame isso a
+// partir de um useEffect quando o livro selecionado mudar; depois disso,
+// getInterlinearWords passa a enxergar os dados em cache de forma síncrona.
+export function loadBookLexicon(bookName: string): Promise<BookLexicon | null> {
+  const cached = bookCache.get(bookName);
+  if (cached) return Promise.resolve(cached);
+
+  const inFlight = loadingPromises.get(bookName);
+  if (inFlight) return inFlight;
+
+  const promise = fetch(`/lexicon/${encodeURIComponent(bookName)}.json`)
+    .then((res) => (res.ok ? (res.json() as Promise<BookLexicon>) : null))
+    .then((data) => {
+      if (data) bookCache.set(bookName, data);
+      loadingPromises.delete(bookName);
+      return data;
+    })
+    .catch(() => {
+      loadingPromises.delete(bookName);
+      return null;
+    });
+
+  loadingPromises.set(bookName, promise);
+  return promise;
+}
+
+export function isBookLexiconLoaded(bookName: string): boolean {
+  return bookCache.has(bookName);
+}
+
+// Retorna a análise palavra-por-palavra para "Livro-Capítulo-Versículo" (ex.:
+// "1 Samuel-3-1") a partir do que já estiver em cache. Retorna null se o léxico
+// do livro ainda não foi carregado (chame loadBookLexicon antes) ou se o
+// versículo não tiver dado real cadastrado na fonte.
 export const getInterlinearWords = (verseKey: string): InterlinearWord[] | null => {
-  return REAL_LEXICON[verseKey] || null;
+  const lastDash = verseKey.lastIndexOf("-");
+  const midDash = verseKey.lastIndexOf("-", lastDash - 1);
+  if (midDash === -1) return null;
+
+  const bookName = verseKey.slice(0, midDash);
+  const chapVers = verseKey.slice(midDash + 1);
+
+  const book = bookCache.get(bookName);
+  return book?.[chapVers] || null;
 };

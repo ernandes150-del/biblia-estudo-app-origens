@@ -29,6 +29,10 @@ type ReadViewProps = {
   currentVerseNote: VerseNote | null;
   saveStudyText: (text: string) => void;
   currentReferences: ReferenceItem[];
+  // Incrementado pelo componente pai sempre que o léxico interlinear de um
+  // livro termina de carregar. Não é lido diretamente aqui — sua única função
+  // é forçar este componente a re-renderizar e reconsultar getInterlinearWords.
+  lexiconVersion: number;
 };
 
 export default function ReadView({
@@ -50,16 +54,20 @@ export default function ReadView({
   currentVerseNote,
   saveStudyText,
   currentReferences,
+  lexiconVersion,
 }: ReadViewProps) {
   const renderVerseContent = (vKey: string, vText: string) => {
     const words = getInterlinearWords(vKey);
 
     if (!words) {
+      const lexiconStillLoading = lexiconVersion === 0;
       return (
         <div>
           <p className="text-sm leading-relaxed font-serif">{vText}</p>
           <p className="text-[10px] text-[#526356] mt-1 italic">
-            Análise interlinear ainda não cadastrada para este versículo.
+            {lexiconStillLoading
+              ? "Carregando léxico interlinear do livro..."
+              : "Análise interlinear ainda não cadastrada para este versículo."}
           </p>
         </div>
       );

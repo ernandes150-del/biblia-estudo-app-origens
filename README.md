@@ -29,6 +29,15 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Créditos de dados
+
+O léxico interlinear (Strong's, gramática e morfologia hebraica/grega) em
+`public/lexicon/` é derivado do **STEPBible-Data**, de "STEP Bible"
+([www.STEPBible.org](https://www.STEPBible.org)) com base em trabalho da
+Tyndale House, Cambridge, disponibilizado sob licença **CC BY 4.0**
+(https://github.com/STEPBible/STEPBible-Data). O texto bíblico em português
+usado no app é da Bíblia Livre (CC BY 4.0, eBible.org).
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

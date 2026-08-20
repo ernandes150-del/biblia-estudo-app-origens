@@ -22,6 +22,7 @@ import ReadView from "./components/ReadView";
 import StudiesView from "./components/StudiesView";
 import SearchView from "./components/SearchView";
 import LexiconModal from "./components/LexiconModal";
+import { loadBookLexicon } from "./lib/lexicon";
 
 export default function BibliaOrigensApp() {
   const typedBibleData = bibleData as unknown as BibleData;
@@ -51,6 +52,22 @@ export default function BibliaOrigensApp() {
 
   // ESTADO DO MENU MOBILE
   const [menuMobileAberto, setMenuMobileAberto] = useState(false);
+
+  // Força um novo render de ReadView quando o léxico interlinear do livro
+  // selecionado termina de carregar (getInterlinearWords lê de um cache que
+  // não é estado do React, então repassamos o contador como prop para
+  // ReadView, que o usa apenas para invalidar seu cálculo memoizado).
+  const [lexiconTick, setLexiconTick] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadBookLexicon(selectedBook).then(() => {
+      if (!cancelled) setLexiconTick((t) => t + 1);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedBook]);
 
   useEffect(() => {
     try {
@@ -278,6 +295,7 @@ export default function BibliaOrigensApp() {
             currentVerseNote={currentVerseNote}
             saveStudyText={saveStudyText}
             currentReferences={currentReferences}
+            lexiconVersion={lexiconTick}
           />
         )}
 
