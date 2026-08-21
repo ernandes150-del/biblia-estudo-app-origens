@@ -23,6 +23,8 @@ import StudiesView from "./components/StudiesView";
 import SearchView from "./components/SearchView";
 import LexiconModal from "./components/LexiconModal";
 import { loadBookLexicon } from "./lib/lexicon";
+import { supabase } from "./lib/supabaseClient";
+import { fetchUserData, upsertVerseNote } from "./lib/userDataStore";
 
 export default function BibliaOrigensApp() {
   const typedBibleData = bibleData as unknown as BibleData;
@@ -70,17 +72,34 @@ export default function BibliaOrigensApp() {
   }, [selectedBook]);
 
   useEffect(() => {
-    try {
-      const activeUser = localStorage.getItem("biblia-origens-session");
-      if (activeUser) {
-        const parsedUser: User = JSON.parse(activeUser);
-        setUser(parsedUser);
-        const savedData = localStorage.getItem(`biblia-origens-data-${parsedUser.email}`);
-        if (savedData) setUserData(JSON.parse(savedData));
+    let cancelled = false;
+
+    // Restaura a sessão (o supabase-js já persiste o token no localStorage
+    // internamente) e escuta login/logout feitos em outras abas.
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (cancelled || !session?.user) return;
+      const su = session.user;
+      setUser({ id: su.id, email: su.email ?? "", name: (su.user_metadata?.name as string) || (su.email?.split("@")[0] ?? "") });
+      const data = await fetchUserData(su.id);
+      if (!cancelled) setUserData(data);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!session?.user) {
+        setUser(null);
+        setUserData({});
+        return;
       }
-    } catch (e) {
-      console.error("Erro ao carregar sessão", e);
-    }
+      const su = session.user;
+      setUser({ id: su.id, email: su.email ?? "", name: (su.user_metadata?.name as string) || (su.email?.split("@")[0] ?? "") });
+      const data = await fetchUserData(su.id);
+      setUserData(data);
+    });
+
+    return () => {
+      cancelled = true;
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   const triggerAuthAlert = (message: string) => {
@@ -88,34 +107,51 @@ export default function BibliaOrigensApp() {
     setTimeout(() => setAuthNotice(null), 5000);
   };
 
-  const saveUserData = (newData: UserData) => {
+  // Atualiza o estado local de imediato (UI otimista) e grava só a nota do
+  // versículo alterado no Supabase, em vez de reescrever tudo.
+  const saveUserData = (newData: UserData, changedKey?: string) => {
     setUserData(newData);
-    if (user) {
-      localStorage.setItem(`biblia-origens-data-${user.email}`, JSON.stringify(newData));
+    if (user && changedKey) {
+      upsertVerseNote(user.id, changedKey, newData[changedKey]);
     }
   };
 
-  const handleAuth = (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!emailInput || !passwordInput) return;
 
-    const loggedUser: User = {
-      name: authMode === "register" ? nameInput : emailInput.split("@")[0],
-      email: emailInput,
-    };
-
-    localStorage.setItem("biblia-origens-session", JSON.stringify(loggedUser));
-    setUser(loggedUser);
-
-    const savedData = localStorage.getItem(`biblia-origens-data-${loggedUser.email}`);
-    if (savedData) setUserData(JSON.parse(savedData));
+    if (authMode === "register") {
+      const { data, error } = await supabase.auth.signUp({
+        email: emailInput,
+        password: passwordInput,
+        options: { data: { name: nameInput || emailInput.split("@")[0] } },
+      });
+      if (error) {
+        triggerAuthAlert(error.message);
+        return;
+      }
+      if (!data.session) {
+        // Projeto com confirmação de e-mail ativada: ainda não há sessão.
+        triggerAuthAlert("Conta criada! Verifique seu e-mail para confirmar o acesso.");
+        return;
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: emailInput,
+        password: passwordInput,
+      });
+      if (error) {
+        triggerAuthAlert(error.message);
+        return;
+      }
+    }
 
     setAuthNotice(null);
     setActiveTab("read");
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("biblia-origens-session");
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     setUserData({});
     setActiveTab("home");
@@ -136,7 +172,7 @@ export default function BibliaOrigensApp() {
     }
     const key = `${selectedBook}-${selectedChapter}-${verseNum}`;
     const existing = userData[key] || { favorite: false, highlighted: false, note: "", study: "" };
-    saveUserData({ ...userData, [key]: { ...existing, favorite: !existing.favorite } });
+    saveUserData({ ...userData, [key]: { ...existing, favorite: !existing.favorite } }, key);
   };
 
   const toggleHighlight = (verseNum: number) => {
@@ -146,7 +182,7 @@ export default function BibliaOrigensApp() {
     }
     const key = `${selectedBook}-${selectedChapter}-${verseNum}`;
     const existing = userData[key] || { favorite: false, highlighted: false, note: "", study: "" };
-    saveUserData({ ...userData, [key]: { ...existing, highlighted: !existing.highlighted } });
+    saveUserData({ ...userData, [key]: { ...existing, highlighted: !existing.highlighted } }, key);
   };
 
   const saveStudyText = (studyText: string) => {
@@ -156,7 +192,7 @@ export default function BibliaOrigensApp() {
     }
     if (!currentVerseKey) return;
     const existing = userData[currentVerseKey] || { favorite: false, highlighted: false, note: "", study: "" };
-    saveUserData({ ...userData, [currentVerseKey]: { ...existing, study: studyText } });
+    saveUserData({ ...userData, [currentVerseKey]: { ...existing, study: studyText } }, currentVerseKey);
   };
 
   const handleSearch = (term: string) => {

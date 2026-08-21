@@ -33,6 +33,7 @@ export type VerseNote = {
 export type UserData = Record<string, VerseNote>;
 
 export type User = {
+  id: string;
   name: string;
   email: string;
 };

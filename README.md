@@ -38,6 +38,26 @@ Tyndale House, Cambridge, disponibilizado sob licença **CC BY 4.0**
 (https://github.com/STEPBible/STEPBible-Data). O texto bíblico em português
 usado no app é da Bíblia Livre (CC BY 4.0, eBible.org).
 
+## Autenticação e persistência (Supabase)
+
+Login/cadastro e as anotações de estudo (favoritos, destaques, notas) usam o
+[Supabase](https://supabase.com) (Auth + Postgres).
+
+1. Crie um projeto gratuito em https://supabase.com.
+2. No SQL Editor do projeto, rode o script `supabase/schema.sql` deste
+   repositório — ele cria a tabela `verse_notes` com Row Level Security (cada
+   usuário só acessa as próprias anotações).
+3. Em Project Settings > API, copie a **Project URL** e a chave
+   **anon public**.
+4. Copie `.env.local.example` para `.env.local` e preencha essas duas
+   variáveis.
+5. Na Vercel, adicione as mesmas duas variáveis em
+   Project Settings > Environment Variables antes do próximo deploy.
+
+Por padrão, o Supabase exige confirmação de e-mail para novas contas. Isso
+pode ser desativado em Authentication > Providers > Email, se quiser permitir
+login imediato após o cadastro.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
