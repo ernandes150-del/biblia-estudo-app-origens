@@ -11,4 +11,13 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-export const supabase = createClient(supabaseUrl ?? "", supabaseAnonKey ?? "");
+// createClient lança exceção se receber uma URL vazia/inválida, o que
+// quebraria o build (pré-renderização estática) quando as variáveis de
+// ambiente não estiverem configuradas. Usamos um placeholder sintaticamente
+// válido nesse caso: o build passa, e chamadas reais só falham em runtime
+// (com erro de rede claro), nunca no build.
+export const supabase = createClient(
+  supabaseUrl || "https://placeholder.supabase.co",
+  supabaseAnonKey || "placeholder-anon-key"
+);
+
