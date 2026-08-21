@@ -30,11 +30,11 @@ export default function LexiconModal({ word, onClose }: LexiconModalProps) {
         </div>
 
         <div className="space-y-2 text-xs">
-          <p><strong>Tradução no contexto:</strong> {word.translation}</p>
+          <p><strong>Glosa literal (fonte, inglês):</strong> {word.translation}</p>
           <p><strong>Gramática:</strong> {word.grammar}</p>
           <p><strong>Morfologia:</strong> {word.morphology}</p>
           <div className="pt-2 border-t border-[#D8D5C5]">
-            <strong className="block mb-1">Significado Exegético:</strong>
+            <strong className="block mb-1">Significado (léxico, inglês):</strong>
             <p className="text-[#526356] leading-relaxed">{word.meaning}</p>
           </div>
         </div>

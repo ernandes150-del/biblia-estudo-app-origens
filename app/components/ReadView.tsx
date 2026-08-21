@@ -75,40 +75,35 @@ export default function ReadView({
 
     if (selectedVersion === "ORIGINAL") {
       return (
-        <div className="flex flex-wrap gap-y-4 gap-x-3 justify-start">
-          {words.map((word, idx) => (
-            <div
-              key={idx}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedWord(word);
-              }}
-              className="flex flex-col items-center p-2 rounded-lg hover:bg-[#D8D5C5]/50 cursor-pointer border border-transparent hover:border-[#D8D5C5]"
-            >
-              <span className={`text-sm font-semibold mb-0.5 ${word.isJesusWords ? "text-[#B91C1C]" : "text-[#1F2923]"}`}>
-                {word.translation}
-              </span>
-              <span className={`text-base font-serif font-bold ${word.isJesusWords ? "text-[#B91C1C]" : "text-[#2D3B32]"}`}>
-                {word.original}
-              </span>
-              <span className="text-[10px] italic text-[#526356] mt-0.5">
-                ({word.translit})
-              </span>
-            </div>
-          ))}
+        <div>
+          <p className="text-xs text-[#526356] italic mb-2 leading-snug">{vText}</p>
+          <div className="flex flex-wrap gap-y-4 gap-x-3 justify-start">
+            {words.map((word, idx) => (
+              <div
+                key={idx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedWord(word);
+                }}
+                className="flex flex-col items-center p-2 rounded-lg hover:bg-[#D8D5C5]/50 cursor-pointer border border-transparent hover:border-[#D8D5C5]"
+              >
+                <span className={`text-base font-serif font-bold ${word.isJesusWords ? "text-[#B91C1C]" : "text-[#2D3B32]"}`}>
+                  {word.original}
+                </span>
+                <span className="text-[10px] italic text-[#526356] mt-0.5">
+                  ({word.translit})
+                </span>
+                <span className={`text-[10px] mt-0.5 ${word.isJesusWords ? "text-[#B91C1C]" : "text-[#7A8B7E]"}`}>
+                  {word.translation}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       );
     }
 
-    return (
-      <p className="text-sm leading-relaxed font-serif">
-        {words.map((word, idx) => (
-          <span key={idx} className={word.isJesusWords ? "text-[#B91C1C] font-semibold" : "text-[#1F2923]"}>
-            {word.translation}{" "}
-          </span>
-        ))}
-      </p>
-    );
+    return <p className="text-sm leading-relaxed font-serif">{vText}</p>;
   };
 
   return (
