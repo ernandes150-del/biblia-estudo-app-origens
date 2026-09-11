@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import bibleData from "../data/bible/bible.json";
 import contextData from "../data/study/context.json";
 import type {
@@ -23,6 +23,8 @@ import StudiesView from "./components/StudiesView";
 import SearchView from "./components/SearchView";
 import { loadBookLexicon } from "./lib/lexicon";
 import { loadCrossReferences, getCrossReferences } from "./lib/crossReferences";
+import { loadOccurrences } from "./lib/occurrences";
+import { resolveWordSearch } from "./lib/wordSearch";
 import { supabase } from "./lib/supabaseClient";
 import { fetchUserData, upsertVerseNote } from "./lib/userDataStore";
 
@@ -65,6 +67,7 @@ export default function BibliaOrigensApp() {
 
   const [userData, setUserData] = useState<UserData>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const searchTermRef = useRef("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
   // ESTADO DO MENU MOBILE
@@ -210,12 +213,43 @@ export default function BibliaOrigensApp() {
     saveUserData({ ...userData, [currentVerseKey]: { ...existing, study: studyText } }, currentVerseKey);
   };
 
-  const handleSearch = (term: string) => {
+  const handleSearch = async (term: string) => {
     setSearchTerm(term);
+    searchTermRef.current = term;
     if (!term.trim() || term.length < 3) {
       setSearchResults([]);
       return;
     }
+
+    // Primeiro tenta reconhecer a busca como um Strong's ou a transliteração
+    // de uma palavra original (ex: "H2617", "chesed").
+    const strongs = await resolveWordSearch(term);
+    if (searchTermRef.current !== term) return; // usuário já digitou outra coisa
+
+    if (strongs && strongs.length > 0) {
+      const occurrenceLists = await Promise.all(strongs.map((s) => loadOccurrences(s)));
+      if (searchTermRef.current !== term) return;
+
+      const results: SearchResult[] = [];
+      for (const list of occurrenceLists) {
+        if (!list) continue;
+        for (const o of list) {
+          if (results.length >= 100) break;
+          const text = typedBibleData.books[o.b]?.chapterData[String(o.c)]?.[String(o.v)] || "";
+          results.push({
+            bookKey: o.b,
+            bookName: `${o.b} — ${o.o} (${o.t})`,
+            chapter: String(o.c),
+            verse: String(o.v),
+            text,
+          });
+        }
+      }
+      setSearchResults(results);
+      return;
+    }
+
+    // Busca normal: substring no texto em português.
     const results: SearchResult[] = [];
     const termLower = term.toLowerCase();
 

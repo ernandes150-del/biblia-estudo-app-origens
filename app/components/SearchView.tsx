@@ -20,7 +20,7 @@ export default function SearchView({ searchTerm, handleSearch, searchResults, na
             type="text"
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Digite uma palavra ou termo (ex: 'princípio', 'amor')..."
+            placeholder="Palavra em português, transliteração (ex: 'chesed') ou Strong's (ex: 'H2617')..."
             className="flex-1 bg-[var(--bg-elevated)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
           />
         </div>
