@@ -31,38 +31,18 @@ export const LinkIcon = () => (
 
 // LOGO DE OLIVEIRA BASEADO NA ILUSTRAÇÃO DETALHADA
 export const OliveTreeLogo = () => (
-  <div className="w-10 h-10 bg-[#C9A227] text-[#0F0F10] rounded-xl flex items-center justify-center shadow-md border border-[#DDB94A] shrink-0 p-1">
-    <svg className="w-8 h-8" viewBox="0 0 100 100" fill="currentColor">
-      {/* Raízes e Base do Solo */}
-      <path d="M 20 88 Q 35 84 50 86 Q 65 84 80 88 C 82 89 18 89 20 88 Z" opacity="0.8" />
-
-      {/* Tronco Escultural Retorcido */}
-      <path d="M 44 86 C 40 76 34 68 38 56 C 42 46 48 40 46 32 C 48 32 52 38 50 48 C 48 58 58 68 54 86 Z" />
-      <path d="M 54 86 C 58 76 64 66 58 54 C 54 44 50 38 52 30 C 54 32 56 40 62 50 C 66 60 62 76 56 86 Z" opacity="0.9" />
-      <path d="M 36 78 Q 42 70 48 74 Q 42 82 36 78 Z" />
-      <path d="M 64 78 Q 58 70 52 74 Q 58 82 64 78 Z" />
-
-      {/* Galhos Principais e Ramificações da Copa */}
-      <path d="M 46 34 C 40 28 28 26 20 32 C 28 24 40 24 48 30 Z" />
-      <path d="M 52 32 C 60 26 72 26 80 32 C 72 24 60 24 50 30 Z" />
-      <path d="M 48 28 C 44 20 34 16 26 18 C 34 12 46 14 50 24 Z" />
-      <path d="M 50 26 C 56 18 66 14 74 18 C 66 12 54 14 48 24 Z" />
-
-      {/* Densidade de Folhas Estilizadas (Copa Arredondada) */}
-      <circle cx="25" cy="30" r="3" />
-      <circle cx="32" cy="24" r="3.5" />
-      <circle cx="20" cy="38" r="3" />
-      <circle cx="38" cy="18" r="3.5" />
-      <circle cx="48" cy="14" r="4" />
-      <circle cx="62" cy="18" r="3.5" />
-      <circle cx="68" cy="24" r="3.5" />
-      <circle cx="75" cy="30" r="3" />
-      <circle cx="80" cy="38" r="3" />
-      <circle cx="30" cy="36" r="3" />
-      <circle cx="70" cy="36" r="3" />
-      <circle cx="42" cy="26" r="3.5" />
-      <circle cx="58" cy="26" r="3.5" />
-      <circle cx="50" cy="20" r="3.5" />
+  <div className="w-10 h-10 bg-[#0A84FF] rounded-[11px] flex items-center justify-center shadow-sm shrink-0">
+    <svg className="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Marca minimalista: livro aberto com uma linha central (texto/versículo) */}
+      <path
+        d="M12 5.5C10.2 4.3 7.8 4 5.5 4.4C4.9 4.5 4.5 5 4.5 5.6V17.6C4.5 18.4 5.2 19 6 18.9C8 18.6 10.1 18.9 12 20"
+        stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
+      />
+      <path
+        d="M12 5.5C13.8 4.3 16.2 4 18.5 4.4C19.1 4.5 19.5 5 19.5 5.6V17.6C19.5 18.4 18.8 19 18 18.9C16 18.6 13.9 18.9 12 20"
+        stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
+      />
+      <line x1="12" y1="5.5" x2="12" y2="20" stroke="white" strokeWidth="1.6" strokeLinecap="round" opacity="0.55" />
     </svg>
   </div>
 );

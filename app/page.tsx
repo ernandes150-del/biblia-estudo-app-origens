@@ -237,6 +237,10 @@ export default function BibliaOrigensApp() {
     if (openStudy) setActiveSidePanel("study");
   };
 
+  // Só existem referências cruzadas reais para 3 versículos cadastrados
+  // manualmente até agora (ver data/study/references.json). Para todo o
+  // resto, o painel mostra que não há referência cadastrada — nunca um
+  // conjunto genérico fixo se passando por dado real.
   const currentReferences = useMemo(() => {
     const verseNum = selectedVerse || 1;
     const refKey = `${selectedBook} ${selectedChapter}:${verseNum}`;
@@ -246,29 +250,11 @@ export default function BibliaOrigensApp() {
       return directRefs.map(ref => ({ passage: ref.reference, text: ref.description }));
     }
 
-    if (selectedBook === "Gênesis") {
-      return [
-        { passage: "João 1:1", text: "No princípio era o Verbo, e o Verbo estava com Deus, e o Verbo era Deus." },
-        { passage: "Hebreus 11:3", text: "Pela fé entendemos que os mundos pela palavra de Deus foram criados." },
-        { passage: "Salmos 33:6", text: "Pela palavra do SENHOR foram feitos os céus, e todo o exército deles pelo espírito da sua boca." }
-      ];
-    } else if (selectedBook === "João") {
-      return [
-        { passage: "Gênesis 1:1", text: "No princípio criou Deus os céus e a terra." },
-        { passage: "Colossenses 1:16", text: "Porque nele foram criadas todas as coisas que há nos céus e na terra, visíveis e invisíveis." },
-        { passage: "1 João 1:1", text: "O que era desde o princípio, o que ouvimos, o que vimos com os nossos olhos..." }
-      ];
-    }
-
-    return [
-      { passage: `${selectedBook} ${selectedChapter}:1`, text: "Paralelo contextual de temas doutrinários e históricos." },
-      { passage: "Salmos 119:105", text: "Lâmpada para os meus pés é tua palavra e luz para o meu caminho." },
-      { passage: "2 Timóteo 3:16", text: "Toda a Escritura é divinamente inspirada e proveitosa para ensinar, para redarguir, para corrigir..." }
-    ];
+    return [];
   }, [selectedBook, selectedChapter, selectedVerse, typedReferencesData]);
 
   return (
-    <div className="h-screen w-screen bg-[#0F0F10] text-[#F1EBD9] font-sans flex flex-col overflow-hidden">
+    <div className="h-screen w-screen bg-[#000000] text-[#F5F5F7] font-sans flex flex-col overflow-hidden">
 
       {authNotice && (
         <AuthNotice message={authNotice} onGoToLogin={() => setActiveTab("home")} />

@@ -107,8 +107,8 @@ export default function ReadView({
       const lexiconStillLoading = lexiconVersion === 0;
       return (
         <div>
-          <p className="text-sm leading-relaxed font-serif text-[#DCD6C6]">{vText}</p>
-          <p className="text-[10px] text-[#8A8378] mt-1 italic">
+          <p className="text-sm leading-relaxed font-serif text-[#D1D1D6]">{vText}</p>
+          <p className="text-[10px] text-[#8E8E93] mt-1 italic">
             {lexiconStillLoading
               ? "Carregando léxico interlinear do livro..."
               : "Análise interlinear ainda não cadastrada para este versículo."}
@@ -120,7 +120,7 @@ export default function ReadView({
     if (selectedVersion === "ORIGINAL") {
       return (
         <div>
-          <p className="text-xs text-[#8A8378] italic mb-2 leading-snug">{vText}</p>
+          <p className="text-xs text-[#8E8E93] italic mb-2 leading-snug">{vText}</p>
           <div className="flex flex-wrap gap-y-3 gap-x-2 justify-start" dir={currentLanguage === "Hebraico" ? "rtl" : "ltr"}>
             {words.map((word, idx) => (
               <button
@@ -131,14 +131,14 @@ export default function ReadView({
                 }}
                 className={`flex flex-col items-center px-2 py-1.5 rounded-lg border transition-colors ${
                   selectedWord === word
-                    ? "bg-[#C9A227]/15 border-[#C9A227]"
-                    : "border-transparent hover:bg-[#2A2A2C] hover:border-[#3A3A3C]"
+                    ? "bg-[#0A84FF]/15 border-[#0A84FF]"
+                    : "border-transparent hover:bg-[#2C2C2E] hover:border-[#3A3A3C]"
                 }`}
               >
-                <span className={`text-base font-serif font-bold ${word.isJesusWords ? "text-[#C0392B]" : "text-[#F1EBD9]"}`}>
+                <span className={`text-base font-serif font-bold ${word.isJesusWords ? "text-[#FF453A]" : "text-[#F5F5F7]"}`}>
                   {word.original}
                 </span>
-                <span className="text-[10px] italic text-[#8A8378] mt-0.5">({word.translit})</span>
+                <span className="text-[10px] italic text-[#8E8E93] mt-0.5">({word.translit})</span>
               </button>
             ))}
           </div>
@@ -146,20 +146,20 @@ export default function ReadView({
       );
     }
 
-    return <p className="text-sm leading-relaxed font-serif text-[#DCD6C6]">{vText}</p>;
+    return <p className="text-sm leading-relaxed font-serif text-[#D1D1D6]">{vText}</p>;
   };
 
   return (
-    <div className="flex-1 flex overflow-hidden bg-[#0F0F10]">
+    <div className="flex-1 flex overflow-hidden bg-[#000000]">
       {/* PAINEL DE VERSÍCULOS */}
       <main className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-[#2A2A2C] pb-3">
+        <div className="flex items-center justify-between border-b border-[#2C2C2E] pb-3">
           <div>
-            <h2 className="text-xl md:text-2xl font-serif font-bold text-[#F1EBD9]">
+            <h2 className="text-xl md:text-2xl font-serif font-bold text-[#F5F5F7]">
               {selectedBook} {selectedChapter}
             </h2>
-            <p className="text-xs text-[#8A8378] mt-0.5">
-              Idioma original: <span className="font-semibold text-[#C9A227]">{currentLanguage}</span>
+            <p className="text-xs text-[#8E8E93] mt-0.5">
+              Idioma original: <span className="font-semibold text-[#0A84FF]">{currentLanguage}</span>
             </p>
           </div>
 
@@ -168,8 +168,8 @@ export default function ReadView({
               onClick={() => setActiveSidePanel(activeSidePanel === "context" ? "none" : "context")}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                 activeSidePanel === "context"
-                  ? "bg-[#C9A227] text-[#0F0F10] border-[#C9A227]"
-                  : "bg-[#1B1B1D] text-[#DCD6C6] border-[#2A2A2C] hover:border-[#C9A227]/50"
+                  ? "bg-[#0A84FF] text-white border-[#0A84FF]"
+                  : "bg-[#1C1C1E] text-[#D1D1D6] border-[#2C2C2E] hover:border-[#0A84FF]/50"
               }`}
             >
               Contexto do Livro
@@ -179,8 +179,8 @@ export default function ReadView({
                 onClick={() => setActiveSidePanel(activeSidePanel === "references" ? "none" : "references")}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                   activeSidePanel === "references"
-                    ? "bg-[#C9A227] text-[#0F0F10] border-[#C9A227]"
-                    : "bg-[#1B1B1D] text-[#DCD6C6] border-[#2A2A2C] hover:border-[#C9A227]/50"
+                    ? "bg-[#0A84FF] text-white border-[#0A84FF]"
+                    : "bg-[#1C1C1E] text-[#D1D1D6] border-[#2C2C2E] hover:border-[#0A84FF]/50"
                 }`}
               >
                 Referências
@@ -203,19 +203,19 @@ export default function ReadView({
                 onClick={() => setSelectedVerse(vNum)}
                 className={`p-4 rounded-xl border transition-all cursor-pointer ${
                   isSelected
-                    ? "border-[#C9A227]/60 bg-[#1B1B1D] shadow-[0_0_0_1px_rgba(201,162,39,0.15)]"
-                    : "border-[#232325] bg-[#161617] hover:border-[#2A2A2C]"
-                } ${vNote?.highlighted ? "bg-[#2B2312] border-[#8A6D1F]" : ""}`}
+                    ? "border-[#0A84FF]/60 bg-[#1C1C1E] shadow-[0_0_0_1px_rgba(201,162,39,0.15)]"
+                    : "border-[#161617] bg-[#1C1C1E] hover:border-[#2C2C2E]"
+                } ${vNote?.highlighted ? "bg-[#2C2410] border-[#8A6D1F]" : ""}`}
               >
                 <div className="flex items-start justify-between gap-3 mb-2">
-                  <span className="font-bold text-xs text-[#0F0F10] bg-[#C9A227] px-2 py-0.5 rounded-md">
+                  <span className="font-bold text-xs text-white bg-[#0A84FF] px-2 py-0.5 rounded-md">
                     {vNum}
                   </span>
 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={(e) => { e.stopPropagation(); toggleFavorite(vNum); }}
-                      className="p-1 hover:bg-[#2A2A2C] rounded"
+                      className="p-1 hover:bg-[#2C2C2E] rounded"
                       title="Favoritar"
                     >
                       <StarIcon filled={vNote?.favorite} />
@@ -224,8 +224,8 @@ export default function ReadView({
                       onClick={(e) => { e.stopPropagation(); toggleHighlight(vNum); }}
                       className={`text-xs px-2 py-0.5 rounded border ${
                         vNote?.highlighted
-                          ? "bg-[#8A6D1F] border-[#C9A227] text-[#0F0F10] font-bold"
-                          : "border-[#2A2A2C] text-[#8A8378]"
+                          ? "bg-[#8A6D1F] border-[#0A84FF] text-white font-bold"
+                          : "border-[#2C2C2E] text-[#8E8E93]"
                       }`}
                     >
                       Destacar
@@ -236,7 +236,7 @@ export default function ReadView({
                         setSelectedVerse(vNum);
                         setActiveSidePanel("study");
                       }}
-                      className="text-xs bg-[#C9A227] text-[#0F0F10] px-2.5 py-0.5 rounded font-medium"
+                      className="text-xs bg-[#0A84FF] text-white px-2.5 py-0.5 rounded font-medium"
                     >
                       Estudar
                     </button>
@@ -246,8 +246,8 @@ export default function ReadView({
                 {renderVerseContent(verseKey, vText)}
 
                 {vNote?.study && (
-                  <div className="mt-3 pt-2 border-t border-[#2A2A2C] text-xs text-[#DCD6C6] italic bg-[#1B1B1D] p-2 rounded">
-                    <strong className="text-[#C9A227] not-italic">Anotação de estudo:</strong> {vNote.study}
+                  <div className="mt-3 pt-2 border-t border-[#2C2C2E] text-xs text-[#D1D1D6] italic bg-[#1C1C1E] p-2 rounded">
+                    <strong className="text-[#0A84FF] not-italic">Anotação de estudo:</strong> {vNote.study}
                   </div>
                 )}
               </div>
@@ -258,38 +258,38 @@ export default function ReadView({
 
       {/* PAINEL LATERAL DE DETALHES / ANÁLISE */}
       {activeSidePanel !== "none" && (
-        <aside className="w-80 md:w-96 border-l border-[#2A2A2C] bg-[#141415] p-4 overflow-y-auto shrink-0 hidden md:block">
-          <div className="flex items-center justify-between mb-4 border-b border-[#2A2A2C] pb-2">
-            <h3 className="font-serif font-bold text-sm text-[#F1EBD9] uppercase tracking-wide">
+        <aside className="w-80 md:w-96 border-l border-[#2C2C2E] bg-[#050505] p-4 overflow-y-auto shrink-0 hidden md:block">
+          <div className="flex items-center justify-between mb-4 border-b border-[#2C2C2E] pb-2">
+            <h3 className="font-serif font-bold text-sm text-[#F5F5F7] uppercase tracking-wide">
               {activeSidePanel === "context" && "Contexto do Livro"}
               {activeSidePanel === "study" && `Caderno de Estudo - ${selectedBook} ${selectedChapter}:${selectedVerse}`}
               {activeSidePanel === "references" && `Referências de ${selectedBook} ${selectedChapter}:${selectedVerse}`}
               {activeSidePanel === "word" && "Palavra Original"}
             </h3>
-            <button onClick={() => setActiveSidePanel("none")} className="text-xs font-bold text-[#8A8378] hover:text-[#F1EBD9]">
+            <button onClick={() => setActiveSidePanel("none")} className="text-xs font-bold text-[#8E8E93] hover:text-[#F5F5F7]">
               ✕ Fechar
             </button>
           </div>
 
           {/* PAINEL DE CONTEXTO */}
           {activeSidePanel === "context" && (
-            <div className="space-y-4 text-xs text-[#DCD6C6]">
+            <div className="space-y-4 text-xs text-[#D1D1D6]">
               {typedContextData[selectedBook] ? (
                 <>
-                  <p><strong className="text-[#C9A227]">Autor:</strong> {typedContextData[selectedBook].author}</p>
-                  <p><strong className="text-[#C9A227]">Data aproximada:</strong> {typedContextData[selectedBook].date}</p>
-                  <p><strong className="text-[#C9A227]">Tema principal:</strong> {typedContextData[selectedBook].theme}</p>
-                  <div className="pt-2 border-t border-[#2A2A2C]">
-                    <strong className="block mb-1 text-[#C9A227]">Introdução:</strong>
-                    <p className="leading-relaxed text-[#8A8378]">{typedContextData[selectedBook].introduction}</p>
+                  <p><strong className="text-[#0A84FF]">Autor:</strong> {typedContextData[selectedBook].author}</p>
+                  <p><strong className="text-[#0A84FF]">Data aproximada:</strong> {typedContextData[selectedBook].date}</p>
+                  <p><strong className="text-[#0A84FF]">Tema principal:</strong> {typedContextData[selectedBook].theme}</p>
+                  <div className="pt-2 border-t border-[#2C2C2E]">
+                    <strong className="block mb-1 text-[#0A84FF]">Introdução:</strong>
+                    <p className="leading-relaxed text-[#8E8E93]">{typedContextData[selectedBook].introduction}</p>
                   </div>
-                  <div className="pt-2 border-t border-[#2A2A2C]">
-                    <strong className="block mb-1 text-[#C9A227]">Contexto Histórico:</strong>
-                    <p className="leading-relaxed text-[#8A8378]">{typedContextData[selectedBook].historicalContext}</p>
+                  <div className="pt-2 border-t border-[#2C2C2E]">
+                    <strong className="block mb-1 text-[#0A84FF]">Contexto Histórico:</strong>
+                    <p className="leading-relaxed text-[#8E8E93]">{typedContextData[selectedBook].historicalContext}</p>
                   </div>
                 </>
               ) : (
-                <p className="text-[#8A8378]">Informações contextuais detalhadas para {selectedBook} em catalogação exegética.</p>
+                <p className="text-[#8E8E93]">Informações contextuais detalhadas para {selectedBook} em catalogação exegética.</p>
               )}
             </div>
           )}
@@ -297,17 +297,17 @@ export default function ReadView({
           {/* PAINEL DE ESTUDO DO VERSÍCULO */}
           {activeSidePanel === "study" && (
             <div className="space-y-4">
-              <p className="text-xs text-[#8A8378] italic border-b border-[#2A2A2C] pb-2">
+              <p className="text-xs text-[#8E8E93] italic border-b border-[#2C2C2E] pb-2">
                 &ldquo;{currentVerseKey && currentChapterVerses[selectedVerse || 1]}&rdquo;
               </p>
               <div>
-                <label className="text-xs font-bold text-[#C9A227] block mb-1">Sua Anotação Exegética:</label>
+                <label className="text-xs font-bold text-[#0A84FF] block mb-1">Sua Anotação Exegética:</label>
                 <textarea
                   rows={8}
                   value={currentVerseNote?.study || ""}
                   onChange={(e) => saveStudyText(e.target.value)}
                   placeholder="Escreva suas observações de estudo sobre o versículo..."
-                  className="w-full bg-[#1B1B1D] border border-[#2A2A2C] rounded-xl p-3 text-xs leading-relaxed text-[#DCD6C6] focus:outline-none focus:border-[#C9A227]"
+                  className="w-full bg-[#1C1C1E] border border-[#2C2C2E] rounded-xl p-3 text-xs leading-relaxed text-[#D1D1D6] focus:outline-none focus:border-[#0A84FF]"
                 />
               </div>
             </div>
@@ -316,39 +316,45 @@ export default function ReadView({
           {/* PAINEL DE REFERÊNCIAS CRUZADAS */}
           {activeSidePanel === "references" && (
             <div className="space-y-3">
-              {currentReferences.map((ref, i) => (
-                <div key={i} className="p-3 bg-[#1B1B1D] border border-[#2A2A2C] rounded-xl text-xs space-y-1">
-                  <div className="flex items-center gap-1.5 font-bold text-[#C9A227]">
-                    <LinkIcon /> {ref.passage}
+              {currentReferences.length === 0 ? (
+                <p className="text-xs text-[#8E8E93]">
+                  Nenhuma referência cruzada cadastrada para este versículo ainda.
+                </p>
+              ) : (
+                currentReferences.map((ref, i) => (
+                  <div key={i} className="p-3 bg-[#1C1C1E] border border-[#2C2C2E] rounded-xl text-xs space-y-1">
+                    <div className="flex items-center gap-1.5 font-bold text-[#0A84FF]">
+                      <LinkIcon /> {ref.passage}
+                    </div>
+                    <p className="text-[#8E8E93] italic">{ref.text}</p>
                   </div>
-                  <p className="text-[#8A8378] italic">{ref.text}</p>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           )}
 
           {/* PAINEL DE PALAVRA ORIGINAL (Definição / Ocorrências) */}
           {activeSidePanel === "word" && selectedWord && (
             <div>
-              <div className="text-center pb-4 border-b border-[#2A2A2C] mb-3">
-                <div className={`text-4xl font-serif font-bold mb-1 ${selectedWord.isJesusWords ? "text-[#C0392B]" : "text-[#F1EBD9]"}`}>
+              <div className="text-center pb-4 border-b border-[#2C2C2E] mb-3">
+                <div className={`text-4xl font-serif font-bold mb-1 ${selectedWord.isJesusWords ? "text-[#FF453A]" : "text-[#F5F5F7]"}`}>
                   {selectedWord.original}
                 </div>
-                <div className="text-xs text-[#8A8378] italic">
+                <div className="text-xs text-[#8E8E93] italic">
                   {selectedWord.translit}
                   {selectedWord.strong && (
-                    <span className="ml-2 text-[10px] font-mono bg-[#2A2A2C] text-[#C9A227] px-1.5 py-0.5 rounded">
+                    <span className="ml-2 text-[10px] font-mono bg-[#2C2C2E] text-[#0A84FF] px-1.5 py-0.5 rounded">
                       {selectedWord.strong}
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="flex gap-1 mb-4 border-b border-[#2A2A2C]">
+              <div className="flex gap-1 mb-4 border-b border-[#2C2C2E]">
                 <button
                   onClick={() => setWordTab("definicao")}
                   className={`px-3 py-1.5 text-xs font-medium border-b-2 -mb-px ${
-                    wordTab === "definicao" ? "border-[#C9A227] text-[#C9A227]" : "border-transparent text-[#8A8378]"
+                    wordTab === "definicao" ? "border-[#0A84FF] text-[#0A84FF]" : "border-transparent text-[#8E8E93]"
                   }`}
                 >
                   Definição
@@ -356,7 +362,7 @@ export default function ReadView({
                 <button
                   onClick={() => setWordTab("ocorrencias")}
                   className={`px-3 py-1.5 text-xs font-medium border-b-2 -mb-px ${
-                    wordTab === "ocorrencias" ? "border-[#C9A227] text-[#C9A227]" : "border-transparent text-[#8A8378]"
+                    wordTab === "ocorrencias" ? "border-[#0A84FF] text-[#0A84FF]" : "border-transparent text-[#8E8E93]"
                   }`}
                 >
                   Ocorrências{occurrences ? ` (${occurrences.length})` : ""}
@@ -366,49 +372,74 @@ export default function ReadView({
               {wordTab === "definicao" && (
                 <div className="space-y-4 text-xs">
                   <div>
-                    <p className="text-[10px] font-bold text-[#8A8378] uppercase tracking-wide mb-1">
+                    <p className="text-[10px] font-bold text-[#8E8E93] uppercase tracking-wide mb-1">
                       Sentido neste versículo
                     </p>
-                    <p className="text-[#F1EBD9] text-sm">{translateGloss(selectedWord.translation)}</p>
+                    {(() => {
+                      const g = translateGloss(selectedWord.translation);
+                      return (
+                        <p className="text-[#F5F5F7] text-sm">
+                          {g.text}
+                          {!g.translated && (
+                            <span className="ml-1.5 text-[9px] font-bold text-[#8E8E93] align-middle border border-[#2C2C2E] rounded px-1 py-0.5">
+                              EN
+                            </span>
+                          )}
+                        </p>
+                      );
+                    })()}
                   </div>
 
                   {selectedWord.morphology && (
-                    <div className="pt-3 border-t border-[#2A2A2C]">
-                      <p className="text-[10px] font-bold text-[#8A8378] uppercase tracking-wide mb-1">
+                    <div className="pt-3 border-t border-[#2C2C2E]">
+                      <p className="text-[10px] font-bold text-[#8E8E93] uppercase tracking-wide mb-1">
                         Como esta forma é construída
                       </p>
-                      <p className="text-[#DCD6C6] leading-relaxed">
+                      <p className="text-[#D1D1D6] leading-relaxed">
                         {decodeMorphology(selectedWord.morphology, selectedWord.strong?.startsWith("H") ? "hebrew" : "greek")}
                       </p>
                     </div>
                   )}
 
                   {selectedWord.meaning && (
-                    <div className="pt-3 border-t border-[#2A2A2C]">
-                      <p className="text-[10px] font-bold text-[#8A8378] uppercase tracking-wide mb-1">
+                    <div className="pt-3 border-t border-[#2C2C2E]">
+                      <p className="text-[10px] font-bold text-[#8E8E93] uppercase tracking-wide mb-1">
                         Forma de dicionário
                       </p>
-                      <p className="text-[#DCD6C6] leading-relaxed">{translateGloss(selectedWord.meaning)}</p>
+                      {(() => {
+                        const m = translateGloss(selectedWord.meaning);
+                        return (
+                          <p className="text-[#D1D1D6] leading-relaxed">
+                            {m.text}
+                            {!m.translated && (
+                              <span className="ml-1.5 text-[9px] font-bold text-[#8E8E93] align-middle border border-[#2C2C2E] rounded px-1 py-0.5">
+                                EN
+                              </span>
+                            )}
+                          </p>
+                        );
+                      })()}
                     </div>
                   )}
 
-                  <p className="text-[10px] text-[#5A564F] pt-2 border-t border-[#2A2A2C]">
-                    Fonte lexical: STEPBible-Data (CC BY 4.0) — glosa traduzida automaticamente a partir de um
-                    dicionário fechado de termos comuns; termos fora dele aparecem em inglês.
+                  <p className="text-[10px] text-[#6E6E73] pt-2 border-t border-[#2C2C2E]">
+                    Fonte lexical: STEPBible-Data (CC BY 4.0). O selo <span className="font-bold">EN</span> indica
+                    que essa glosa específica ainda não está no dicionário de tradução (~88% de cobertura) e
+                    aparece no original em inglês, em vez de uma mistura de idiomas.
                   </p>
                 </div>
               )}
 
               {wordTab === "ocorrencias" && (
                 <div className="space-y-1.5">
-                  {occurrences === null && <p className="text-xs text-[#8A8378]">Carregando ocorrências...</p>}
+                  {occurrences === null && <p className="text-xs text-[#8E8E93]">Carregando ocorrências...</p>}
                   {occurrences !== null && occurrences.length === 0 && (
-                    <p className="text-xs text-[#8A8378]">Nenhuma outra ocorrência encontrada.</p>
+                    <p className="text-xs text-[#8E8E93]">Nenhuma outra ocorrência encontrada.</p>
                   )}
                   {occurrences?.map((o, i) => (
-                    <div key={i} className="flex items-baseline justify-between text-xs px-2 py-1.5 rounded hover:bg-[#1B1B1D]">
-                      <span className="text-[#8A8378]">{refLabel(o)}</span>
-                      <span className="font-serif text-[#F1EBD9]">{o.o}</span>
+                    <div key={i} className="flex items-baseline justify-between text-xs px-2 py-1.5 rounded hover:bg-[#1C1C1E]">
+                      <span className="text-[#8E8E93]">{refLabel(o)}</span>
+                      <span className="font-serif text-[#F5F5F7]">{o.o}</span>
                     </div>
                   ))}
                 </div>
