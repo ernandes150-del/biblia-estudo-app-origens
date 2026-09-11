@@ -33,3 +33,15 @@ export function loadOccurrences(strong: string): Promise<Occurrence[] | null> {
   loading.set(strong, promise);
   return promise;
 }
+
+// Agrega as ocorrências de todas as variantes de Strong estendido que
+// compartilham o mesmo Strong clássico (ex: H7225 reúne H7225G, H7225G_A,
+// H7225G_B e H7225H) — assim a contagem bate com o padrão clássico usado
+// pela maioria das ferramentas de estudo bíblico, em vez de mostrar só um
+// sentido específico do STEPBible como se fosse a palavra inteira.
+export async function loadOccurrencesForClassic(strongs: string[]): Promise<Occurrence[]> {
+  const lists = await Promise.all(strongs.map((s) => loadOccurrences(s)));
+  const merged: Occurrence[] = [];
+  for (const list of lists) if (list) merged.push(...list);
+  return merged;
+}

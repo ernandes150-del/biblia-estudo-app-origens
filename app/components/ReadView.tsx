@@ -11,8 +11,10 @@ import type {
 } from "../types";
 import { getInterlinearWords } from "../lib/lexicon";
 import { decodeMorphology } from "../lib/morphology";
-import { translateGloss } from "../lib/glossTranslation";
-import { loadOccurrences, type Occurrence } from "../lib/occurrences";
+import { translateGloss, splitCompoundGloss } from "../lib/glossTranslation";
+import { loadOccurrencesForClassic, type Occurrence } from "../lib/occurrences";
+import { classicStrongOf, loadClassicGroups, loadDictionaryEntry, type DictionaryEntry } from "../lib/dictionary";
+import { formatTranslit } from "../lib/format";
 import { studyBlocksToPlainText, parseStudyBlocks } from "../lib/studyBlocks";
 import StudyEditor from "./StudyEditor";
 import { LinkIcon, StarIcon } from "../lib/icons";
@@ -79,26 +81,50 @@ export default function ReadView({
 }: ReadViewProps) {
   const [wordTab, setWordTab] = useState<"definicao" | "ocorrencias">("definicao");
   const [occurrences, setOccurrences] = useState<Occurrence[] | null>(null);
+  const [dictEntry, setDictEntry] = useState<DictionaryEntry | null>(null);
   const fetchingStrongRef = useRef<string | null>(null);
+  const fetchingDictRef = useRef<string | null>(null);
 
   // Sempre que uma nova palavra é selecionada, volta pra aba Definição e
-  // reseta as ocorrências carregadas (evita mostrar as da palavra anterior).
-  // Ajuste de estado feito durante a renderização (não num efeito) seguindo
-  // o padrão recomendado pelo React para "resetar estado quando uma prop muda".
+  // reseta as ocorrências/dicionário carregados (evita mostrar os da palavra
+  // anterior). Ajuste de estado feito durante a renderização (não num
+  // efeito) seguindo o padrão recomendado pelo React para "resetar estado
+  // quando uma prop muda".
   const [trackedWord, setTrackedWord] = useState(selectedWord);
   if (trackedWord !== selectedWord) {
     setTrackedWord(selectedWord);
     setWordTab("definicao");
     setOccurrences(null);
+    setDictEntry(null);
   }
 
+  // Carrega a entrada de dicionário completa (BDB/Abbott-Smith via
+  // STEPBible) assim que uma palavra é selecionada.
   useEffect(() => {
-    if (wordTab !== "ocorrencias" || !selectedWord?.strong || occurrences) return;
-    if (fetchingStrongRef.current === selectedWord.strong) return;
-    fetchingStrongRef.current = selectedWord.strong;
+    const strong = selectedWord?.strong;
+    if (!strong || dictEntry || fetchingDictRef.current === strong) return;
+    fetchingDictRef.current = strong;
     let cancelled = false;
-    loadOccurrences(selectedWord.strong).then((data) => {
-      if (!cancelled) setOccurrences(data ?? []);
+    loadDictionaryEntry(strong).then((entry) => {
+      if (!cancelled) setDictEntry(entry);
+      fetchingDictRef.current = null;
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedWord?.strong, dictEntry]);
+
+  useEffect(() => {
+    const strong = selectedWord?.strong;
+    if (wordTab !== "ocorrencias" || !strong || occurrences) return;
+    if (fetchingStrongRef.current === strong) return;
+    fetchingStrongRef.current = strong;
+    let cancelled = false;
+    loadClassicGroups().then(async (groups) => {
+      const classic = classicStrongOf(strong);
+      const siblings = groups?.[classic] ?? [strong];
+      const data = await loadOccurrencesForClassic(siblings);
+      if (!cancelled) setOccurrences(data);
       fetchingStrongRef.current = null;
     });
     return () => {
@@ -149,7 +175,7 @@ export default function ReadView({
                 <span className={`text-base font-serif font-bold ${word.isJesusWords ? "text-[var(--danger)]" : "text-[var(--text)]"}`}>
                   {word.original}
                 </span>
-                <span className="text-[10px] italic text-[var(--text-muted)] mt-0.5">({word.translit})</span>
+                <span className="text-[10px] italic text-[var(--text-muted)] mt-0.5">({formatTranslit(word.translit)})</span>
               </button>
             ))}
           </div>
@@ -370,10 +396,10 @@ export default function ReadView({
                   {selectedWord.original}
                 </div>
                 <div className="relative text-xs text-[var(--text-muted)] italic">
-                  {selectedWord.translit}
+                  {formatTranslit(selectedWord.translit)}
                   {selectedWord.strong && (
                     <span className="ml-2 text-[10px] font-mono bg-[var(--border)] text-[var(--accent)] px-1.5 py-0.5 rounded">
-                      {selectedWord.strong}
+                      {classicStrongOf(selectedWord.strong)}
                     </span>
                   )}
                 </div>
@@ -405,9 +431,12 @@ export default function ReadView({
                       Sentido neste versículo
                     </p>
                     {(() => {
-                      const g = translateGloss(selectedWord.translation);
+                      const { core, prefix } = splitCompoundGloss(selectedWord.translation);
+                      const g = translateGloss(core);
+                      const p = prefix ? translateGloss(prefix) : null;
                       return (
                         <p className="text-[var(--text)] text-sm">
+                          {p && <span className="text-[var(--text-muted)]">{p.text} · </span>}
                           {g.text}
                           {!g.translated && (
                             <span className="ml-1.5 text-[9px] font-bold text-[var(--text-muted)] align-middle border border-[var(--border)] rounded px-1 py-0.5">
@@ -430,12 +459,24 @@ export default function ReadView({
                     </div>
                   )}
 
-                  {selectedWord.meaning && (
-                    <div className="pt-3 border-t border-[var(--border)]">
-                      <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1">
-                        Forma de dicionário
-                      </p>
-                      {(() => {
+                  <div className="pt-3 border-t border-[var(--border)]">
+                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1">
+                      Forma de dicionário
+                    </p>
+                    {dictEntry ? (
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-serif text-lg text-[var(--text)]">{dictEntry.headword}</span>
+                        <span className="text-[var(--text-muted)] italic">{formatTranslit(dictEntry.translit)}</span>
+                        <span className="text-[var(--text-dim)]">
+                          {dictEntry.pos.includes("N-F") ? "substantivo feminino"
+                            : dictEntry.pos.includes("N-M") ? "substantivo masculino"
+                            : dictEntry.pos.includes("V") ? "verbo"
+                            : dictEntry.pos.includes("A") ? "adjetivo"
+                            : dictEntry.pos}
+                        </span>
+                      </div>
+                    ) : selectedWord.meaning ? (
+                      (() => {
                         const m = translateGloss(selectedWord.meaning);
                         return (
                           <p className="text-[var(--text-secondary)] leading-relaxed">
@@ -447,8 +488,21 @@ export default function ReadView({
                             )}
                           </p>
                         );
-                      })()}
-                    </div>
+                      })()
+                    ) : (
+                      <p className="text-[var(--text-dim)]">Carregando...</p>
+                    )}
+                  </div>
+
+                  {dictEntry?.def && (
+                    <details className="pt-3 border-t border-[var(--border)]">
+                      <summary className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide cursor-pointer select-none">
+                        Definição completa (inglês) — toque para expandir
+                      </summary>
+                      <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-line mt-2 max-h-64 overflow-y-auto pr-1">
+                        {dictEntry.def}
+                      </p>
+                    </details>
                   )}
 
                   {selectedWord.strong && (
@@ -467,9 +521,11 @@ export default function ReadView({
                   )}
 
                   <p className="text-[10px] text-[var(--text-dim)] pt-2 border-t border-[var(--border)]">
-                    Fonte lexical: STEPBible-Data (CC BY 4.0). O selo <span className="font-bold">EN</span> indica
-                    que essa glosa específica ainda não está no dicionário de tradução (~88% de cobertura) e
-                    aparece no original em inglês, em vez de uma mistura de idiomas.
+                    Fonte lexical: STEPBible-Data (CC BY 4.0), com base no BDB (hebraico) e no léxico de
+                    Abbott-Smith (grego). O selo <span className="font-bold">EN</span> indica que essa glosa
+                    específica ainda não está no dicionário de tradução (~88% de cobertura) e aparece no
+                    original em inglês, em vez de uma mistura de idiomas. A definição completa permanece em
+                    inglês, como na fonte.
                   </p>
                 </div>
               )}

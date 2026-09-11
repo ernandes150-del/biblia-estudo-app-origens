@@ -14,6 +14,15 @@ const D: Record<string, string> = dict;
 
 export type GlossTranslation = { text: string; translated: boolean };
 
+// Separa uma glosa composta (prefixo hebraico + palavra núcleo, como vem do
+// STEPBible: "in/ beginning") no sentido do núcleo e no sentido do prefixo.
+// Quando não há "/", a glosa inteira é o núcleo.
+export function splitCompoundGloss(gloss: string): { core: string; prefix?: string } {
+  const idx = gloss.lastIndexOf("/");
+  if (idx === -1) return { core: gloss };
+  return { prefix: gloss.slice(0, idx).trim(), core: gloss.slice(idx + 1).trim() };
+}
+
 export function translateGloss(gloss: string | undefined): GlossTranslation {
   if (!gloss) return { text: "", translated: true };
 
