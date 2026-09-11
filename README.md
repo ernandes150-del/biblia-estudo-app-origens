@@ -35,8 +35,11 @@ O léxico interlinear (Strong's, gramática e morfologia hebraica/grega) em
 `public/lexicon/` é derivado do **STEPBible-Data**, de "STEP Bible"
 ([www.STEPBible.org](https://www.STEPBible.org)) com base em trabalho da
 Tyndale House, Cambridge, disponibilizado sob licença **CC BY 4.0**
-(https://github.com/STEPBible/STEPBible-Data). O texto bíblico em português
-usado no app é da Bíblia Livre (CC BY 4.0, eBible.org). A marcação de
+(https://github.com/STEPBible/STEPBible-Data). O dicionário completo em
+`public/dictionary/` vem da mesma fonte, com base no **BDB** (Brown-Driver-Briggs,
+hebraico) e no **léxico de Abbott-Smith** (grego), ambas obras clássicas de
+domínio público. O texto bíblico em português usado no app é da Bíblia Livre
+(CC BY 4.0, eBible.org). A marcação de
 "palavras de Jesus" (`isJesusWords`) usa o dataset `red_letter_verses.json`
 do projeto **KJV Study** (kennethreitz/kjvstudy.org), licença ISC — aplicada
 apenas aos 1.501 versículos onde a fonte indica que Jesus fala o versículo
