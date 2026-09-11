@@ -1,4 +1,5 @@
 import type { SavedStudy } from "../types";
+import { studyBlocksToPlainText, parseStudyBlocks } from "../lib/studyBlocks";
 
 type StudiesViewProps = {
   savedStudiesList: SavedStudy[];
@@ -33,7 +34,7 @@ export default function StudiesView({ savedStudiesList, navigateToVerse }: Studi
                 </div>
                 <p className="text-xs text-[var(--text-muted)] italic mb-2">&ldquo;{st.verseText}&rdquo;</p>
                 <p className="text-xs text-[var(--text-secondary)] bg-[var(--bg-elevated)] p-3 rounded-lg border border-[var(--border)]">
-                  {st.study}
+                  {studyBlocksToPlainText(parseStudyBlocks(st.study))}
                 </p>
               </div>
             ))}

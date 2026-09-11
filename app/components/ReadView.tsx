@@ -13,6 +13,8 @@ import { getInterlinearWords } from "../lib/lexicon";
 import { decodeMorphology } from "../lib/morphology";
 import { translateGloss } from "../lib/glossTranslation";
 import { loadOccurrences, type Occurrence } from "../lib/occurrences";
+import { studyBlocksToPlainText, parseStudyBlocks } from "../lib/studyBlocks";
+import StudyEditor from "./StudyEditor";
 import { LinkIcon, StarIcon } from "../lib/icons";
 
 type ReadViewProps = {
@@ -256,7 +258,8 @@ export default function ReadView({
 
                 {vNote?.study && (
                   <div className="mt-3 pt-2 border-t border-[var(--border)] text-xs text-[var(--text-secondary)] italic bg-[var(--bg-elevated)] p-2 rounded">
-                    <strong className="text-[var(--accent)] not-italic">Anotação de estudo:</strong> {vNote.study}
+                    <strong className="text-[var(--accent)] not-italic">Anotação de estudo:</strong>{" "}
+                    {studyBlocksToPlainText(parseStudyBlocks(vNote.study))}
                   </div>
                 )}
               </div>
@@ -318,13 +321,12 @@ export default function ReadView({
               </p>
               <div>
                 <label className="text-xs font-bold text-[var(--accent)] block mb-1">Sua Anotação Exegética:</label>
-                <textarea
-                  rows={8}
-                  value={currentVerseNote?.study || ""}
-                  onChange={(e) => saveStudyText(e.target.value)}
-                  placeholder="Escreva suas observações de estudo sobre o versículo..."
-                  className="w-full bg-[var(--bg-elevated)] border border-[var(--border)] rounded-xl p-3 text-xs leading-relaxed text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
-                />
+                <div className="w-full bg-[var(--bg-elevated)] border border-[var(--border)] rounded-xl p-3 focus-within:border-[var(--accent)]">
+                  <StudyEditor value={currentVerseNote?.study} onChange={saveStudyText} />
+                </div>
+                <p className="text-[10px] text-[var(--text-dim)] mt-1.5">
+                  Enter cria um novo bloco · Backspace num bloco vazio apaga ele · use os botões H / P / • pra trocar o tipo.
+                </p>
               </div>
             </div>
           )}
