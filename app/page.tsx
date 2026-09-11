@@ -38,6 +38,22 @@ export default function BibliaOrigensApp() {
   const [passwordInput, setPasswordInput] = useState("");
   const [authNotice, setAuthNotice] = useState<string | null>(null);
 
+  // TEMA CLARO/ESCURO — persistido no navegador, aplicado via atributo no <html>
+  // (as variáveis de cor em globals.css reagem a esse atributo). O valor
+  // inicial já lê o localStorage na primeira renderização (fora de um efeito).
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    if (typeof window === "undefined") return "dark";
+    const stored = localStorage.getItem("biblia-origens-theme");
+    return stored === "light" ? "light" : "dark";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("biblia-origens-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+
   const [selectedBook, setSelectedBook] = useState<string>("Gênesis");
   const [selectedChapter, setSelectedChapter] = useState<number>(1);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(1);
@@ -254,7 +270,7 @@ export default function BibliaOrigensApp() {
   }, [selectedBook, selectedChapter, selectedVerse, typedReferencesData]);
 
   return (
-    <div className="h-screen w-screen bg-[#000000] text-[#F5F5F7] font-sans flex flex-col overflow-hidden">
+    <div className="h-screen w-screen bg-[var(--bg)] text-[var(--text)] font-sans flex flex-col overflow-hidden">
 
       {authNotice && (
         <AuthNotice message={authNotice} onGoToLogin={() => setActiveTab("home")} />
@@ -277,6 +293,8 @@ export default function BibliaOrigensApp() {
         bookNames={Object.keys(typedBibleData.books)}
         totalChapters={totalChapters}
         onSetSelectedVerse={setSelectedVerse}
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
 
       <div className="flex-1 flex overflow-hidden relative">
