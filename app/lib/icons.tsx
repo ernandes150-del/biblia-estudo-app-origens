@@ -59,7 +59,7 @@ export const AnimatedLogo = () => (
     <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
       {/* Traço principal (diagonal) */}
       <path
-        d="M28 74 L74 26"
+        d="M26 76 L76 24"
         fill="none"
         stroke="white"
         strokeWidth="7"
@@ -71,9 +71,10 @@ export const AnimatedLogo = () => (
           animation: "drawStroke 0.5s ease 0s forwards",
         }}
       />
-      {/* Gancho superior direito */}
+      {/* Gancho superior — sai do topo do traço principal em direção oposta,
+          não sobreposto (senão fica invisível) */}
       <path
-        d="M74 26 L60 40"
+        d="M76 24 L56 15"
         fill="none"
         stroke="white"
         strokeWidth="7"
@@ -85,9 +86,9 @@ export const AnimatedLogo = () => (
           animation: "drawStroke 0.35s ease 0.5s forwards",
         }}
       />
-      {/* Gancho inferior esquerdo */}
+      {/* Gancho inferior — mesma lógica, direção oposta no outro extremo */}
       <path
-        d="M28 74 L42 60"
+        d="M26 76 L46 85"
         fill="none"
         stroke="white"
         strokeWidth="7"

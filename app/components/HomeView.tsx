@@ -27,7 +27,7 @@ export default function HomeView({
   handleAuth,
 }: HomeViewProps) {
   return (
-    <main className="flex-1 flex items-center justify-center relative overflow-hidden bg-[var(--bg)]">
+    <main className="flex-1 flex items-center justify-center relative overflow-y-auto bg-[var(--bg)] py-8">
       {/* GLOW DECORATIVO DE FUNDO */}
       <div
         className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] opacity-25 blur-3xl"
@@ -96,6 +96,28 @@ export default function HomeView({
                 {authMode === "login" ? "Entrar" : "Cadastrar"}
               </button>
             </form>
+
+            {/* NÚMEROS REAIS DO ACERVO */}
+            <div className="flex items-center justify-center gap-5 pt-8 text-center">
+              <div>
+                <div className="text-lg font-bold text-[var(--text)]">66</div>
+                <div className="text-[9px] text-[var(--text-muted)] uppercase tracking-wide">livros</div>
+              </div>
+              <div className="w-px h-7 bg-[var(--border)]" />
+              <div>
+                <div className="text-lg font-bold text-[var(--text)]">425 mil</div>
+                <div className="text-[9px] text-[var(--text-muted)] uppercase tracking-wide">palavras</div>
+              </div>
+              <div className="w-px h-7 bg-[var(--border)]" />
+              <div>
+                <div className="text-lg font-bold text-[var(--text)]">25 mil</div>
+                <div className="text-[9px] text-[var(--text-muted)] uppercase tracking-wide">raízes</div>
+              </div>
+            </div>
+
+            <p className="text-center text-[10px] text-[var(--text-dim)] pt-6">
+              Powered by Ernandes Machado Arruda
+            </p>
           </div>
         )}
       </div>
