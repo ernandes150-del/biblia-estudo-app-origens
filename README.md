@@ -45,7 +45,13 @@ do projeto **KJV Study** (kennethreitz/kjvstudy.org), licença ISC — aplicada
 apenas aos 1.501 versículos onde a fonte indica que Jesus fala o versículo
 inteiro. As referências cruzadas em `public/cross-references/` vêm da
 **Treasury of Scripture Knowledge**, via o mesmo projeto KJV Study
-(originalmente de OpenBible.info, CC BY).
+(originalmente de OpenBible.info, CC BY). O comentário bíblico em
+`public/commentary/matthew-henry/` é de **Matthew Henry** (1662-1714),
+obra clássica de domínio público, obtida via **Free Use Bible API**
+(bible.helloao.org, projeto HelloAO Lab, licença MIT/CC Public Domain
+Mark). Cobre 65 dos 66 livros — a fonte não inclui comentário para
+Cânticos dos Cânticos. O texto do comentário permanece em inglês, como na
+fonte original; nenhuma tradução foi fabricada.
 
 ## Autenticação e persistência (Supabase)
 

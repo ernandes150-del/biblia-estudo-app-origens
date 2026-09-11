@@ -15,6 +15,7 @@ import { translateGloss, splitCompoundGloss } from "../lib/glossTranslation";
 import { loadOccurrencesForClassic, type Occurrence } from "../lib/occurrences";
 import { classicStrongOf, loadClassicGroups, loadDictionaryEntry, type DictionaryEntry } from "../lib/dictionary";
 import { getCuratedEntry } from "../lib/curatedDictionary";
+import { loadCommentaryBook, getCommentaryForVerse, getCommentaryIntro, type CommentaryBlock } from "../lib/commentary";
 import { formatTranslit } from "../lib/format";
 import { studyBlocksToPlainText, parseStudyBlocks } from "../lib/studyBlocks";
 import StudyEditor from "./StudyEditor";
@@ -87,6 +88,25 @@ export default function ReadView({
   const [dictFetchedFor, setDictFetchedFor] = useState<string | null>(null);
   const fetchingStrongRef = useRef<string | null>(null);
   const fetchingDictRef = useRef<string | null>(null);
+  const [commentaryLoadedFor, setCommentaryLoadedFor] = useState<string | null>(null);
+  const fetchingCommentaryRef = useRef<string | null>(null);
+
+  // Carrega o comentário de Matthew Henry do livro atual assim que o
+  // painel de comentário é aberto (um arquivo por livro, reaproveitado do
+  // cache do módulo entre capítulos/versículos).
+  useEffect(() => {
+    if (activeSidePanel !== "commentary" || commentaryLoadedFor === selectedBook) return;
+    if (fetchingCommentaryRef.current === selectedBook) return;
+    fetchingCommentaryRef.current = selectedBook;
+    let cancelled = false;
+    loadCommentaryBook(selectedBook).then(() => {
+      if (!cancelled) setCommentaryLoadedFor(selectedBook);
+      fetchingCommentaryRef.current = null;
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeSidePanel, selectedBook, commentaryLoadedFor]);
 
   // Sempre que uma nova palavra é selecionada, volta pra aba Definição e
   // reseta as ocorrências/dicionário carregados (evita mostrar os da palavra
@@ -205,6 +225,7 @@ export default function ReadView({
             {activeSidePanel === "context" && "Contexto do Livro"}
             {activeSidePanel === "study" && `Caderno de Estudo - ${selectedBook} ${selectedChapter}:${selectedVerse}`}
             {activeSidePanel === "references" && `Referências de ${selectedBook} ${selectedChapter}:${selectedVerse}`}
+            {activeSidePanel === "commentary" && `Comentário de ${selectedBook} ${selectedChapter}:${selectedVerse}`}
             {activeSidePanel === "word" && "Palavra Original"}
           </h3>
           <button onClick={() => setActiveSidePanel("none")} className="text-xs font-bold text-[var(--text-muted)] hover:text-[var(--text)]">
@@ -277,6 +298,46 @@ export default function ReadView({
                 );
               })
             )}
+          </div>
+        )}
+
+        {/* PAINEL DE COMENTÁRIO (Matthew Henry, domínio público) */}
+        {activeSidePanel === "commentary" && (
+          <div className="space-y-3 text-xs">
+            {commentaryLoadedFor !== selectedBook ? (
+              <p className="text-[var(--text-dim)]">Carregando...</p>
+            ) : (
+              (() => {
+                const block: CommentaryBlock | null = selectedVerse
+                  ? getCommentaryForVerse(selectedBook, selectedChapter, selectedVerse)
+                  : null;
+                if (!block) {
+                  return (
+                    <p className="text-[var(--text-muted)]">
+                      {getCommentaryIntro(selectedBook) === null
+                        ? "Este livro não tem comentário de Matthew Henry cadastrado nesta fonte."
+                        : "Nenhum comentário cadastrado para este versículo."}
+                    </p>
+                  );
+                }
+                return (
+                  <div>
+                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-2">
+                      {selectedBook} {selectedChapter}:{block.s}
+                      {block.e !== block.s ? `-${block.e}` : ""}
+                    </p>
+                    <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
+                      {block.t}
+                    </p>
+                  </div>
+                );
+              })()
+            )}
+            <p className="text-[10px] text-[var(--text-dim)] pt-2 border-t border-[var(--border)]">
+              Fonte: Matthew Henry, Comentário Bíblico (falecido em 1714), domínio público. Texto em
+              inglês, obtido via Free Use Bible API (HelloAO Lab). Não cobre Cânticos dos Cânticos, que
+              não recebeu comentário na fonte original.
+            </p>
           </div>
         )}
 
@@ -542,6 +603,18 @@ export default function ReadView({
                 }`}
               >
                 Referências
+              </button>
+            )}
+            {selectedVerse && (
+              <button
+                onClick={() => setActiveSidePanel(activeSidePanel === "commentary" ? "none" : "commentary")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                  activeSidePanel === "commentary"
+                    ? "bg-[var(--accent)] text-white border-[var(--accent)]"
+                    : "bg-[var(--bg-elevated)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--accent)]/50"
+                }`}
+              >
+                Comentário
               </button>
             )}
           </div>
