@@ -336,6 +336,7 @@ export default function BibliaOrigensApp() {
             saveStudyText={saveStudyText}
             currentReferences={currentReferences}
             lexiconVersion={lexiconTick}
+            navigateToVerse={navigateToVerse}
           />
         )}
 

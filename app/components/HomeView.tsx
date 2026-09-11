@@ -143,6 +143,10 @@ export default function HomeView({
             </form>
           </div>
         )}
+
+        <p className="text-center text-[10px] text-[var(--text-dim)] pb-6">
+          Powered by Ernandes Machado Arruda
+        </p>
       </div>
     </main>
   );

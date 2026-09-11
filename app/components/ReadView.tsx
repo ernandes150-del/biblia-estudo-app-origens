@@ -38,6 +38,7 @@ type ReadViewProps = {
   // livro termina de carregar. Não é lido diretamente aqui — sua única função
   // é forçar este componente a re-renderizar e reconsultar getInterlinearWords.
   lexiconVersion: number;
+  navigateToVerse: (book: string, chapter: number, verse: number, openStudy?: boolean) => void;
 };
 
 function refLabel(o: Occurrence): string {
@@ -65,6 +66,7 @@ export default function ReadView({
   saveStudyText,
   currentReferences,
   lexiconVersion,
+  navigateToVerse,
 }: ReadViewProps) {
   const [wordTab, setWordTab] = useState<"definicao" | "ocorrencias">("definicao");
   const [occurrences, setOccurrences] = useState<Occurrence[] | null>(null);
@@ -201,10 +203,10 @@ export default function ReadView({
               <div
                 key={vNum}
                 onClick={() => setSelectedVerse(vNum)}
-                className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                className={`p-4 rounded-xl border backdrop-blur-md transition-all cursor-pointer ${
                   isSelected
-                    ? "border-[var(--accent)]/60 bg-[var(--bg-elevated)] shadow-[0_0_0_1px_rgba(201,162,39,0.15)]"
-                    : "border-[var(--bg-elevated-2)] bg-[var(--bg-elevated)] hover:border-[var(--border)]"
+                    ? "border-[var(--accent)]/60 bg-[var(--bg-elevated)]/80 shadow-[0_0_0_1px_rgba(10,132,255,0.15)]"
+                    : "border-[var(--bg-elevated-2)] bg-[var(--bg-elevated)]/60 hover:border-[var(--border)]"
                 } ${vNote?.highlighted ? "bg-[var(--highlight-bg)] border-[var(--highlight-border)]" : ""}`}
               >
                 <div className="flex items-start justify-between gap-3 mb-2">
@@ -264,7 +266,7 @@ export default function ReadView({
             className="md:hidden fixed inset-0 bg-black/60 z-40"
             onClick={() => setActiveSidePanel("none")}
           />
-          <aside className="fixed md:static inset-x-0 bottom-0 md:inset-auto top-16 md:top-auto z-50 md:z-auto w-full md:w-80 lg:w-96 max-h-[85vh] md:max-h-none border-t md:border-t-0 md:border-l border-[var(--border)] bg-[var(--bg-panel)] p-4 pb-8 md:pb-4 overflow-y-auto shrink-0 rounded-t-2xl md:rounded-none shadow-2xl md:shadow-none">
+          <aside className="fixed md:static inset-x-0 bottom-0 md:inset-auto top-16 md:top-auto z-50 md:z-auto w-full md:w-80 lg:w-96 max-h-[85vh] md:max-h-none border-t md:border-t-0 md:border-l border-[var(--border)] bg-[var(--bg-panel)]/80 backdrop-blur-2xl p-4 pb-8 md:pb-4 overflow-y-auto shrink-0 rounded-t-2xl md:rounded-none shadow-2xl md:shadow-none">
             <div className="md:hidden w-10 h-1 bg-[var(--border)] rounded-full mx-auto mb-3" />
           <div className="flex items-center justify-between mb-4 border-b border-[var(--border)] pb-2">
             <h3 className="font-serif font-bold text-sm text-[var(--text)] uppercase tracking-wide">
@@ -343,11 +345,15 @@ export default function ReadView({
           {/* PAINEL DE PALAVRA ORIGINAL (Definição / Ocorrências) */}
           {activeSidePanel === "word" && selectedWord && (
             <div>
-              <div className="text-center pb-4 border-b border-[var(--border)] mb-3">
-                <div className={`text-4xl font-serif font-bold mb-1 ${selectedWord.isJesusWords ? "text-[var(--danger)]" : "text-[var(--text)]"}`}>
+              <div className="relative text-center pb-4 border-b border-[var(--border)] mb-3 -mx-4 px-4 pt-2 overflow-hidden">
+                <div
+                  className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-64 h-40 opacity-25 blur-3xl"
+                  style={{ background: "radial-gradient(circle, var(--accent) 0%, transparent 70%)" }}
+                />
+                <div className={`relative text-4xl font-serif font-bold mb-1 ${selectedWord.isJesusWords ? "text-[var(--danger)]" : "text-[var(--text)]"}`}>
                   {selectedWord.original}
                 </div>
-                <div className="text-xs text-[var(--text-muted)] italic">
+                <div className="relative text-xs text-[var(--text-muted)] italic">
                   {selectedWord.translit}
                   {selectedWord.strong && (
                     <span className="ml-2 text-[10px] font-mono bg-[var(--border)] text-[var(--accent)] px-1.5 py-0.5 rounded">
@@ -444,10 +450,14 @@ export default function ReadView({
                     <p className="text-xs text-[var(--text-muted)]">Nenhuma outra ocorrência encontrada.</p>
                   )}
                   {occurrences?.map((o, i) => (
-                    <div key={i} className="flex items-baseline justify-between text-xs px-2 py-1.5 rounded hover:bg-[var(--bg-elevated)]">
+                    <button
+                      key={i}
+                      onClick={() => navigateToVerse(o.b, o.c, o.v)}
+                      className="w-full flex items-baseline justify-between text-xs px-2 py-1.5 rounded hover:bg-[var(--bg-elevated)] text-left transition-colors"
+                    >
                       <span className="text-[var(--text-muted)]">{refLabel(o)}</span>
                       <span className="font-serif text-[var(--text)]">{o.o}</span>
-                    </div>
+                    </button>
                   ))}
                 </div>
               )}

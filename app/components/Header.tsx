@@ -1,5 +1,5 @@
 import type { ActiveTab, TranslationVersion, User } from "../types";
-import { AcademicCapIcon, BookOpenIcon, AppLogo, SearchIcon } from "../lib/icons";
+import { AcademicCapIcon, BookOpenIcon, AppLogo, SearchIcon, SunIcon, MoonIcon } from "../lib/icons";
 
 type HeaderProps = {
   user: User | null;
@@ -54,24 +54,33 @@ export default function Header({
   };
 
   return (
-    <header className="border-b border-[var(--border)] bg-[var(--bg)]/95 backdrop-blur-md px-4 md:px-6 py-3 shrink-0 z-20">
+    <header className="border-b border-[var(--border)] bg-[var(--bg)]/70 backdrop-blur-2xl px-4 md:px-6 py-3 shrink-0 z-20 supports-[backdrop-filter]:bg-[var(--bg)]/60">
       <div className="flex items-center justify-between">
         <div onClick={() => { setActiveTab("home"); setMenuMobileAberto(false); }} className="flex items-center gap-3 cursor-pointer">
           <AppLogo />
-          <span className="font-serif text-lg font-bold tracking-tight text-[var(--text)]">
+          <span className="text-base font-semibold tracking-[0.08em] uppercase text-[var(--text)]">
             Bíblia Origens
           </span>
         </div>
 
         {/* BOTÃO HAMBÚRGUER PARA CELULAR */}
         <div className="md:hidden flex items-center gap-2">
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text)] text-sm"
-            aria-label={theme === "dark" ? "Mudar para tema claro" : "Mudar para tema escuro"}
-          >
-            {theme === "dark" ? "☀️" : "🌙"}
-          </button>
+          <div className="flex items-center bg-[var(--bg-elevated)] rounded-full p-0.5 border border-[var(--border)]">
+            <button
+              onClick={() => theme !== "light" && toggleTheme()}
+              className={`p-1.5 rounded-full transition-colors ${theme === "light" ? "bg-[var(--bg)] text-[var(--text)]" : "text-[var(--text-muted)]"}`}
+              aria-label="Tema claro"
+            >
+              <SunIcon />
+            </button>
+            <button
+              onClick={() => theme !== "dark" && toggleTheme()}
+              className={`p-1.5 rounded-full transition-colors ${theme === "dark" ? "bg-[var(--bg)] text-[var(--text)]" : "text-[var(--text-muted)]"}`}
+              aria-label="Tema escuro"
+            >
+              <MoonIcon />
+            </button>
+          </div>
           <button
             onClick={() => setMenuMobileAberto(!menuMobileAberto)}
             className="p-2 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text)] text-sm font-bold flex items-center gap-1.5"
@@ -121,14 +130,25 @@ export default function Header({
           </nav>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={toggleTheme}
-              className="p-1.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-elevated)] transition-colors"
-              aria-label={theme === "dark" ? "Mudar para tema claro" : "Mudar para tema escuro"}
-              title={theme === "dark" ? "Tema claro" : "Tema escuro"}
-            >
-              {theme === "dark" ? "☀️" : "🌙"}
-            </button>
+            {/* SELETOR DE TEMA ESTILO iOS (segmented control) */}
+            <div className="flex items-center bg-[var(--bg-elevated)] rounded-full p-0.5 border border-[var(--border)]">
+              <button
+                onClick={() => theme !== "light" && toggleTheme()}
+                className={`p-1.5 rounded-full transition-colors ${theme === "light" ? "bg-[var(--bg)] text-[var(--text)] shadow-sm" : "text-[var(--text-muted)]"}`}
+                aria-label="Tema claro"
+                title="Tema claro"
+              >
+                <SunIcon />
+              </button>
+              <button
+                onClick={() => theme !== "dark" && toggleTheme()}
+                className={`p-1.5 rounded-full transition-colors ${theme === "dark" ? "bg-[var(--bg)] text-[var(--text)] shadow-sm" : "text-[var(--text-muted)]"}`}
+                aria-label="Tema escuro"
+                title="Tema escuro"
+              >
+                <MoonIcon />
+              </button>
+            </div>
 
             {user ? (
               <div className="flex items-center gap-3">

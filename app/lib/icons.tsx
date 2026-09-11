@@ -31,12 +31,27 @@ export const LinkIcon = () => (
 
 // LOGO DE OLIVEIRA BASEADO NA ILUSTRAÇÃO DETALHADA
 export const AppLogo = () => (
-  <div className="w-10 h-10 bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] rounded-[11px] flex items-center justify-center shadow-sm shrink-0">
+  <div className="relative w-11 h-11 bg-gradient-to-b from-[var(--accent-hover)] to-[var(--accent-deep)] rounded-[12px] flex items-center justify-center shadow-lg shrink-0 ring-1 ring-white/20 ring-inset">
     {/* Marca: a letra hebraica Álef (א) — primeira letra do alfabeto hebraico,
         primeira palavra da Torá começa com ela. Identidade própria do app,
         não um clipart de livro genérico. */}
-    <span className="font-serif text-[22px] leading-none text-white select-none" style={{ transform: "translateY(-1px)" }}>
+    <span className="font-serif text-[28px] font-bold leading-none text-white select-none drop-shadow-sm" style={{ transform: "translateY(-1px)" }}>
       א
     </span>
+    {/* brilho sutil no topo, estilo ícone iOS */}
+    <div className="absolute inset-x-1 top-1 h-1/3 rounded-full bg-white/15 blur-[2px] pointer-events-none" />
   </div>
+);
+
+export const SunIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M12 2.5V5M12 19V21.5M21.5 12H19M5 12H2.5M18.5 5.5L16.8 7.2M7.2 16.8L5.5 18.5M18.5 18.5L16.8 16.8M7.2 7.2L5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
+);
+
+export const MoonIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 0 0 10.5 10.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+  </svg>
 );
