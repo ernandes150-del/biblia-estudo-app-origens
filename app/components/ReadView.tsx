@@ -330,14 +330,21 @@ export default function ReadView({
                   Nenhuma referência cruzada cadastrada para este versículo ainda.
                 </p>
               ) : (
-                currentReferences.map((ref, i) => (
-                  <div key={i} className="p-3 bg-[var(--bg-elevated)] border border-[var(--border)] rounded-xl text-xs space-y-1">
-                    <div className="flex items-center gap-1.5 font-bold text-[var(--accent)]">
-                      <LinkIcon /> {ref.passage}
-                    </div>
-                    <p className="text-[var(--text-muted)] italic">{ref.text}</p>
-                  </div>
-                ))
+                currentReferences.map((ref, i) => {
+                  const m = ref.passage.match(/^(.+)\s(\d+):(\d+)$/);
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => m && navigateToVerse(m[1], Number(m[2]), Number(m[3]))}
+                      className="w-full text-left p-3 bg-[var(--bg-elevated)]/60 backdrop-blur-md border border-[var(--border)] rounded-xl text-xs space-y-1 hover:border-[var(--accent)]/60 transition-colors"
+                    >
+                      <div className="flex items-center gap-1.5 font-bold text-[var(--accent)]">
+                        <LinkIcon /> {ref.passage}
+                      </div>
+                      <p className="text-[var(--text-muted)] italic">{ref.text}</p>
+                    </button>
+                  );
+                })
               )}
             </div>
           )}

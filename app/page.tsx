@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import bibleData from "../data/bible/bible.json";
-import referencesData from "../data/study/references.json";
 import contextData from "../data/study/context.json";
 import type {
   ActiveSidePanel,
@@ -10,6 +9,7 @@ import type {
   BibleData,
   ContextInfo,
   InterlinearWord,
+  ReferenceItem,
   SearchResult,
   TranslationVersion,
   User,
@@ -22,12 +22,12 @@ import ReadView from "./components/ReadView";
 import StudiesView from "./components/StudiesView";
 import SearchView from "./components/SearchView";
 import { loadBookLexicon } from "./lib/lexicon";
+import { loadCrossReferences, getCrossReferences } from "./lib/crossReferences";
 import { supabase } from "./lib/supabaseClient";
 import { fetchUserData, upsertVerseNote } from "./lib/userDataStore";
 
 export default function BibliaOrigensApp() {
   const typedBibleData = bibleData as unknown as BibleData;
-  const typedReferencesData = referencesData as unknown as Record<string, { reference: string; description: string }[]>;
   const typedContextData = contextData as unknown as Record<string, ContextInfo>;
 
   // ESTADOS
@@ -78,7 +78,7 @@ export default function BibliaOrigensApp() {
 
   useEffect(() => {
     let cancelled = false;
-    loadBookLexicon(selectedBook).then(() => {
+    Promise.all([loadBookLexicon(selectedBook), loadCrossReferences(selectedBook)]).then(() => {
       if (!cancelled) setLexiconTick((t) => t + 1);
     });
     return () => {
@@ -253,21 +253,26 @@ export default function BibliaOrigensApp() {
     if (openStudy) setActiveSidePanel("study");
   };
 
-  // Só existem referências cruzadas reais para 3 versículos cadastrados
-  // manualmente até agora (ver data/study/references.json). Para todo o
-  // resto, o painel mostra que não há referência cadastrada — nunca um
-  // conjunto genérico fixo se passando por dado real.
+  // Só existem referências cruzadas reais para versículos cadastrados na
+  // Treasury of Scripture Knowledge (24.900 dos 31.102 versículos da Bíblia).
+  // Para o resto, o painel mostra que não há referência cadastrada — nunca
+  // um conjunto genérico fixo se passando por dado real. O texto de cada
+  // referência é resolvido ao vivo a partir do próprio bibleData (nunca
+  // duplicado em outro arquivo, sempre em sincronia com o texto do app).
   const currentReferences = useMemo(() => {
     const verseNum = selectedVerse || 1;
-    const refKey = `${selectedBook} ${selectedChapter}:${verseNum}`;
-    const directRefs = typedReferencesData[refKey];
+    const targets = getCrossReferences(selectedBook, `${selectedChapter}-${verseNum}`);
+    if (!targets) return [];
 
-    if (directRefs && directRefs.length > 0) {
-      return directRefs.map(ref => ({ passage: ref.reference, text: ref.description }));
-    }
-
-    return [];
-  }, [selectedBook, selectedChapter, selectedVerse, typedReferencesData]);
+    return targets
+      .map((t) => {
+        const text = typedBibleData.books[t.b]?.chapterData[String(t.c)]?.[String(t.v)];
+        if (!text) return null;
+        return { passage: `${t.b} ${t.c}:${t.v}`, text };
+      })
+      .filter((r): r is ReferenceItem => r !== null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- lexiconTick força o recálculo depois que loadCrossReferences preenche um cache fora do estado do React (mesmo padrão usado para o léxico).
+  }, [selectedBook, selectedChapter, selectedVerse, lexiconTick, typedBibleData]);
 
   return (
     <div className="h-screen w-screen bg-[var(--bg)] text-[var(--text)] font-sans flex flex-col overflow-hidden">

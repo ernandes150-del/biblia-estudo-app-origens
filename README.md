@@ -40,7 +40,9 @@ usado no app é da Bíblia Livre (CC BY 4.0, eBible.org). A marcação de
 "palavras de Jesus" (`isJesusWords`) usa o dataset `red_letter_verses.json`
 do projeto **KJV Study** (kennethreitz/kjvstudy.org), licença ISC — aplicada
 apenas aos 1.501 versículos onde a fonte indica que Jesus fala o versículo
-inteiro.
+inteiro. As referências cruzadas em `public/cross-references/` vêm da
+**Treasury of Scripture Knowledge**, via o mesmo projeto KJV Study
+(originalmente de OpenBible.info, CC BY).
 
 ## Autenticação e persistência (Supabase)
 
