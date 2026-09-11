@@ -14,6 +14,7 @@ import { decodeMorphology } from "../lib/morphology";
 import { translateGloss, splitCompoundGloss } from "../lib/glossTranslation";
 import { loadOccurrencesForClassic, type Occurrence } from "../lib/occurrences";
 import { classicStrongOf, loadClassicGroups, loadDictionaryEntry, type DictionaryEntry } from "../lib/dictionary";
+import { getCuratedEntry } from "../lib/curatedDictionary";
 import { formatTranslit } from "../lib/format";
 import { studyBlocksToPlainText, parseStudyBlocks } from "../lib/studyBlocks";
 import StudyEditor from "./StudyEditor";
@@ -80,8 +81,10 @@ export default function ReadView({
   saveWordNote,
 }: ReadViewProps) {
   const [wordTab, setWordTab] = useState<"definicao" | "ocorrencias">("definicao");
+  const [dictLang, setDictLang] = useState<"pt" | "en">("pt");
   const [occurrences, setOccurrences] = useState<Occurrence[] | null>(null);
   const [dictEntry, setDictEntry] = useState<DictionaryEntry | null>(null);
+  const [dictFetchedFor, setDictFetchedFor] = useState<string | null>(null);
   const fetchingStrongRef = useRef<string | null>(null);
   const fetchingDictRef = useRef<string | null>(null);
 
@@ -96,23 +99,31 @@ export default function ReadView({
     setWordTab("definicao");
     setOccurrences(null);
     setDictEntry(null);
+    setDictFetchedFor(null);
   }
 
   // Carrega a entrada de dicionário completa (BDB/Abbott-Smith via
-  // STEPBible) assim que uma palavra é selecionada.
+  // STEPBible) assim que uma palavra é selecionada. dictFetchedFor marca que
+  // a busca terminou (com ou sem resultado) — sem isso, uma palavra que
+  // legitimamente não está no dicionário ficava presa em "Carregando..."
+  // pra sempre, porque null de "não achou" e null de "ainda não buscou"
+  // eram indistinguíveis.
   useEffect(() => {
     const strong = selectedWord?.strong;
-    if (!strong || dictEntry || fetchingDictRef.current === strong) return;
+    if (!strong || dictFetchedFor === strong || fetchingDictRef.current === strong) return;
     fetchingDictRef.current = strong;
     let cancelled = false;
     loadDictionaryEntry(strong).then((entry) => {
-      if (!cancelled) setDictEntry(entry);
+      if (!cancelled) {
+        setDictEntry(entry);
+        setDictFetchedFor(strong);
+      }
       fetchingDictRef.current = null;
     });
     return () => {
       cancelled = true;
     };
-  }, [selectedWord?.strong, dictEntry]);
+  }, [selectedWord?.strong, dictFetchedFor]);
 
   useEffect(() => {
     const strong = selectedWord?.strong;
@@ -142,6 +153,7 @@ export default function ReadView({
 
     if (!words) {
       const lexiconStillLoading = lexiconVersion === 0;
+
       return (
         <div>
           <p className="text-sm leading-relaxed font-serif text-[var(--text-secondary)]">{vText}</p>
@@ -186,6 +198,315 @@ export default function ReadView({
     return <p className="text-sm leading-relaxed font-serif text-[var(--text-secondary)]">{vText}</p>;
   };
 
+  const renderPanelInner = () => (
+    <>
+        <div className="flex items-center justify-between mb-4 border-b border-[var(--border)] pb-2">
+          <h3 className="font-serif font-bold text-sm text-[var(--text)] uppercase tracking-wide">
+            {activeSidePanel === "context" && "Contexto do Livro"}
+            {activeSidePanel === "study" && `Caderno de Estudo - ${selectedBook} ${selectedChapter}:${selectedVerse}`}
+            {activeSidePanel === "references" && `Referências de ${selectedBook} ${selectedChapter}:${selectedVerse}`}
+            {activeSidePanel === "word" && "Palavra Original"}
+          </h3>
+          <button onClick={() => setActiveSidePanel("none")} className="text-xs font-bold text-[var(--text-muted)] hover:text-[var(--text)]">
+            ✕ Fechar
+          </button>
+        </div>
+
+        {/* PAINEL DE CONTEXTO */}
+        {activeSidePanel === "context" && (
+          <div className="space-y-4 text-xs text-[var(--text-secondary)]">
+            {typedContextData[selectedBook] ? (
+              <>
+                <p><strong className="text-[var(--accent)]">Autor:</strong> {typedContextData[selectedBook].author}</p>
+                <p><strong className="text-[var(--accent)]">Data aproximada:</strong> {typedContextData[selectedBook].date}</p>
+                <p><strong className="text-[var(--accent)]">Tema principal:</strong> {typedContextData[selectedBook].theme}</p>
+                <div className="pt-2 border-t border-[var(--border)]">
+                  <strong className="block mb-1 text-[var(--accent)]">Introdução:</strong>
+                  <p className="leading-relaxed text-[var(--text-muted)]">{typedContextData[selectedBook].introduction}</p>
+                </div>
+                <div className="pt-2 border-t border-[var(--border)]">
+                  <strong className="block mb-1 text-[var(--accent)]">Contexto Histórico:</strong>
+                  <p className="leading-relaxed text-[var(--text-muted)]">{typedContextData[selectedBook].historicalContext}</p>
+                </div>
+              </>
+            ) : (
+              <p className="text-[var(--text-muted)]">Informações contextuais detalhadas para {selectedBook} em catalogação exegética.</p>
+            )}
+          </div>
+        )}
+
+        {/* PAINEL DE ESTUDO DO VERSÍCULO */}
+        {activeSidePanel === "study" && (
+          <div className="space-y-4">
+            <p className="text-xs text-[var(--text-muted)] italic border-b border-[var(--border)] pb-2">
+              &ldquo;{currentVerseKey && currentChapterVerses[selectedVerse || 1]}&rdquo;
+            </p>
+            <div>
+              <label className="text-xs font-bold text-[var(--accent)] block mb-1">Sua Anotação Exegética:</label>
+              <div className="w-full bg-[var(--bg-elevated)] border border-[var(--border)] rounded-xl p-3 focus-within:border-[var(--accent)]">
+                <StudyEditor value={currentVerseNote?.study} onChange={saveStudyText} />
+              </div>
+              <p className="text-[10px] text-[var(--text-dim)] mt-1.5">
+                Enter cria um novo bloco · Backspace num bloco vazio apaga ele · use os botões H / P / • pra trocar o tipo.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* PAINEL DE REFERÊNCIAS CRUZADAS */}
+        {activeSidePanel === "references" && (
+          <div className="space-y-3">
+            {currentReferences.length === 0 ? (
+              <p className="text-xs text-[var(--text-muted)]">
+                Nenhuma referência cruzada cadastrada para este versículo ainda.
+              </p>
+            ) : (
+              currentReferences.map((ref, i) => {
+                const m = ref.passage.match(/^(.+)\s(\d+):(\d+)$/);
+                return (
+                  <button
+                    key={i}
+                    onClick={() => m && navigateToVerse(m[1], Number(m[2]), Number(m[3]))}
+                    className="w-full text-left p-3 bg-[var(--bg-elevated)]/60 backdrop-blur-md border border-[var(--border)] rounded-xl text-xs space-y-1 hover:border-[var(--accent)]/60 transition-colors"
+                  >
+                    <div className="flex items-center gap-1.5 font-bold text-[var(--accent)]">
+                      <LinkIcon /> {ref.passage}
+                    </div>
+                    <p className="text-[var(--text-muted)] italic">{ref.text}</p>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        )}
+
+        {/* PAINEL DE PALAVRA ORIGINAL (Definição / Ocorrências) */}
+        {activeSidePanel === "word" && selectedWord && (
+          <div>
+            <div className="relative text-center pb-4 border-b border-[var(--border)] mb-3 -mx-4 px-4 pt-2 overflow-hidden">
+              <div
+                className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-64 h-40 opacity-25 blur-3xl"
+                style={{ background: "radial-gradient(circle, var(--accent) 0%, transparent 70%)" }}
+              />
+              <div className={`relative text-4xl font-serif font-bold mb-1 ${selectedWord.isJesusWords ? "text-[var(--danger)]" : "text-[var(--text)]"}`}>
+                {selectedWord.original}
+              </div>
+              <div className="relative text-xs text-[var(--text-muted)] italic">
+                {formatTranslit(selectedWord.translit)}
+                {selectedWord.strong && (
+                  <span className="ml-2 text-[10px] font-mono bg-[var(--border)] text-[var(--accent)] px-1.5 py-0.5 rounded">
+                    {classicStrongOf(selectedWord.strong)}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between mb-4 border-b border-[var(--border)]">
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setWordTab("definicao")}
+                  className={`px-3 py-1.5 text-xs font-medium border-b-2 -mb-px ${
+                    wordTab === "definicao" ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-muted)]"
+                  }`}
+                >
+                  Definição
+                </button>
+                <button
+                  onClick={() => setWordTab("ocorrencias")}
+                  className={`px-3 py-1.5 text-xs font-medium border-b-2 -mb-px ${
+                    wordTab === "ocorrencias" ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-muted)]"
+                  }`}
+                >
+                  Ocorrências{occurrences ? ` (${occurrences.length})` : ""}
+                </button>
+              </div>
+
+              {wordTab === "definicao" && (
+                <div className="flex items-center bg-[var(--bg-elevated)] rounded-full p-0.5 border border-[var(--border)] mb-1.5">
+                  <button
+                    onClick={() => setDictLang("pt")}
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-colors ${dictLang === "pt" ? "bg-[var(--accent)] text-white" : "text-[var(--text-muted)]"}`}
+                  >
+                    PT
+                  </button>
+                  <button
+                    onClick={() => setDictLang("en")}
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-colors ${dictLang === "en" ? "bg-[var(--accent)] text-white" : "text-[var(--text-muted)]"}`}
+                  >
+                    EN
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {wordTab === "definicao" && (
+              <div className="space-y-3 text-xs">
+                <div>
+                  <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1">
+                    Sentido neste versículo
+                  </p>
+                  {(() => {
+                    const { core, prefix } = splitCompoundGloss(selectedWord.translation);
+                    const g = translateGloss(core);
+                    const p = prefix ? translateGloss(prefix) : null;
+                    return (
+                      <p className="text-[var(--text)] text-sm">
+                        {p && <span className="text-[var(--text-muted)]">{p.text} · </span>}
+                        {g.text}
+                        {!g.translated && (
+                          <span className="ml-1.5 text-[9px] font-bold text-[var(--text-muted)] align-middle border border-[var(--border)] rounded px-1 py-0.5">
+                            EN
+                          </span>
+                        )}
+                      </p>
+                    );
+                  })()}
+                </div>
+
+                {selectedWord.morphology && (
+                  <div className="pt-2.5 border-t border-[var(--border)]">
+                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1">
+                      Como esta forma é construída
+                    </p>
+                    <p className="text-[var(--text-secondary)] leading-relaxed">
+                      {decodeMorphology(selectedWord.morphology, selectedWord.strong?.startsWith("H") ? "hebrew" : "greek")}
+                    </p>
+                  </div>
+                )}
+
+                <div className="pt-2.5 border-t border-[var(--border)]">
+                  <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1">
+                    Forma de dicionário
+                  </p>
+                  {dictEntry ? (
+                    <div>
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        <span className="font-serif text-lg text-[var(--text)]">{dictEntry.headword}</span>
+                        <span className="text-[var(--text-muted)] italic">{formatTranslit(dictEntry.translit)}</span>
+                        <span className="text-[var(--text-dim)]">
+                          {dictEntry.pos.includes("N-F") ? "substantivo feminino"
+                            : dictEntry.pos.includes("N-M") ? "substantivo masculino"
+                            : dictEntry.pos.includes("V") ? "verbo"
+                            : dictEntry.pos.includes("A") ? "adjetivo"
+                            : dictEntry.pos}
+                        </span>
+                      </div>
+                      {(() => {
+                        const curated = getCuratedEntry(selectedWord.strong);
+                        if (dictLang === "pt" && curated) {
+                          return (
+                            <div className="mt-1.5">
+                              <p className="text-[var(--text)] font-medium">{curated.gloss}</p>
+                              <p className="text-[var(--text-secondary)] leading-relaxed mt-0.5">{curated.note}</p>
+                            </div>
+                          );
+                        }
+                        if (dictLang === "pt" && !curated) {
+                          return (
+                            <p className="text-[var(--text-dim)] text-[10px] mt-1.5 italic">
+                              Ainda não temos tradução curada em português pra esta palavra — abaixo, o
+                              original em inglês.
+                            </p>
+                          );
+                        }
+                        return null;
+                      })()}
+                      {(dictLang === "en" || !getCuratedEntry(selectedWord.strong)) && (
+                        <p className="text-[var(--text-secondary)] leading-relaxed mt-1.5">
+                          {dictEntry.gloss}
+                          <span className="ml-1.5 text-[9px] font-bold text-[var(--text-muted)] align-middle border border-[var(--border)] rounded px-1 py-0.5">
+                            EN
+                          </span>
+                        </p>
+                      )}
+                    </div>
+                  ) : selectedWord.meaning ? (
+                    (() => {
+                      const m = translateGloss(selectedWord.meaning);
+                      return (
+                        <p className="text-[var(--text-secondary)] leading-relaxed">
+                          {m.text}
+                          {!m.translated && (
+                            <span className="ml-1.5 text-[9px] font-bold text-[var(--text-muted)] align-middle border border-[var(--border)] rounded px-1 py-0.5">
+                              EN
+                            </span>
+                          )}
+                        </p>
+                      );
+                    })()
+                  ) : dictFetchedFor === selectedWord.strong ? (
+                    <p className="text-[var(--text-dim)]">Sem entrada de dicionário cadastrada para esta palavra.</p>
+                  ) : (
+                    <p className="text-[var(--text-dim)]">Carregando...</p>
+                  )}
+                </div>
+
+                {dictEntry?.def && (
+                  <details className="pt-2.5 border-t border-[var(--border)]">
+                    <summary className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide cursor-pointer select-none">
+                      Definição completa (inglês) — toque para expandir
+                    </summary>
+                    <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-line mt-2 max-h-64 overflow-y-auto pr-1">
+                      {dictEntry.def}
+                    </p>
+                  </details>
+                )}
+
+                {selectedWord.strong && (
+                  <div className="pt-2.5 border-t border-[var(--border)]">
+                    <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1 block">
+                      Sua nota sobre esta palavra
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={wordNotes[selectedWord.strong] ?? ""}
+                      onChange={(e) => saveWordNote(selectedWord.strong!, e.target.value)}
+                      placeholder="Observações sobre essa palavra em toda a Escritura..."
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-xs text-[var(--text-secondary)] leading-relaxed focus:outline-none focus:border-[var(--accent)]"
+                    />
+                  </div>
+                )}
+
+                <p className="text-[10px] text-[var(--text-dim)] pt-2 border-t border-[var(--border)]">
+                  Fonte lexical: STEPBible-Data (CC BY 4.0), com base no BDB (hebraico) e no léxico de
+                  Abbott-Smith (grego). O selo <span className="font-bold">EN</span> indica que essa glosa
+                  específica ainda não está no dicionário de tradução (~88% de cobertura) e aparece no
+                  original em inglês, em vez de uma mistura de idiomas. A definição completa permanece em
+                  inglês, como na fonte.
+                </p>
+              </div>
+            )}
+
+            {wordTab === "ocorrencias" && (
+              <div className="space-y-1.5">
+                {occurrences === null && <p className="text-xs text-[var(--text-muted)]">Carregando ocorrências...</p>}
+                {occurrences !== null && occurrences.length === 0 && (
+                  <p className="text-xs text-[var(--text-muted)]">Nenhuma outra ocorrência encontrada.</p>
+                )}
+                {occurrences?.map((o, i) => {
+                  const ptText = bibleData.books[o.b]?.chapterData[String(o.c)]?.[String(o.v)];
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => navigateToVerse(o.b, o.c, o.v)}
+                      className="w-full text-left px-2 py-2 rounded hover:bg-[var(--bg-elevated)] transition-colors border-b border-[var(--border)]/50 last:border-0"
+                    >
+                      <div className="flex items-baseline justify-between text-xs">
+                        <span className="text-[var(--text-muted)]">{refLabel(o)}</span>
+                        <span className="font-serif text-[var(--text)]">{o.o}</span>
+                      </div>
+                      {ptText && (
+                        <p className="text-[10px] text-[var(--text-dim)] mt-0.5 line-clamp-1">{ptText}</p>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+    </>
+  );
   return (
     <div className="flex-1 flex overflow-hidden bg-[var(--bg)]">
       {/* PAINEL DE VERSÍCULOS */}
@@ -294,271 +615,34 @@ export default function ReadView({
         </div>
       </main>
 
-      {/* PAINEL LATERAL DE DETALHES / ANÁLISE — painel fixo no desktop, tela cheia deslizante no celular */}
+      {/* PAINEL LATERAL DE DETALHES / ANÁLISE — painel fixo no desktop (contexto/estudo/referências),
+          popup central estilo liquid glass pra palavra (desktop e celular), tela cheia deslizante no
+          celular pros demais. */}
       {activeSidePanel !== "none" && (
         <>
-          {/* Fundo escurecido no celular, fecha o painel ao tocar fora */}
+          {/* Fundo escurecido/desfocado — sempre visível pro popup de palavra, só no celular pros demais */}
           <div
-            className="md:hidden fixed inset-0 bg-black/60 z-40"
+            className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 ${activeSidePanel === "word" ? "" : "md:hidden"}`}
             onClick={() => setActiveSidePanel("none")}
           />
-          <aside className="fixed md:static inset-x-0 bottom-0 md:inset-auto top-16 md:top-auto z-50 md:z-auto w-full md:w-80 lg:w-96 max-h-[85vh] md:max-h-none border-t md:border-t-0 md:border-l border-[var(--border)] bg-[var(--bg-panel)]/80 backdrop-blur-2xl p-4 pb-8 md:pb-4 overflow-y-auto shrink-0 rounded-t-2xl md:rounded-none shadow-2xl md:shadow-none">
-            <div className="md:hidden w-10 h-1 bg-[var(--border)] rounded-full mx-auto mb-3" />
-          <div className="flex items-center justify-between mb-4 border-b border-[var(--border)] pb-2">
-            <h3 className="font-serif font-bold text-sm text-[var(--text)] uppercase tracking-wide">
-              {activeSidePanel === "context" && "Contexto do Livro"}
-              {activeSidePanel === "study" && `Caderno de Estudo - ${selectedBook} ${selectedChapter}:${selectedVerse}`}
-              {activeSidePanel === "references" && `Referências de ${selectedBook} ${selectedChapter}:${selectedVerse}`}
-              {activeSidePanel === "word" && "Palavra Original"}
-            </h3>
-            <button onClick={() => setActiveSidePanel("none")} className="text-xs font-bold text-[var(--text-muted)] hover:text-[var(--text)]">
-              ✕ Fechar
-            </button>
-          </div>
-
-          {/* PAINEL DE CONTEXTO */}
-          {activeSidePanel === "context" && (
-            <div className="space-y-4 text-xs text-[var(--text-secondary)]">
-              {typedContextData[selectedBook] ? (
-                <>
-                  <p><strong className="text-[var(--accent)]">Autor:</strong> {typedContextData[selectedBook].author}</p>
-                  <p><strong className="text-[var(--accent)]">Data aproximada:</strong> {typedContextData[selectedBook].date}</p>
-                  <p><strong className="text-[var(--accent)]">Tema principal:</strong> {typedContextData[selectedBook].theme}</p>
-                  <div className="pt-2 border-t border-[var(--border)]">
-                    <strong className="block mb-1 text-[var(--accent)]">Introdução:</strong>
-                    <p className="leading-relaxed text-[var(--text-muted)]">{typedContextData[selectedBook].introduction}</p>
-                  </div>
-                  <div className="pt-2 border-t border-[var(--border)]">
-                    <strong className="block mb-1 text-[var(--accent)]">Contexto Histórico:</strong>
-                    <p className="leading-relaxed text-[var(--text-muted)]">{typedContextData[selectedBook].historicalContext}</p>
-                  </div>
-                </>
-              ) : (
-                <p className="text-[var(--text-muted)]">Informações contextuais detalhadas para {selectedBook} em catalogação exegética.</p>
-              )}
-            </div>
-          )}
-
-          {/* PAINEL DE ESTUDO DO VERSÍCULO */}
-          {activeSidePanel === "study" && (
-            <div className="space-y-4">
-              <p className="text-xs text-[var(--text-muted)] italic border-b border-[var(--border)] pb-2">
-                &ldquo;{currentVerseKey && currentChapterVerses[selectedVerse || 1]}&rdquo;
-              </p>
-              <div>
-                <label className="text-xs font-bold text-[var(--accent)] block mb-1">Sua Anotação Exegética:</label>
-                <div className="w-full bg-[var(--bg-elevated)] border border-[var(--border)] rounded-xl p-3 focus-within:border-[var(--accent)]">
-                  <StudyEditor value={currentVerseNote?.study} onChange={saveStudyText} />
-                </div>
-                <p className="text-[10px] text-[var(--text-dim)] mt-1.5">
-                  Enter cria um novo bloco · Backspace num bloco vazio apaga ele · use os botões H / P / • pra trocar o tipo.
-                </p>
+          <aside
+            className={
+              activeSidePanel === "word"
+                ? "fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+                : "fixed md:static inset-x-0 bottom-0 md:inset-auto top-16 md:top-auto z-50 md:z-auto w-full md:w-80 lg:w-96 max-h-[85vh] md:max-h-none border-t md:border-t-0 md:border-l border-[var(--border)] bg-[var(--bg-panel)]/80 backdrop-blur-2xl p-4 pb-8 md:pb-4 overflow-y-auto shrink-0 rounded-t-2xl md:rounded-none shadow-2xl md:shadow-none"
+            }
+          >
+            {activeSidePanel === "word" ? (
+              <div className="pointer-events-auto w-full max-w-sm max-h-[85vh] overflow-y-auto rounded-3xl border border-white/10 bg-[var(--bg-panel)]/75 backdrop-blur-2xl shadow-2xl p-4">
+                {renderPanelInner()}
               </div>
-            </div>
-          )}
-
-          {/* PAINEL DE REFERÊNCIAS CRUZADAS */}
-          {activeSidePanel === "references" && (
-            <div className="space-y-3">
-              {currentReferences.length === 0 ? (
-                <p className="text-xs text-[var(--text-muted)]">
-                  Nenhuma referência cruzada cadastrada para este versículo ainda.
-                </p>
-              ) : (
-                currentReferences.map((ref, i) => {
-                  const m = ref.passage.match(/^(.+)\s(\d+):(\d+)$/);
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => m && navigateToVerse(m[1], Number(m[2]), Number(m[3]))}
-                      className="w-full text-left p-3 bg-[var(--bg-elevated)]/60 backdrop-blur-md border border-[var(--border)] rounded-xl text-xs space-y-1 hover:border-[var(--accent)]/60 transition-colors"
-                    >
-                      <div className="flex items-center gap-1.5 font-bold text-[var(--accent)]">
-                        <LinkIcon /> {ref.passage}
-                      </div>
-                      <p className="text-[var(--text-muted)] italic">{ref.text}</p>
-                    </button>
-                  );
-                })
-              )}
-            </div>
-          )}
-
-          {/* PAINEL DE PALAVRA ORIGINAL (Definição / Ocorrências) */}
-          {activeSidePanel === "word" && selectedWord && (
-            <div>
-              <div className="relative text-center pb-4 border-b border-[var(--border)] mb-3 -mx-4 px-4 pt-2 overflow-hidden">
-                <div
-                  className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-64 h-40 opacity-25 blur-3xl"
-                  style={{ background: "radial-gradient(circle, var(--accent) 0%, transparent 70%)" }}
-                />
-                <div className={`relative text-4xl font-serif font-bold mb-1 ${selectedWord.isJesusWords ? "text-[var(--danger)]" : "text-[var(--text)]"}`}>
-                  {selectedWord.original}
-                </div>
-                <div className="relative text-xs text-[var(--text-muted)] italic">
-                  {formatTranslit(selectedWord.translit)}
-                  {selectedWord.strong && (
-                    <span className="ml-2 text-[10px] font-mono bg-[var(--border)] text-[var(--accent)] px-1.5 py-0.5 rounded">
-                      {classicStrongOf(selectedWord.strong)}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex gap-1 mb-4 border-b border-[var(--border)]">
-                <button
-                  onClick={() => setWordTab("definicao")}
-                  className={`px-3 py-1.5 text-xs font-medium border-b-2 -mb-px ${
-                    wordTab === "definicao" ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-muted)]"
-                  }`}
-                >
-                  Definição
-                </button>
-                <button
-                  onClick={() => setWordTab("ocorrencias")}
-                  className={`px-3 py-1.5 text-xs font-medium border-b-2 -mb-px ${
-                    wordTab === "ocorrencias" ? "border-[var(--accent)] text-[var(--accent)]" : "border-transparent text-[var(--text-muted)]"
-                  }`}
-                >
-                  Ocorrências{occurrences ? ` (${occurrences.length})` : ""}
-                </button>
-              </div>
-
-              {wordTab === "definicao" && (
-                <div className="space-y-4 text-xs">
-                  <div>
-                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1">
-                      Sentido neste versículo
-                    </p>
-                    {(() => {
-                      const { core, prefix } = splitCompoundGloss(selectedWord.translation);
-                      const g = translateGloss(core);
-                      const p = prefix ? translateGloss(prefix) : null;
-                      return (
-                        <p className="text-[var(--text)] text-sm">
-                          {p && <span className="text-[var(--text-muted)]">{p.text} · </span>}
-                          {g.text}
-                          {!g.translated && (
-                            <span className="ml-1.5 text-[9px] font-bold text-[var(--text-muted)] align-middle border border-[var(--border)] rounded px-1 py-0.5">
-                              EN
-                            </span>
-                          )}
-                        </p>
-                      );
-                    })()}
-                  </div>
-
-                  {selectedWord.morphology && (
-                    <div className="pt-3 border-t border-[var(--border)]">
-                      <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1">
-                        Como esta forma é construída
-                      </p>
-                      <p className="text-[var(--text-secondary)] leading-relaxed">
-                        {decodeMorphology(selectedWord.morphology, selectedWord.strong?.startsWith("H") ? "hebrew" : "greek")}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="pt-3 border-t border-[var(--border)]">
-                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1">
-                      Forma de dicionário
-                    </p>
-                    {dictEntry ? (
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-serif text-lg text-[var(--text)]">{dictEntry.headword}</span>
-                        <span className="text-[var(--text-muted)] italic">{formatTranslit(dictEntry.translit)}</span>
-                        <span className="text-[var(--text-dim)]">
-                          {dictEntry.pos.includes("N-F") ? "substantivo feminino"
-                            : dictEntry.pos.includes("N-M") ? "substantivo masculino"
-                            : dictEntry.pos.includes("V") ? "verbo"
-                            : dictEntry.pos.includes("A") ? "adjetivo"
-                            : dictEntry.pos}
-                        </span>
-                      </div>
-                    ) : selectedWord.meaning ? (
-                      (() => {
-                        const m = translateGloss(selectedWord.meaning);
-                        return (
-                          <p className="text-[var(--text-secondary)] leading-relaxed">
-                            {m.text}
-                            {!m.translated && (
-                              <span className="ml-1.5 text-[9px] font-bold text-[var(--text-muted)] align-middle border border-[var(--border)] rounded px-1 py-0.5">
-                                EN
-                              </span>
-                            )}
-                          </p>
-                        );
-                      })()
-                    ) : (
-                      <p className="text-[var(--text-dim)]">Carregando...</p>
-                    )}
-                  </div>
-
-                  {dictEntry?.def && (
-                    <details className="pt-3 border-t border-[var(--border)]">
-                      <summary className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide cursor-pointer select-none">
-                        Definição completa (inglês) — toque para expandir
-                      </summary>
-                      <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-line mt-2 max-h-64 overflow-y-auto pr-1">
-                        {dictEntry.def}
-                      </p>
-                    </details>
-                  )}
-
-                  {selectedWord.strong && (
-                    <div className="pt-3 border-t border-[var(--border)]">
-                      <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1 block">
-                        Sua nota sobre esta palavra
-                      </label>
-                      <textarea
-                        rows={3}
-                        value={wordNotes[selectedWord.strong] ?? ""}
-                        onChange={(e) => saveWordNote(selectedWord.strong!, e.target.value)}
-                        placeholder="Observações sobre essa palavra em toda a Escritura..."
-                        className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-xs text-[var(--text-secondary)] leading-relaxed focus:outline-none focus:border-[var(--accent)]"
-                      />
-                    </div>
-                  )}
-
-                  <p className="text-[10px] text-[var(--text-dim)] pt-2 border-t border-[var(--border)]">
-                    Fonte lexical: STEPBible-Data (CC BY 4.0), com base no BDB (hebraico) e no léxico de
-                    Abbott-Smith (grego). O selo <span className="font-bold">EN</span> indica que essa glosa
-                    específica ainda não está no dicionário de tradução (~88% de cobertura) e aparece no
-                    original em inglês, em vez de uma mistura de idiomas. A definição completa permanece em
-                    inglês, como na fonte.
-                  </p>
-                </div>
-              )}
-
-              {wordTab === "ocorrencias" && (
-                <div className="space-y-1.5">
-                  {occurrences === null && <p className="text-xs text-[var(--text-muted)]">Carregando ocorrências...</p>}
-                  {occurrences !== null && occurrences.length === 0 && (
-                    <p className="text-xs text-[var(--text-muted)]">Nenhuma outra ocorrência encontrada.</p>
-                  )}
-                  {occurrences?.map((o, i) => {
-                    const ptText = bibleData.books[o.b]?.chapterData[String(o.c)]?.[String(o.v)];
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => navigateToVerse(o.b, o.c, o.v)}
-                        className="w-full text-left px-2 py-2 rounded hover:bg-[var(--bg-elevated)] transition-colors border-b border-[var(--border)]/50 last:border-0"
-                      >
-                        <div className="flex items-baseline justify-between text-xs">
-                          <span className="text-[var(--text-muted)]">{refLabel(o)}</span>
-                          <span className="font-serif text-[var(--text)]">{o.o}</span>
-                        </div>
-                        {ptText && (
-                          <p className="text-[10px] text-[var(--text-dim)] mt-0.5 line-clamp-1">{ptText}</p>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-        </aside>
+            ) : (
+              <>
+                <div className="md:hidden w-10 h-1 bg-[var(--border)] rounded-full mx-auto mb-3" />
+                {renderPanelInner()}
+              </>
+            )}
+          </aside>
         </>
       )}
     </div>
