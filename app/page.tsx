@@ -16,6 +16,7 @@ import type {
   UserData,
 } from "./types";
 import AuthNotice from "./components/AuthNotice";
+import { SunIcon, MoonIcon } from "./lib/icons";
 import Header from "./components/Header";
 import HomeView from "./components/HomeView";
 import ReadView from "./components/ReadView";
@@ -329,6 +330,27 @@ export default function BibliaOrigensApp() {
 
       {authNotice && (
         <AuthNotice message={authNotice} onGoToLogin={() => setActiveTab("home")} />
+      )}
+
+      {!user && (
+        <div className="fixed top-4 right-4 z-30 flex items-center bg-[var(--bg-elevated)] rounded-full p-0.5 border border-[var(--border)]">
+          <button
+            onClick={() => theme !== "light" && toggleTheme()}
+            className={`p-1.5 rounded-full transition-colors ${theme === "light" ? "bg-[var(--bg)] text-[var(--text)] shadow-sm" : "text-[var(--text-muted)]"}`}
+            aria-label="Tema claro"
+            title="Tema claro"
+          >
+            <SunIcon />
+          </button>
+          <button
+            onClick={() => theme !== "dark" && toggleTheme()}
+            className={`p-1.5 rounded-full transition-colors ${theme === "dark" ? "bg-[var(--bg)] text-[var(--text)] shadow-sm" : "text-[var(--text-muted)]"}`}
+            aria-label="Tema escuro"
+            title="Tema escuro"
+          >
+            <MoonIcon />
+          </button>
+        </div>
       )}
 
       {user && (

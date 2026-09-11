@@ -50,57 +50,27 @@ export const AnimatedLogo = () => (
   <div className="relative w-24 h-24">
     <div
       className="absolute inset-0 rounded-[26px] bg-gradient-to-b from-[var(--accent-hover)] to-[var(--accent-deep)] opacity-0 shadow-2xl ring-1 ring-white/20 ring-inset"
-      style={{ animation: "logoBoxIn 0.5s ease 0.9s forwards" }}
+      style={{ animation: "logoBoxIn 0.6s ease 0s forwards" }}
     />
     <div
       className="absolute inset-x-3 top-3 h-1/3 rounded-full bg-white/15 blur-[3px] opacity-0 pointer-events-none"
-      style={{ animation: "fadeIn 0.5s ease 1.3s forwards" }}
+      style={{ animation: "fadeIn 0.5s ease 0.9s forwards" }}
     />
-    <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
-      {/* Traço principal (diagonal) */}
-      <path
-        d="M26 76 L76 24"
-        fill="none"
-        stroke="white"
-        strokeWidth="7"
-        strokeLinecap="round"
-        pathLength="1"
+    {/* A letra real (mesma fonte do logo estático) "sobe" revelando-se de
+        baixo pra cima, como se estivesse se materializando — em vez de
+        tentar desenhar o traçado à mão, o que não estava saindo parecido
+        com um Álef de verdade. */}
+    <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-[26px]">
+      <span
+        className="font-serif text-[60px] font-bold leading-none text-white select-none drop-shadow-sm"
         style={{
-          strokeDasharray: 1,
-          strokeDashoffset: 1,
-          animation: "drawStroke 0.5s ease 0s forwards",
+          transform: "translateY(-2px)",
+          animation: "revealUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.35s forwards",
         }}
-      />
-      {/* Gancho superior — sai do topo do traço principal em direção oposta,
-          não sobreposto (senão fica invisível) */}
-      <path
-        d="M76 24 L56 15"
-        fill="none"
-        stroke="white"
-        strokeWidth="7"
-        strokeLinecap="round"
-        pathLength="1"
-        style={{
-          strokeDasharray: 1,
-          strokeDashoffset: 1,
-          animation: "drawStroke 0.35s ease 0.5s forwards",
-        }}
-      />
-      {/* Gancho inferior — mesma lógica, direção oposta no outro extremo */}
-      <path
-        d="M26 76 L46 85"
-        fill="none"
-        stroke="white"
-        strokeWidth="7"
-        strokeLinecap="round"
-        pathLength="1"
-        style={{
-          strokeDasharray: 1,
-          strokeDashoffset: 1,
-          animation: "drawStroke 0.35s ease 0.75s forwards",
-        }}
-      />
-    </svg>
+      >
+        א
+      </span>
+    </div>
   </div>
 );export const SunIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

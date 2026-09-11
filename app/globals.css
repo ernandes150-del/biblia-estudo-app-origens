@@ -56,10 +56,10 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Animação de entrada do logo na tela inicial (o Álef "se desenhando") */
-@keyframes drawStroke {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
+/* Animação de entrada do logo na tela inicial */
+@keyframes revealUp {
+  from { clip-path: inset(100% -20% -20% -20%); opacity: 0.3; }
+  to { clip-path: inset(-20% -20% -20% -20%); opacity: 1; }
 }
 @keyframes logoBoxIn {
   from { opacity: 0; transform: scale(0.9); }
