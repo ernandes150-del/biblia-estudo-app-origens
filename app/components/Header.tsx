@@ -50,11 +50,11 @@ export default function Header({
   };
 
   return (
-    <header className="border-b border-[#E2E0D5] bg-[#F6F5F0]/95 backdrop-blur-md px-4 md:px-6 py-3 shrink-0 z-20">
+    <header className="border-b border-[#2A2A2C] bg-[#0F0F10]/95 backdrop-blur-md px-4 md:px-6 py-3 shrink-0 z-20">
       <div className="flex items-center justify-between">
         <div onClick={() => { setActiveTab("home"); setMenuMobileAberto(false); }} className="flex items-center gap-3 cursor-pointer">
           <OliveTreeLogo />
-          <span className="font-serif text-lg font-bold tracking-tight text-[#2D3B32]">
+          <span className="font-serif text-lg font-bold tracking-tight text-[#F1EBD9]">
             Bíblia Origens
           </span>
         </div>
@@ -62,7 +62,7 @@ export default function Header({
         {/* BOTÃO HAMBÚRGUER PARA CELULAR */}
         <button
           onClick={() => setMenuMobileAberto(!menuMobileAberto)}
-          className="md:hidden p-2 rounded-lg bg-[#EAE8DD] border border-[#D8D5C5] text-[#2D3B32] text-sm font-bold flex items-center gap-1.5"
+          className="md:hidden p-2 rounded-lg bg-[#1B1B1D] border border-[#2A2A2C] text-[#F1EBD9] text-sm font-bold flex items-center gap-1.5"
           aria-label="Abrir Menu"
         >
           {menuMobileAberto ? "✕" : "☰"}
@@ -74,7 +74,7 @@ export default function Header({
             <button
               onClick={() => setActiveTab("home")}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                activeTab === "home" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
+                activeTab === "home" ? "bg-[#C9A227] text-[#0F0F10]" : "text-[#8A8378] hover:bg-[#1B1B1D]"
               }`}
             >
               Início
@@ -82,7 +82,7 @@ export default function Header({
             <button
               onClick={() => setActiveTab("read")}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                activeTab === "read" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
+                activeTab === "read" ? "bg-[#C9A227] text-[#0F0F10]" : "text-[#8A8378] hover:bg-[#1B1B1D]"
               }`}
             >
               <BookOpenIcon /> Leitura
@@ -91,7 +91,7 @@ export default function Header({
               <button
                 onClick={() => setActiveTab("studies")}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  activeTab === "studies" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
+                  activeTab === "studies" ? "bg-[#C9A227] text-[#0F0F10]" : "text-[#8A8378] hover:bg-[#1B1B1D]"
                 }`}
               >
                 <AcademicCapIcon /> Meus Estudos ({savedStudiesCount})
@@ -100,7 +100,7 @@ export default function Header({
             <button
               onClick={() => setActiveTab("search")}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                activeTab === "search" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] hover:bg-[#EAE8DD]"
+                activeTab === "search" ? "bg-[#C9A227] text-[#0F0F10]" : "text-[#8A8378] hover:bg-[#1B1B1D]"
               }`}
             >
               <SearchIcon /> Pesquisa
@@ -110,11 +110,11 @@ export default function Header({
           <div className="flex items-center gap-3">
             {user ? (
               <div className="flex items-center gap-3">
-                <span className="text-xs text-[#526356]">Olá, <strong className="text-[#2D3B32]">{user.name}</strong></span>
-                <button onClick={handleLogout} className="text-xs font-semibold text-rose-700 hover:underline">Sair</button>
+                <span className="text-xs text-[#8A8378]">Olá, <strong className="text-[#F1EBD9]">{user.name}</strong></span>
+                <button onClick={handleLogout} className="text-xs font-semibold text-rose-400 hover:underline">Sair</button>
               </div>
             ) : (
-              <button onClick={() => setActiveTab("home")} className="text-xs bg-[#2D3B32] text-[#F6F5F0] px-3 py-1.5 rounded-lg font-medium">
+              <button onClick={() => setActiveTab("home")} className="text-xs bg-[#C9A227] text-[#0F0F10] px-3 py-1.5 rounded-lg font-medium">
                 Entrar / Criar Conta
               </button>
             )}
@@ -124,7 +124,7 @@ export default function Header({
                 <select
                   value={selectedVersion}
                   onChange={(e) => setSelectedVersion(e.target.value as TranslationVersion)}
-                  className="bg-[#2D3B32] text-[#F6F5F0] text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer"
+                  className="bg-[#C9A227] text-[#0F0F10] text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer"
                 >
                   <option value="ORIGINAL">Interlinear (Original)</option>
                   <option value="CONTINUOUS">Leitura Corrida</option>
@@ -133,7 +133,7 @@ export default function Header({
                 <select
                   value={selectedBook}
                   onChange={(e) => changeBook(e.target.value)}
-                  className="bg-[#EAE8DD] border border-[#D8D5C5] text-[#1F2923] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none"
+                  className="bg-[#1B1B1D] border border-[#2A2A2C] text-[#DCD6C6] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none"
                 >
                   {bookNames.map((b) => (
                     <option key={b} value={b}>{b}</option>
@@ -143,7 +143,7 @@ export default function Header({
                 <select
                   value={selectedChapter}
                   onChange={(e) => changeChapter(Number(e.target.value))}
-                  className="bg-[#EAE8DD] border border-[#D8D5C5] text-[#1F2923] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none"
+                  className="bg-[#1B1B1D] border border-[#2A2A2C] text-[#DCD6C6] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none"
                 >
                   {Array.from({ length: totalChapters }, (_, i) => i + 1).map((ch) => (
                     <option key={ch} value={ch}>{ch}</option>
@@ -157,12 +157,12 @@ export default function Header({
 
       {/* CONTAINER DO MENU MOBILE (Abre quando pressionado no celular) */}
       {menuMobileAberto && (
-        <div className="md:hidden mt-3 pt-3 border-t border-[#E2E0D5] flex flex-col gap-3">
+        <div className="md:hidden mt-3 pt-3 border-t border-[#2A2A2C] flex flex-col gap-3">
           <nav className="flex flex-col gap-2">
             <button
               onClick={() => { setActiveTab("home"); setMenuMobileAberto(false); }}
               className={`px-3 py-2 rounded-lg text-xs font-medium text-left ${
-                activeTab === "home" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] bg-[#EAE8DD]"
+                activeTab === "home" ? "bg-[#C9A227] text-[#0F0F10]" : "text-[#8A8378] bg-[#1B1B1D]"
               }`}
             >
               Início
@@ -170,7 +170,7 @@ export default function Header({
             <button
               onClick={() => { setActiveTab("read"); setMenuMobileAberto(false); }}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-left ${
-                activeTab === "read" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] bg-[#EAE8DD]"
+                activeTab === "read" ? "bg-[#C9A227] text-[#0F0F10]" : "text-[#8A8378] bg-[#1B1B1D]"
               }`}
             >
               <BookOpenIcon /> Leitura
@@ -179,7 +179,7 @@ export default function Header({
               <button
                 onClick={() => { setActiveTab("studies"); setMenuMobileAberto(false); }}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-left ${
-                  activeTab === "studies" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] bg-[#EAE8DD]"
+                  activeTab === "studies" ? "bg-[#C9A227] text-[#0F0F10]" : "text-[#8A8378] bg-[#1B1B1D]"
                 }`}
               >
                 <AcademicCapIcon /> Meus Estudos ({savedStudiesCount})
@@ -188,7 +188,7 @@ export default function Header({
             <button
               onClick={() => { setActiveTab("search"); setMenuMobileAberto(false); }}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-left ${
-                activeTab === "search" ? "bg-[#2D3B32] text-[#F6F5F0]" : "text-[#526356] bg-[#EAE8DD]"
+                activeTab === "search" ? "bg-[#C9A227] text-[#0F0F10]" : "text-[#8A8378] bg-[#1B1B1D]"
               }`}
             >
               <SearchIcon /> Pesquisa
@@ -197,12 +197,12 @@ export default function Header({
 
           {/* SELETORES DE BÍBLIA NO MENU MOBILE */}
           {activeTab === "read" && (
-            <div className="flex flex-col gap-2 pt-2 border-t border-[#E2E0D5]">
-              <label className="text-[10px] font-bold text-[#526356] uppercase">Modo, Livro e Capítulo:</label>
+            <div className="flex flex-col gap-2 pt-2 border-t border-[#2A2A2C]">
+              <label className="text-[10px] font-bold text-[#8A8378] uppercase">Modo, Livro e Capítulo:</label>
               <select
                 value={selectedVersion}
                 onChange={(e) => setSelectedVersion(e.target.value as TranslationVersion)}
-                className="bg-[#2D3B32] text-[#F6F5F0] text-xs font-bold rounded-lg p-2 focus:outline-none"
+                className="bg-[#C9A227] text-[#0F0F10] text-xs font-bold rounded-lg p-2 focus:outline-none"
               >
                 <option value="ORIGINAL">Interlinear (Original)</option>
                 <option value="CONTINUOUS">Leitura Corrida</option>
@@ -212,7 +212,7 @@ export default function Header({
                 <select
                   value={selectedBook}
                   onChange={(e) => changeBook(e.target.value)}
-                  className="bg-[#EAE8DD] border border-[#D8D5C5] text-[#1F2923] text-xs font-medium rounded-lg p-2 focus:outline-none"
+                  className="bg-[#1B1B1D] border border-[#2A2A2C] text-[#DCD6C6] text-xs font-medium rounded-lg p-2 focus:outline-none"
                 >
                   {bookNames.map((b) => (
                     <option key={b} value={b}>{b}</option>
@@ -222,7 +222,7 @@ export default function Header({
                 <select
                   value={selectedChapter}
                   onChange={(e) => changeChapter(Number(e.target.value))}
-                  className="bg-[#EAE8DD] border border-[#D8D5C5] text-[#1F2923] text-xs font-medium rounded-lg p-2 focus:outline-none"
+                  className="bg-[#1B1B1D] border border-[#2A2A2C] text-[#DCD6C6] text-xs font-medium rounded-lg p-2 focus:outline-none"
                 >
                   {Array.from({ length: totalChapters }, (_, i) => i + 1).map((ch) => (
                     <option key={ch} value={ch}>Capítulo {ch}</option>
@@ -233,14 +233,14 @@ export default function Header({
           )}
 
           {/* USER LOGOUT MOBILE */}
-          <div className="pt-2 border-t border-[#E2E0D5] flex items-center justify-between">
+          <div className="pt-2 border-t border-[#2A2A2C] flex items-center justify-between">
             {user ? (
               <>
-                <span className="text-xs text-[#526356]">Olá, <strong className="text-[#2D3B32]">{user.name}</strong></span>
-                <button onClick={handleLogout} className="text-xs font-semibold text-rose-700">Sair</button>
+                <span className="text-xs text-[#8A8378]">Olá, <strong className="text-[#F1EBD9]">{user.name}</strong></span>
+                <button onClick={handleLogout} className="text-xs font-semibold text-rose-400">Sair</button>
               </>
             ) : (
-              <button onClick={() => { setActiveTab("home"); setMenuMobileAberto(false); }} className="w-full text-xs bg-[#2D3B32] text-[#F6F5F0] p-2 rounded-lg font-medium text-center">
+              <button onClick={() => { setActiveTab("home"); setMenuMobileAberto(false); }} className="w-full text-xs bg-[#C9A227] text-[#0F0F10] p-2 rounded-lg font-medium text-center">
                 Entrar / Criar Conta
               </button>
             )}

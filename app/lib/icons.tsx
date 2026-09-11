@@ -31,7 +31,7 @@ export const LinkIcon = () => (
 
 // LOGO DE OLIVEIRA BASEADO NA ILUSTRAÇÃO DETALHADA
 export const OliveTreeLogo = () => (
-  <div className="w-10 h-10 bg-[#2D3B32] text-[#F6F5F0] rounded-xl flex items-center justify-center shadow-md border border-[#425447] shrink-0 p-1">
+  <div className="w-10 h-10 bg-[#C9A227] text-[#0F0F10] rounded-xl flex items-center justify-center shadow-md border border-[#DDB94A] shrink-0 p-1">
     <svg className="w-8 h-8" viewBox="0 0 100 100" fill="currentColor">
       {/* Raízes e Base do Solo */}
       <path d="M 20 88 Q 35 84 50 86 Q 65 84 80 88 C 82 89 18 89 20 88 Z" opacity="0.8" />

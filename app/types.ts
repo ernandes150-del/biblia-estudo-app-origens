@@ -60,7 +60,7 @@ export type TranslationVersion = "ORIGINAL" | "CONTINUOUS";
 
 export type ActiveTab = "home" | "read" | "studies" | "search";
 
-export type ActiveSidePanel = "none" | "context" | "study" | "references";
+export type ActiveSidePanel = "none" | "context" | "study" | "references" | "word";
 
 export type ReferenceItem = { passage: string; text: string };
 

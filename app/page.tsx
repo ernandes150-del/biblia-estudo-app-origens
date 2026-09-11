@@ -21,7 +21,6 @@ import HomeView from "./components/HomeView";
 import ReadView from "./components/ReadView";
 import StudiesView from "./components/StudiesView";
 import SearchView from "./components/SearchView";
-import LexiconModal from "./components/LexiconModal";
 import { loadBookLexicon } from "./lib/lexicon";
 import { supabase } from "./lib/supabaseClient";
 import { fetchUserData, upsertVerseNote } from "./lib/userDataStore";
@@ -269,7 +268,7 @@ export default function BibliaOrigensApp() {
   }, [selectedBook, selectedChapter, selectedVerse, typedReferencesData]);
 
   return (
-    <div className="h-screen w-screen bg-[#F6F5F0] text-[#1F2923] font-sans flex flex-col overflow-hidden">
+    <div className="h-screen w-screen bg-[#0F0F10] text-[#F1EBD9] font-sans flex flex-col overflow-hidden">
 
       {authNotice && (
         <AuthNotice message={authNotice} onGoToLogin={() => setActiveTab("home")} />
@@ -326,6 +325,7 @@ export default function BibliaOrigensApp() {
             toggleFavorite={toggleFavorite}
             toggleHighlight={toggleHighlight}
             setSelectedWord={setSelectedWord}
+            selectedWord={selectedWord}
             typedContextData={typedContextData}
             currentVerseKey={currentVerseKey}
             currentVerseNote={currentVerseNote}
@@ -348,10 +348,6 @@ export default function BibliaOrigensApp() {
           />
         )}
       </div>
-
-      {selectedWord && (
-        <LexiconModal word={selectedWord} onClose={() => setSelectedWord(null)} />
-      )}
     </div>
   );
 }
