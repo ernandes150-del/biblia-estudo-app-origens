@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type {
   ActiveSidePanel,
+  BibleData,
   ContextInfo,
   InterlinearWord,
   ReferenceItem,
@@ -39,6 +40,9 @@ type ReadViewProps = {
   // é forçar este componente a re-renderizar e reconsultar getInterlinearWords.
   lexiconVersion: number;
   navigateToVerse: (book: string, chapter: number, verse: number, openStudy?: boolean) => void;
+  bibleData: BibleData;
+  wordNotes: Record<string, string>;
+  saveWordNote: (strong: string, note: string) => void;
 };
 
 function refLabel(o: Occurrence): string {
@@ -67,6 +71,9 @@ export default function ReadView({
   currentReferences,
   lexiconVersion,
   navigateToVerse,
+  bibleData,
+  wordNotes,
+  saveWordNote,
 }: ReadViewProps) {
   const [wordTab, setWordTab] = useState<"definicao" | "ocorrencias">("definicao");
   const [occurrences, setOccurrences] = useState<Occurrence[] | null>(null);
@@ -442,6 +449,21 @@ export default function ReadView({
                     </div>
                   )}
 
+                  {selectedWord.strong && (
+                    <div className="pt-3 border-t border-[var(--border)]">
+                      <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-1 block">
+                        Sua nota sobre esta palavra
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={wordNotes[selectedWord.strong] ?? ""}
+                        onChange={(e) => saveWordNote(selectedWord.strong!, e.target.value)}
+                        placeholder="Observações sobre essa palavra em toda a Escritura..."
+                        className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-xs text-[var(--text-secondary)] leading-relaxed focus:outline-none focus:border-[var(--accent)]"
+                      />
+                    </div>
+                  )}
+
                   <p className="text-[10px] text-[var(--text-dim)] pt-2 border-t border-[var(--border)]">
                     Fonte lexical: STEPBible-Data (CC BY 4.0). O selo <span className="font-bold">EN</span> indica
                     que essa glosa específica ainda não está no dicionário de tradução (~88% de cobertura) e
@@ -456,16 +478,24 @@ export default function ReadView({
                   {occurrences !== null && occurrences.length === 0 && (
                     <p className="text-xs text-[var(--text-muted)]">Nenhuma outra ocorrência encontrada.</p>
                   )}
-                  {occurrences?.map((o, i) => (
-                    <button
-                      key={i}
-                      onClick={() => navigateToVerse(o.b, o.c, o.v)}
-                      className="w-full flex items-baseline justify-between text-xs px-2 py-1.5 rounded hover:bg-[var(--bg-elevated)] text-left transition-colors"
-                    >
-                      <span className="text-[var(--text-muted)]">{refLabel(o)}</span>
-                      <span className="font-serif text-[var(--text)]">{o.o}</span>
-                    </button>
-                  ))}
+                  {occurrences?.map((o, i) => {
+                    const ptText = bibleData.books[o.b]?.chapterData[String(o.c)]?.[String(o.v)];
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => navigateToVerse(o.b, o.c, o.v)}
+                        className="w-full text-left px-2 py-2 rounded hover:bg-[var(--bg-elevated)] transition-colors border-b border-[var(--border)]/50 last:border-0"
+                      >
+                        <div className="flex items-baseline justify-between text-xs">
+                          <span className="text-[var(--text-muted)]">{refLabel(o)}</span>
+                          <span className="font-serif text-[var(--text)]">{o.o}</span>
+                        </div>
+                        {ptText && (
+                          <p className="text-[10px] text-[var(--text-dim)] mt-0.5 line-clamp-1">{ptText}</p>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>

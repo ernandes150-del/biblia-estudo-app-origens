@@ -66,3 +66,31 @@ export async function upsertVerseNote(
 
   if (error) console.error("Erro ao salvar anotação no Supabase:", error.message);
 }
+
+// --- Notas ligadas à palavra original (Strong's), não a um versículo ---
+
+export async function fetchWordNotes(userId: string): Promise<Record<string, string>> {
+  const { data, error } = await supabase.from("word_notes").select("strong, note").eq("user_id", userId);
+
+  if (error) {
+    console.error("Erro ao carregar notas de palavra do Supabase:", error.message);
+    return {};
+  }
+
+  const result: Record<string, string> = {};
+  for (const row of (data ?? []) as { strong: string; note: string }[]) {
+    result[row.strong] = row.note;
+  }
+  return result;
+}
+
+export async function upsertWordNote(userId: string, strong: string, note: string): Promise<void> {
+  if (!note.trim()) {
+    const { error } = await supabase.from("word_notes").delete().eq("user_id", userId).eq("strong", strong);
+    if (error) console.error("Erro ao remover nota de palavra vazia:", error.message);
+    return;
+  }
+
+  const { error } = await supabase.from("word_notes").upsert({ user_id: userId, strong, note });
+  if (error) console.error("Erro ao salvar nota de palavra no Supabase:", error.message);
+}

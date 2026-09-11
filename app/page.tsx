@@ -26,7 +26,7 @@ import { loadCrossReferences, getCrossReferences } from "./lib/crossReferences";
 import { loadOccurrences } from "./lib/occurrences";
 import { resolveWordSearch } from "./lib/wordSearch";
 import { supabase } from "./lib/supabaseClient";
-import { fetchUserData, upsertVerseNote } from "./lib/userDataStore";
+import { fetchUserData, upsertVerseNote, fetchWordNotes, upsertWordNote } from "./lib/userDataStore";
 
 export default function BibliaOrigensApp() {
   const typedBibleData = bibleData as unknown as BibleData;
@@ -66,6 +66,7 @@ export default function BibliaOrigensApp() {
   const [selectedWord, setSelectedWord] = useState<InterlinearWord | null>(null);
 
   const [userData, setUserData] = useState<UserData>({});
+  const [wordNotes, setWordNotes] = useState<Record<string, string>>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const searchTermRef = useRef("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -98,20 +99,25 @@ export default function BibliaOrigensApp() {
       if (cancelled || !session?.user) return;
       const su = session.user;
       setUser({ id: su.id, email: su.email ?? "", name: (su.user_metadata?.name as string) || (su.email?.split("@")[0] ?? "") });
-      const data = await fetchUserData(su.id);
-      if (!cancelled) setUserData(data);
+      const [data, wNotes] = await Promise.all([fetchUserData(su.id), fetchWordNotes(su.id)]);
+      if (!cancelled) {
+        setUserData(data);
+        setWordNotes(wNotes);
+      }
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (!session?.user) {
         setUser(null);
         setUserData({});
+        setWordNotes({});
         return;
       }
       const su = session.user;
       setUser({ id: su.id, email: su.email ?? "", name: (su.user_metadata?.name as string) || (su.email?.split("@")[0] ?? "") });
-      const data = await fetchUserData(su.id);
+      const [data, wNotes] = await Promise.all([fetchUserData(su.id), fetchWordNotes(su.id)]);
       setUserData(data);
+      setWordNotes(wNotes);
     });
 
     return () => {
@@ -132,6 +138,15 @@ export default function BibliaOrigensApp() {
     if (user && changedKey) {
       upsertVerseNote(user.id, changedKey, newData[changedKey]);
     }
+  };
+
+  const saveWordNote = (strong: string, note: string) => {
+    if (!user) {
+      triggerAuthAlert("Apenas pessoas logadas podem criar anotações de palavra.");
+      return;
+    }
+    setWordNotes((prev) => ({ ...prev, [strong]: note }));
+    upsertWordNote(user.id, strong, note);
   };
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -376,6 +391,9 @@ export default function BibliaOrigensApp() {
             currentReferences={currentReferences}
             lexiconVersion={lexiconTick}
             navigateToVerse={navigateToVerse}
+            bibleData={typedBibleData}
+            wordNotes={wordNotes}
+            saveWordNote={saveWordNote}
           />
         )}
 
