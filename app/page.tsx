@@ -99,6 +99,7 @@ export default function BibliaOrigensApp() {
       if (cancelled || !session?.user) return;
       const su = session.user;
       setUser({ id: su.id, email: su.email ?? "", name: (su.user_metadata?.name as string) || (su.email?.split("@")[0] ?? "") });
+      setActiveTab("read");
       const [data, wNotes] = await Promise.all([fetchUserData(su.id), fetchWordNotes(su.id)]);
       if (!cancelled) {
         setUserData(data);
@@ -330,29 +331,31 @@ export default function BibliaOrigensApp() {
         <AuthNotice message={authNotice} onGoToLogin={() => setActiveTab("home")} />
       )}
 
-      <Header
-        user={user}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        savedStudiesCount={savedStudiesList.length}
-        handleLogout={handleLogout}
-        menuMobileAberto={menuMobileAberto}
-        setMenuMobileAberto={setMenuMobileAberto}
-        selectedVersion={selectedVersion}
-        setSelectedVersion={setSelectedVersion}
-        selectedBook={selectedBook}
-        setSelectedBook={setSelectedBook}
-        selectedChapter={selectedChapter}
-        setSelectedChapter={setSelectedChapter}
-        bookNames={Object.keys(typedBibleData.books)}
-        totalChapters={totalChapters}
-        onSetSelectedVerse={setSelectedVerse}
-        theme={theme}
-        toggleTheme={toggleTheme}
-      />
+      {user && (
+        <Header
+          user={user}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          savedStudiesCount={savedStudiesList.length}
+          handleLogout={handleLogout}
+          menuMobileAberto={menuMobileAberto}
+          setMenuMobileAberto={setMenuMobileAberto}
+          selectedVersion={selectedVersion}
+          setSelectedVersion={setSelectedVersion}
+          selectedBook={selectedBook}
+          setSelectedBook={setSelectedBook}
+          selectedChapter={selectedChapter}
+          setSelectedChapter={setSelectedChapter}
+          bookNames={Object.keys(typedBibleData.books)}
+          totalChapters={totalChapters}
+          onSetSelectedVerse={setSelectedVerse}
+          theme={theme}
+          toggleTheme={toggleTheme}
+        />
+      )}
 
       <div className="flex-1 flex overflow-hidden relative">
-        {activeTab === "home" && (
+        {(!user || activeTab === "home") && (
           <HomeView
             user={user}
             authMode={authMode}
@@ -368,7 +371,7 @@ export default function BibliaOrigensApp() {
           />
         )}
 
-        {activeTab === "read" && (
+        {activeTab === "read" && user && (
           <ReadView
             selectedBook={selectedBook}
             selectedChapter={selectedChapter}
@@ -401,7 +404,7 @@ export default function BibliaOrigensApp() {
           <StudiesView savedStudiesList={savedStudiesList} navigateToVerse={navigateToVerse} />
         )}
 
-        {activeTab === "search" && (
+        {activeTab === "search" && user && (
           <SearchView
             searchTerm={searchTerm}
             handleSearch={handleSearch}

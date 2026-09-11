@@ -43,7 +43,65 @@ export const AppLogo = () => (
   </div>
 );
 
-export const SunIcon = () => (
+// Versão animada do logo pra tela inicial: o Álef se desenha traço por
+// traço (efeito de "vídeo se formando"), depois o quadrado ganha
+// preenchimento e brilho. Usa a mesma marca (Álef), não um ícone novo.
+export const AnimatedLogo = () => (
+  <div className="relative w-24 h-24">
+    <div
+      className="absolute inset-0 rounded-[26px] bg-gradient-to-b from-[var(--accent-hover)] to-[var(--accent-deep)] opacity-0 shadow-2xl ring-1 ring-white/20 ring-inset"
+      style={{ animation: "logoBoxIn 0.5s ease 0.9s forwards" }}
+    />
+    <div
+      className="absolute inset-x-3 top-3 h-1/3 rounded-full bg-white/15 blur-[3px] opacity-0 pointer-events-none"
+      style={{ animation: "fadeIn 0.5s ease 1.3s forwards" }}
+    />
+    <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
+      {/* Traço principal (diagonal) */}
+      <path
+        d="M28 74 L74 26"
+        fill="none"
+        stroke="white"
+        strokeWidth="7"
+        strokeLinecap="round"
+        pathLength="1"
+        style={{
+          strokeDasharray: 1,
+          strokeDashoffset: 1,
+          animation: "drawStroke 0.5s ease 0s forwards",
+        }}
+      />
+      {/* Gancho superior direito */}
+      <path
+        d="M74 26 L60 40"
+        fill="none"
+        stroke="white"
+        strokeWidth="7"
+        strokeLinecap="round"
+        pathLength="1"
+        style={{
+          strokeDasharray: 1,
+          strokeDashoffset: 1,
+          animation: "drawStroke 0.35s ease 0.5s forwards",
+        }}
+      />
+      {/* Gancho inferior esquerdo */}
+      <path
+        d="M28 74 L42 60"
+        fill="none"
+        stroke="white"
+        strokeWidth="7"
+        strokeLinecap="round"
+        pathLength="1"
+        style={{
+          strokeDasharray: 1,
+          strokeDashoffset: 1,
+          animation: "drawStroke 0.35s ease 0.75s forwards",
+        }}
+      />
+    </svg>
+  </div>
+);export const SunIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.8" />
     <path d="M12 2.5V5M12 19V21.5M21.5 12H19M5 12H2.5M18.5 5.5L16.8 7.2M7.2 16.8L5.5 18.5M18.5 18.5L16.8 16.8M7.2 7.2L5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
