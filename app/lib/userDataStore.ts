@@ -1,10 +1,11 @@
 import { supabase } from "./supabaseClient";
-import type { UserData, VerseNote } from "../types";
+import type { HighlightColor, UserData, VerseNote } from "../types";
 
 type VerseNoteRow = {
   verse_key: string;
   favorite: boolean;
   highlighted: boolean;
+  highlight_color: HighlightColor | null;
   note: string;
   study: string;
 };
@@ -14,7 +15,7 @@ type VerseNoteRow = {
 export async function fetchUserData(userId: string): Promise<UserData> {
   const { data, error } = await supabase
     .from("verse_notes")
-    .select("verse_key, favorite, highlighted, note, study")
+    .select("verse_key, favorite, highlighted, highlight_color, note, study")
     .eq("user_id", userId);
 
   if (error) {
@@ -24,9 +25,13 @@ export async function fetchUserData(userId: string): Promise<UserData> {
 
   const result: UserData = {};
   for (const row of (data ?? []) as VerseNoteRow[]) {
+    // Compatibilidade com destaques antigos (coluna boolean "highlighted"),
+    // salvos antes de existir cor - tratados como amarelo.
+    const highlightColor: HighlightColor | null =
+      row.highlight_color ?? (row.highlighted ? "yellow" : null);
     result[row.verse_key] = {
       favorite: row.favorite,
-      highlighted: row.highlighted,
+      highlightColor,
       note: row.note,
       study: row.study,
     };
@@ -43,7 +48,7 @@ export async function upsertVerseNote(
   note: VerseNote
 ): Promise<void> {
   const isEmpty =
-    !note.favorite && !note.highlighted && !note.note.trim() && !(note.study ?? "").trim();
+    !note.favorite && !note.highlightColor && !note.note.trim() && !(note.study ?? "").trim();
 
   if (isEmpty) {
     const { error } = await supabase
@@ -59,7 +64,8 @@ export async function upsertVerseNote(
     user_id: userId,
     verse_key: verseKey,
     favorite: note.favorite,
-    highlighted: note.highlighted,
+    highlighted: !!note.highlightColor,
+    highlight_color: note.highlightColor,
     note: note.note,
     study: note.study ?? "",
   });

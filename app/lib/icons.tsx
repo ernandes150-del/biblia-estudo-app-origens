@@ -23,6 +23,20 @@ export const StarIcon = ({ filled }: { filled?: boolean }) => (
   </svg>
 );
 
+export const HighlighterIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 11l6-6 4 4-6 6H9v-4z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 21h6M4.5 17.5L9 13l2 2-4.5 4.5H4.5v-2z" />
+  </svg>
+);
+
+export const NoteIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.5 13.5V19a1.5 1.5 0 01-1.5 1.5H6A1.5 1.5 0 014.5 19V7.5A1.5 1.5 0 016 6h5.5" />
+  </svg>
+);
+
 export const LinkIcon = () => (
   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />

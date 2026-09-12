@@ -1,5 +1,5 @@
-import type { ActiveTab, TranslationVersion, User } from "../types";
-import { AcademicCapIcon, BookOpenIcon, AppLogo, SearchIcon, SunIcon, MoonIcon } from "../lib/icons";
+import type { ActiveTab, User } from "../types";
+import { AcademicCapIcon, BookOpenIcon, AppLogo, SearchIcon, SunIcon, MoonIcon, StarIcon, HighlighterIcon, NoteIcon } from "../lib/icons";
 
 type HeaderProps = {
   user: User | null;
@@ -9,8 +9,6 @@ type HeaderProps = {
   handleLogout: () => void;
   menuMobileAberto: boolean;
   setMenuMobileAberto: (v: boolean) => void;
-  selectedVersion: TranslationVersion;
-  setSelectedVersion: (v: TranslationVersion) => void;
   selectedBook: string;
   setSelectedBook: (b: string) => void;
   selectedChapter: number;
@@ -30,8 +28,6 @@ export default function Header({
   handleLogout,
   menuMobileAberto,
   setMenuMobileAberto,
-  selectedVersion,
-  setSelectedVersion,
   selectedBook,
   setSelectedBook,
   selectedChapter,
@@ -119,6 +115,36 @@ export default function Header({
                 <AcademicCapIcon /> Meus Estudos ({savedStudiesCount})
               </button>
             )}
+            {user && (
+              <button
+                onClick={() => setActiveTab("favorites")}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  activeTab === "favorites" ? "bg-[var(--accent)] text-white" : "text-[var(--text-muted)] hover:bg-[var(--bg-elevated)]"
+                }`}
+              >
+                <StarIcon /> Favoritos
+              </button>
+            )}
+            {user && (
+              <button
+                onClick={() => setActiveTab("highlights")}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  activeTab === "highlights" ? "bg-[var(--accent)] text-white" : "text-[var(--text-muted)] hover:bg-[var(--bg-elevated)]"
+                }`}
+              >
+                <HighlighterIcon /> Destacadas
+              </button>
+            )}
+            {user && (
+              <button
+                onClick={() => setActiveTab("wordnotes")}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  activeTab === "wordnotes" ? "bg-[var(--accent)] text-white" : "text-[var(--text-muted)] hover:bg-[var(--bg-elevated)]"
+                }`}
+              >
+                <NoteIcon /> Notas
+              </button>
+            )}
             <button
               onClick={() => setActiveTab("search")}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
@@ -163,15 +189,6 @@ export default function Header({
 
             {activeTab === "read" && (
               <div className="flex items-center gap-2 ml-2">
-                <select
-                  value={selectedVersion}
-                  onChange={(e) => setSelectedVersion(e.target.value as TranslationVersion)}
-                  className="bg-[var(--accent)] text-white text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer"
-                >
-                  <option value="ORIGINAL">Interlinear (Original)</option>
-                  <option value="CONTINUOUS">Leitura Corrida</option>
-                </select>
-
                 <select
                   value={selectedBook}
                   onChange={(e) => changeBook(e.target.value)}
@@ -227,6 +244,36 @@ export default function Header({
                 <AcademicCapIcon /> Meus Estudos ({savedStudiesCount})
               </button>
             )}
+            {user && (
+              <button
+                onClick={() => { setActiveTab("favorites"); setMenuMobileAberto(false); }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-left ${
+                  activeTab === "favorites" ? "bg-[var(--accent)] text-white" : "text-[var(--text-muted)] bg-[var(--bg-elevated)]"
+                }`}
+              >
+                <StarIcon /> Favoritos
+              </button>
+            )}
+            {user && (
+              <button
+                onClick={() => { setActiveTab("highlights"); setMenuMobileAberto(false); }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-left ${
+                  activeTab === "highlights" ? "bg-[var(--accent)] text-white" : "text-[var(--text-muted)] bg-[var(--bg-elevated)]"
+                }`}
+              >
+                <HighlighterIcon /> Destacadas
+              </button>
+            )}
+            {user && (
+              <button
+                onClick={() => { setActiveTab("wordnotes"); setMenuMobileAberto(false); }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-left ${
+                  activeTab === "wordnotes" ? "bg-[var(--accent)] text-white" : "text-[var(--text-muted)] bg-[var(--bg-elevated)]"
+                }`}
+              >
+                <NoteIcon /> Notas
+              </button>
+            )}
             <button
               onClick={() => { setActiveTab("search"); setMenuMobileAberto(false); }}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-left ${
@@ -240,16 +287,7 @@ export default function Header({
           {/* SELETORES DE BÍBLIA NO MENU MOBILE */}
           {activeTab === "read" && (
             <div className="flex flex-col gap-2 pt-2 border-t border-[var(--border)]">
-              <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase">Modo, Livro e Capítulo:</label>
-              <select
-                value={selectedVersion}
-                onChange={(e) => setSelectedVersion(e.target.value as TranslationVersion)}
-                className="bg-[var(--accent)] text-white text-xs font-bold rounded-lg p-2 focus:outline-none"
-              >
-                <option value="ORIGINAL">Interlinear (Original)</option>
-                <option value="CONTINUOUS">Leitura Corrida</option>
-              </select>
-
+              <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase">Livro e Capítulo:</label>
               <div className="grid grid-cols-2 gap-2">
                 <select
                   value={selectedBook}

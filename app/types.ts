@@ -23,9 +23,11 @@ export type BibleData = {
   books: Record<string, BibleBook>;
 };
 
+export type HighlightColor = "yellow" | "green" | "red" | "blue";
+
 export type VerseNote = {
   favorite: boolean;
-  highlighted: boolean;
+  highlightColor: HighlightColor | null;
   note: string;
   study?: string;
 };
@@ -56,9 +58,8 @@ export type ContextInfo = {
   summary?: string;
 };
 
-export type TranslationVersion = "ORIGINAL" | "CONTINUOUS";
 
-export type ActiveTab = "home" | "read" | "studies" | "search";
+export type ActiveTab = "home" | "read" | "studies" | "search" | "favorites" | "highlights" | "wordnotes";
 
 export type ActiveSidePanel = "none" | "context" | "study" | "references" | "word" | "commentary";
 

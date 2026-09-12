@@ -8,10 +8,10 @@ import type {
   ActiveTab,
   BibleData,
   ContextInfo,
+  HighlightColor,
   InterlinearWord,
   ReferenceItem,
   SearchResult,
-  TranslationVersion,
   User,
   UserData,
 } from "./types";
@@ -21,6 +21,9 @@ import Header from "./components/Header";
 import HomeView from "./components/HomeView";
 import ReadView from "./components/ReadView";
 import StudiesView from "./components/StudiesView";
+import FavoritesView from "./components/FavoritesView";
+import HighlightsView from "./components/HighlightsView";
+import WordNotesView from "./components/WordNotesView";
 import SearchView from "./components/SearchView";
 import { loadBookLexicon } from "./lib/lexicon";
 import { loadCrossReferences, getCrossReferences } from "./lib/crossReferences";
@@ -60,7 +63,6 @@ export default function BibliaOrigensApp() {
   const [selectedBook, setSelectedBook] = useState<string>("Gênesis");
   const [selectedChapter, setSelectedChapter] = useState<number>(1);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(1);
-  const [selectedVersion, setSelectedVersion] = useState<TranslationVersion>("ORIGINAL");
 
   const [activeTab, setActiveTab] = useState<ActiveTab>("home");
   const [activeSidePanel, setActiveSidePanel] = useState<ActiveSidePanel>("none");
@@ -198,7 +200,7 @@ export default function BibliaOrigensApp() {
   const currentLanguage = currentBook?.testament === "Novo Testamento" ? "Grego" : "Hebraico";
 
   const currentVerseKey = selectedVerse ? `${selectedBook}-${selectedChapter}-${selectedVerse}` : null;
-  const currentVerseNote = currentVerseKey ? userData[currentVerseKey] || { favorite: false, highlighted: false, note: "", study: "" } : null;
+  const currentVerseNote = currentVerseKey ? userData[currentVerseKey] || { favorite: false, highlightColor: null, note: "", study: "" } : null;
 
   const toggleFavorite = (verseNum: number) => {
     if (!user) {
@@ -206,18 +208,21 @@ export default function BibliaOrigensApp() {
       return;
     }
     const key = `${selectedBook}-${selectedChapter}-${verseNum}`;
-    const existing = userData[key] || { favorite: false, highlighted: false, note: "", study: "" };
+    const existing = userData[key] || { favorite: false, highlightColor: null, note: "", study: "" };
     saveUserData({ ...userData, [key]: { ...existing, favorite: !existing.favorite } }, key);
   };
 
-  const toggleHighlight = (verseNum: number) => {
+  // Clicar na mesma cor que já está aplicada remove o destaque; clicar em
+  // outra cor troca o destaque para ela.
+  const setHighlight = (verseNum: number, color: HighlightColor) => {
     if (!user) {
       triggerAuthAlert("Apenas pessoas logadas podem destacar versículos.");
       return;
     }
     const key = `${selectedBook}-${selectedChapter}-${verseNum}`;
-    const existing = userData[key] || { favorite: false, highlighted: false, note: "", study: "" };
-    saveUserData({ ...userData, [key]: { ...existing, highlighted: !existing.highlighted } }, key);
+    const existing = userData[key] || { favorite: false, highlightColor: null, note: "", study: "" };
+    const next = existing.highlightColor === color ? null : color;
+    saveUserData({ ...userData, [key]: { ...existing, highlightColor: next } }, key);
   };
 
   const saveStudyText = (studyText: string) => {
@@ -226,7 +231,7 @@ export default function BibliaOrigensApp() {
       return;
     }
     if (!currentVerseKey) return;
-    const existing = userData[currentVerseKey] || { favorite: false, highlighted: false, note: "", study: "" };
+    const existing = userData[currentVerseKey] || { favorite: false, highlightColor: null, note: "", study: "" };
     saveUserData({ ...userData, [currentVerseKey]: { ...existing, study: studyText } }, currentVerseKey);
   };
 
@@ -362,8 +367,6 @@ export default function BibliaOrigensApp() {
           handleLogout={handleLogout}
           menuMobileAberto={menuMobileAberto}
           setMenuMobileAberto={setMenuMobileAberto}
-          selectedVersion={selectedVersion}
-          setSelectedVersion={setSelectedVersion}
           selectedBook={selectedBook}
           setSelectedBook={setSelectedBook}
           selectedChapter={selectedChapter}
@@ -390,11 +393,13 @@ export default function BibliaOrigensApp() {
             setPasswordInput={setPasswordInput}
             handleAuth={handleAuth}
             onStartReading={() => setActiveTab("read")}
+            setActiveTab={setActiveTab}
           />
         )}
 
         {activeTab === "read" && user && (
           <ReadView
+            key={`${selectedBook}-${selectedChapter}`}
             selectedBook={selectedBook}
             selectedChapter={selectedChapter}
             selectedVerse={selectedVerse}
@@ -402,11 +407,10 @@ export default function BibliaOrigensApp() {
             currentLanguage={currentLanguage}
             currentChapterVerses={currentChapterVerses}
             userData={userData}
-            selectedVersion={selectedVersion}
             activeSidePanel={activeSidePanel}
             setActiveSidePanel={setActiveSidePanel}
             toggleFavorite={toggleFavorite}
-            toggleHighlight={toggleHighlight}
+            setHighlight={setHighlight}
             setSelectedWord={setSelectedWord}
             selectedWord={selectedWord}
             typedContextData={typedContextData}
@@ -424,6 +428,18 @@ export default function BibliaOrigensApp() {
 
         {activeTab === "studies" && user && (
           <StudiesView savedStudiesList={savedStudiesList} navigateToVerse={navigateToVerse} />
+        )}
+
+        {activeTab === "favorites" && user && (
+          <FavoritesView userData={userData} bibleData={typedBibleData} navigateToVerse={navigateToVerse} />
+        )}
+
+        {activeTab === "highlights" && user && (
+          <HighlightsView userData={userData} bibleData={typedBibleData} navigateToVerse={navigateToVerse} />
+        )}
+
+        {activeTab === "wordnotes" && user && (
+          <WordNotesView wordNotes={wordNotes} navigateToVerse={navigateToVerse} />
         )}
 
         {activeTab === "search" && user && (

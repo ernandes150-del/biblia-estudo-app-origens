@@ -3,9 +3,9 @@ import type {
   ActiveSidePanel,
   BibleData,
   ContextInfo,
+  HighlightColor,
   InterlinearWord,
   ReferenceItem,
-  TranslationVersion,
   UserData,
   VerseNote,
 } from "../types";
@@ -29,11 +29,10 @@ type ReadViewProps = {
   currentLanguage: string;
   currentChapterVerses: Record<string, string>;
   userData: UserData;
-  selectedVersion: TranslationVersion;
   activeSidePanel: ActiveSidePanel;
   setActiveSidePanel: (p: ActiveSidePanel) => void;
   toggleFavorite: (verseNum: number) => void;
-  toggleHighlight: (verseNum: number) => void;
+  setHighlight: (verseNum: number, color: HighlightColor) => void;
   setSelectedWord: (w: InterlinearWord | null) => void;
   selectedWord: InterlinearWord | null;
   typedContextData: Record<string, ContextInfo>;
@@ -63,11 +62,10 @@ export default function ReadView({
   currentLanguage,
   currentChapterVerses,
   userData,
-  selectedVersion,
   activeSidePanel,
   setActiveSidePanel,
   toggleFavorite,
-  toggleHighlight,
+  setHighlight,
   setSelectedWord,
   selectedWord,
   typedContextData,
@@ -82,6 +80,7 @@ export default function ReadView({
   saveWordNote,
 }: ReadViewProps) {
   const [wordTab, setWordTab] = useState<"definicao" | "ocorrencias">("definicao");
+  const [expandedVerse, setExpandedVerse] = useState<number | null>(null);
   const [dictLang, setDictLang] = useState<"pt" | "en">("pt");
   const [occurrences, setOccurrences] = useState<Occurrence[] | null>(null);
   const [dictEntry, setDictEntry] = useState<DictionaryEntry | null>(null);
@@ -168,12 +167,15 @@ export default function ReadView({
     setActiveSidePanel("word");
   };
 
-  const renderVerseContent = (vKey: string, vText: string) => {
+  const renderVerseContent = (vKey: string, vText: string, expanded: boolean) => {
+    if (!expanded) {
+      return <p className="text-sm leading-relaxed font-serif text-[var(--text-secondary)]">{vText}</p>;
+    }
+
     const words = getInterlinearWords(vKey);
 
     if (!words) {
       const lexiconStillLoading = lexiconVersion === 0;
-
       return (
         <div>
           <p className="text-sm leading-relaxed font-serif text-[var(--text-secondary)]">{vText}</p>
@@ -186,36 +188,32 @@ export default function ReadView({
       );
     }
 
-    if (selectedVersion === "ORIGINAL") {
-      return (
-        <div>
-          <p className="text-xs text-[var(--text-muted)] italic mb-2 leading-snug">{vText}</p>
-          <div className="flex flex-wrap gap-y-3 gap-x-2 justify-start" dir={currentLanguage === "Hebraico" ? "rtl" : "ltr"}>
-            {words.map((word, idx) => (
-              <button
-                key={idx}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openWord(word);
-                }}
-                className={`flex flex-col items-center px-2 py-1.5 rounded-lg border transition-colors ${
-                  selectedWord === word
-                    ? "bg-[var(--accent)]/15 border-[var(--accent)]"
-                    : "border-transparent hover:bg-[var(--border)] hover:border-[var(--border-strong)]"
-                }`}
-              >
-                <span className={`text-base font-serif font-bold ${word.isJesusWords ? "text-[var(--danger)]" : "text-[var(--text)]"}`}>
-                  {word.original}
-                </span>
-                <span className="text-[10px] italic text-[var(--text-muted)] mt-0.5">({formatTranslit(word.translit)})</span>
-              </button>
-            ))}
-          </div>
+    return (
+      <div>
+        <p className="text-xs text-[var(--text-muted)] italic mb-2 leading-snug">{vText}</p>
+        <div className="flex flex-wrap gap-y-3 gap-x-2 justify-start" dir={currentLanguage === "Hebraico" ? "rtl" : "ltr"}>
+          {words.map((word, idx) => (
+            <button
+              key={idx}
+              onClick={(e) => {
+                e.stopPropagation();
+                openWord(word);
+              }}
+              className={`flex flex-col items-center px-2 py-1.5 rounded-lg border transition-colors ${
+                selectedWord === word
+                  ? "bg-[var(--accent)]/15 border-[var(--accent)]"
+                  : "border-transparent hover:bg-[var(--border)] hover:border-[var(--border-strong)]"
+              }`}
+            >
+              <span className={`text-base font-serif font-bold ${word.isJesusWords ? "text-[var(--danger)]" : "text-[var(--text)]"}`}>
+                {word.original}
+              </span>
+              <span className="text-[10px] italic text-[var(--text-muted)] mt-0.5">({formatTranslit(word.translit)})</span>
+            </button>
+          ))}
         </div>
-      );
-    }
-
-    return <p className="text-sm leading-relaxed font-serif text-[var(--text-secondary)]">{vText}</p>;
+      </div>
+    );
   };
 
   const renderPanelInner = () => (
@@ -593,30 +591,6 @@ export default function ReadView({
             >
               Contexto do Livro
             </button>
-            {selectedVerse && (
-              <button
-                onClick={() => setActiveSidePanel(activeSidePanel === "references" ? "none" : "references")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                  activeSidePanel === "references"
-                    ? "bg-[var(--accent)] text-white border-[var(--accent)]"
-                    : "bg-[var(--bg-elevated)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--accent)]/50"
-                }`}
-              >
-                Referências
-              </button>
-            )}
-            {selectedVerse && (
-              <button
-                onClick={() => setActiveSidePanel(activeSidePanel === "commentary" ? "none" : "commentary")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                  activeSidePanel === "commentary"
-                    ? "bg-[var(--accent)] text-white border-[var(--accent)]"
-                    : "bg-[var(--bg-elevated)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--accent)]/50"
-                }`}
-              >
-                Comentário
-              </button>
-            )}
           </div>
         </div>
 
@@ -625,56 +599,109 @@ export default function ReadView({
           {Object.entries(currentChapterVerses).map(([vNumStr, vText]) => {
             const vNum = parseInt(vNumStr);
             const verseKey = `${selectedBook}-${selectedChapter}-${vNum}`;
-            const isSelected = selectedVerse === vNum;
+            const isExpanded = expandedVerse === vNum;
             const vNote = userData[verseKey];
+            const highlightClass = vNote?.highlightColor
+              ? {
+                  yellow: "bg-[var(--highlight-bg)] border-[var(--highlight-border)]",
+                  green: "bg-[var(--highlight-green-bg)] border-[var(--highlight-green-border)]",
+                  red: "bg-[var(--highlight-red-bg)] border-[var(--highlight-red-border)]",
+                  blue: "bg-[var(--highlight-blue-bg)] border-[var(--highlight-blue-border)]",
+                }[vNote.highlightColor]
+              : "";
+            const colorSwatch: Record<HighlightColor, string> = {
+              yellow: "#E0B94D",
+              green: "#2F6B45",
+              red: "#8A2F2A",
+              blue: "#2A6B8A",
+            };
 
             return (
               <div
                 key={vNum}
-                onClick={() => setSelectedVerse(vNum)}
+                onClick={() => {
+                  const next = isExpanded ? null : vNum;
+                  setExpandedVerse(next);
+                  if (next) {
+                    setSelectedVerse(next);
+                  } else {
+                    setActiveSidePanel("none");
+                  }
+                }}
                 className={`p-4 rounded-xl border backdrop-blur-md transition-all cursor-pointer ${
-                  isSelected
+                  isExpanded
                     ? "border-[var(--accent)]/60 bg-[var(--bg-elevated)]/80 shadow-[0_0_0_1px_rgba(10,132,255,0.15)]"
                     : "border-[var(--bg-elevated-2)] bg-[var(--bg-elevated)]/60 hover:border-[var(--border)]"
-                } ${vNote?.highlighted ? "bg-[var(--highlight-bg)] border-[var(--highlight-border)]" : ""}`}
+                } ${highlightClass}`}
               >
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <span className="font-bold text-xs text-white bg-[var(--accent)] px-2 py-0.5 rounded-md">
+                <div className="flex items-start gap-3 mb-1">
+                  <span className="font-bold text-xs text-white bg-[var(--accent)] px-2 py-0.5 rounded-md shrink-0">
                     {vNum}
                   </span>
+                  <div className="flex-1 min-w-0">{renderVerseContent(verseKey, vText, isExpanded)}</div>
+                </div>
 
-                  <div className="flex items-center gap-2">
+                {isExpanded && (
+                  <div
+                    className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-[var(--border)]"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <button
-                      onClick={(e) => { e.stopPropagation(); toggleFavorite(vNum); }}
-                      className="p-1 hover:bg-[var(--border)] rounded"
+                      onClick={() => toggleFavorite(vNum)}
+                      className={`p-1.5 rounded border ${
+                        vNote?.favorite ? "border-[var(--accent)] bg-[var(--accent)]/10" : "border-[var(--border)]"
+                      }`}
                       title="Favoritar"
                     >
                       <StarIcon filled={vNote?.favorite} />
                     </button>
+
+                    <div className="flex items-center gap-1 px-1.5 py-1 rounded border border-[var(--border)]">
+                      {(Object.keys(colorSwatch) as HighlightColor[]).map((color) => (
+                        <button
+                          key={color}
+                          onClick={() => setHighlight(vNum, color)}
+                          title={`Destacar em ${color}`}
+                          className={`w-4 h-4 rounded-full border-2 transition-transform ${
+                            vNote?.highlightColor === color ? "scale-110 border-white" : "border-transparent"
+                          }`}
+                          style={{ backgroundColor: colorSwatch[color] }}
+                        />
+                      ))}
+                    </div>
+
                     <button
-                      onClick={(e) => { e.stopPropagation(); toggleHighlight(vNum); }}
-                      className={`text-xs px-2 py-0.5 rounded border ${
-                        vNote?.highlighted
-                          ? "bg-[var(--highlight-border)] border-[var(--accent)] text-white font-bold"
-                          : "border-[var(--border)] text-[var(--text-muted)]"
+                      onClick={() => setActiveSidePanel(activeSidePanel === "study" ? "none" : "study")}
+                      className={`text-xs px-2.5 py-1 rounded font-medium ${
+                        activeSidePanel === "study"
+                          ? "bg-[var(--accent)] text-white"
+                          : "bg-[var(--bg-elevated-2)] text-[var(--text-secondary)] border border-[var(--border)]"
                       }`}
-                    >
-                      Destacar
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedVerse(vNum);
-                        setActiveSidePanel("study");
-                      }}
-                      className="text-xs bg-[var(--accent)] text-white px-2.5 py-0.5 rounded font-medium"
                     >
                       Estudar
                     </button>
+                    <button
+                      onClick={() => setActiveSidePanel(activeSidePanel === "commentary" ? "none" : "commentary")}
+                      className={`text-xs px-2.5 py-1 rounded font-medium ${
+                        activeSidePanel === "commentary"
+                          ? "bg-[var(--accent)] text-white"
+                          : "bg-[var(--bg-elevated-2)] text-[var(--text-secondary)] border border-[var(--border)]"
+                      }`}
+                    >
+                      Comentário
+                    </button>
+                    <button
+                      onClick={() => setActiveSidePanel(activeSidePanel === "references" ? "none" : "references")}
+                      className={`text-xs px-2.5 py-1 rounded font-medium ${
+                        activeSidePanel === "references"
+                          ? "bg-[var(--accent)] text-white"
+                          : "bg-[var(--bg-elevated-2)] text-[var(--text-secondary)] border border-[var(--border)]"
+                      }`}
+                    >
+                      Referências
+                    </button>
                   </div>
-                </div>
-
-                {renderVerseContent(verseKey, vText)}
+                )}
 
                 {vNote?.study && (
                   <div className="mt-3 pt-2 border-t border-[var(--border)] text-xs text-[var(--text-secondary)] italic bg-[var(--bg-elevated)] p-2 rounded">

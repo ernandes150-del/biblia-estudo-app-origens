@@ -19,6 +19,12 @@
   --danger: #FF453A;
   --highlight-bg: #2C2410;
   --highlight-border: #8A6D1F;
+  --highlight-green-bg: #12271A;
+  --highlight-green-border: #2F6B45;
+  --highlight-red-bg: #2E1414;
+  --highlight-red-border: #8A2F2A;
+  --highlight-blue-bg: #10202E;
+  --highlight-blue-border: #2A6B8A;
 }
 
 /* Tema claro — mesmos papéis semânticos, valores invertidos */
@@ -40,6 +46,12 @@
   --danger: #FF3B30;
   --highlight-bg: #FFF3CD;
   --highlight-border: #E0B94D;
+  --highlight-green-bg: #E1F5E7;
+  --highlight-green-border: #6EBE86;
+  --highlight-red-bg: #FBE1E0;
+  --highlight-red-border: #E08683;
+  --highlight-blue-bg: #DDEEFB;
+  --highlight-blue-border: #6EAFDD;
 }
 
 @theme inline {

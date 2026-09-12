@@ -1,4 +1,5 @@
-import { AnimatedLogo } from "../lib/icons";
+import { AnimatedLogo, BookOpenIcon, AcademicCapIcon, StarIcon, HighlighterIcon, NoteIcon, SearchIcon } from "../lib/icons";
+import type { ActiveTab } from "../types";
 
 type HomeViewProps = {
   user: { id: string; name: string; email: string } | null;
@@ -12,7 +13,17 @@ type HomeViewProps = {
   setPasswordInput: (v: string) => void;
   handleAuth: (e: React.FormEvent) => void;
   onStartReading: () => void;
+  setActiveTab: (tab: ActiveTab) => void;
 };
+
+const HUB_ITEMS: { tab: ActiveTab; label: string; icon: React.ReactNode }[] = [
+  { tab: "read", label: "Leitura", icon: <BookOpenIcon /> },
+  { tab: "studies", label: "Meus Estudos", icon: <AcademicCapIcon /> },
+  { tab: "favorites", label: "Favoritos", icon: <StarIcon /> },
+  { tab: "highlights", label: "Passagens Destacadas", icon: <HighlighterIcon /> },
+  { tab: "wordnotes", label: "Minhas Notas", icon: <NoteIcon /> },
+  { tab: "search", label: "Pesquisa", icon: <SearchIcon /> },
+];
 
 export default function HomeView({
   user,
@@ -25,6 +36,7 @@ export default function HomeView({
   passwordInput,
   setPasswordInput,
   handleAuth,
+  setActiveTab,
 }: HomeViewProps) {
   return (
     <main className="flex-1 flex items-center justify-center relative overflow-y-auto bg-[var(--bg)] py-8">
@@ -40,6 +52,28 @@ export default function HomeView({
         <h1 className="mt-5 text-lg font-semibold tracking-[0.15em] uppercase text-[var(--text)] opacity-0 animate-[fadeIn_0.6s_ease_1.4s_forwards]">
           Bíblia Origens
         </h1>
+
+        {user && (
+          <div className="mt-8 w-full opacity-0 animate-[fadeIn_0.6s_ease_1.8s_forwards]">
+            <p className="text-center text-xs text-[var(--text-muted)] mb-6">
+              Olá, <strong className="text-[var(--text)]">{user.name}</strong> — o que você quer fazer?
+            </p>
+            <div className="grid grid-cols-3 gap-3">
+              {HUB_ITEMS.map((item) => (
+                <button
+                  key={item.tab}
+                  onClick={() => setActiveTab(item.tab)}
+                  className="flex flex-col items-center gap-2 p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-elevated)]/60 hover:border-[var(--accent)]/60 hover:bg-[var(--bg-elevated)] transition-colors"
+                >
+                  <span className="text-[var(--accent)]">{item.icon}</span>
+                  <span className="text-[10px] text-center text-[var(--text-secondary)] font-medium leading-tight">
+                    {item.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {!user && (
           <div className="mt-8 w-full opacity-0 animate-[fadeIn_0.6s_ease_1.8s_forwards]">
