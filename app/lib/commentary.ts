@@ -72,3 +72,27 @@ export function isBlockTruncated(block: CommentaryBlock): boolean {
   if (!text) return false;
   return !/[.!?"'’”)\]]$/.test(text);
 }
+
+// Pede a tradução de UM bloco sob demanda: a rota de API primeiro olha um
+// cache compartilhado no Supabase (rápido, grátis) e só chama a IA se
+// ninguém ainda pediu a tradução daquele bloco específico. O resultado
+// fica salvo pra sempre — a próxima pessoa a abrir o mesmo versículo já
+// recebe pronto.
+export async function translateBlockOnDemand(
+  book: string,
+  chapter: number,
+  block: CommentaryBlock
+): Promise<{ text_pt: string; truncated: boolean } | { error: string }> {
+  try {
+    const res = await fetch("/api/translate-commentary", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ book, chapter, s: block.s, e: block.e, text: block.t }),
+    });
+    const data = await res.json();
+    if (!res.ok) return { error: data.error || `Erro ${res.status}` };
+    return { text_pt: data.text_pt, truncated: data.truncated };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Erro de rede" };
+  }
+}

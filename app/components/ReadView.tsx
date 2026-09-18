@@ -15,7 +15,7 @@ import { translateGloss, splitCompoundGloss } from "../lib/glossTranslation";
 import { loadOccurrencesForClassic, type Occurrence } from "../lib/occurrences";
 import { classicStrongOf, loadClassicGroups, loadDictionaryEntry, type DictionaryEntry } from "../lib/dictionary";
 import { getCuratedEntry } from "../lib/curatedDictionary";
-import { loadCommentaryBook, getCommentaryForVerse, getCommentaryIntro, isBlockTruncated, type CommentaryBlock } from "../lib/commentary";
+import { loadCommentaryBook, getCommentaryForVerse, getCommentaryIntro, isBlockTruncated, translateBlockOnDemand, type CommentaryBlock } from "../lib/commentary";
 import { formatTranslit } from "../lib/format";
 import { studyBlocksToPlainText, parseStudyBlocks } from "../lib/studyBlocks";
 import StudyEditor from "./StudyEditor";
@@ -89,6 +89,9 @@ export default function ReadView({
   const fetchingDictRef = useRef<string | null>(null);
   const [commentaryLoadedFor, setCommentaryLoadedFor] = useState<string | null>(null);
   const fetchingCommentaryRef = useRef<string | null>(null);
+  const [translatingBlock, setTranslatingBlock] = useState<string | null>(null);
+  const [translateError, setTranslateError] = useState<string | null>(null);
+  const [, bumpTranslation] = useState(0);
 
   // Carrega o comentário de Matthew Henry do livro atual assim que o
   // painel de comentário é aberto (um arquivo por livro, reaproveitado do
@@ -336,6 +339,35 @@ export default function ReadView({
                         app nem da tradução.
                       </p>
                     )}
+                    {!block.t_pt && (() => {
+                      const blockKey = `${selectedBook}-${selectedChapter}-${block.s}`;
+                      const isTranslating = translatingBlock === blockKey;
+                      return (
+                        <div className="mt-3 pt-2 border-t border-[var(--border)]">
+                          <button
+                            disabled={isTranslating}
+                            onClick={async () => {
+                              setTranslateError(null);
+                              setTranslatingBlock(blockKey);
+                              const result = await translateBlockOnDemand(selectedBook, selectedChapter, block);
+                              setTranslatingBlock(null);
+                              if ("error" in result) {
+                                setTranslateError(result.error);
+                              } else {
+                                block.t_pt = result.text_pt;
+                                bumpTranslation((n) => n + 1);
+                              }
+                            }}
+                            className="text-xs bg-[var(--accent)] text-white px-3 py-1.5 rounded-lg font-medium disabled:opacity-60"
+                          >
+                            {isTranslating ? "Traduzindo..." : "Traduzir para português"}
+                          </button>
+                          {translateError && translatingBlock === null && (
+                            <p className="mt-1.5 text-[10px] text-[var(--danger)]">Falha ao traduzir: {translateError}</p>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 );
               })()
