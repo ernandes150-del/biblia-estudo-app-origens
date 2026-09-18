@@ -7,10 +7,11 @@
 // e = fim), não um versículo isolado — assim como no original de Matthew
 // Henry, que comentava passagens inteiras de uma vez.
 
-export type CommentaryBlock = { s: number; e: number; t: string };
+export type CommentaryBlock = { s: number; e: number; t: string; t_pt?: string };
 
 type CommentaryBook = {
   intro: string;
+  intro_pt?: string;
   chapters: Record<string, CommentaryBlock[]>;
 };
 

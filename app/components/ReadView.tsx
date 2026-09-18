@@ -323,18 +323,22 @@ export default function ReadView({
                     <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wide mb-2">
                       {selectedBook} {selectedChapter}:{block.s}
                       {block.e !== block.s ? `-${block.e}` : ""}
+                      {!block.t_pt && (
+                        <span className="ml-2 normal-case font-normal text-[var(--text-dim)]">(ainda só em inglês)</span>
+                      )}
                     </p>
                     <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
-                      {block.t}
+                      {block.t_pt || block.t}
                     </p>
                   </div>
                 );
               })()
             )}
             <p className="text-[10px] text-[var(--text-dim)] pt-2 border-t border-[var(--border)]">
-              Fonte: Matthew Henry, Comentário Bíblico (falecido em 1714), domínio público. Texto em
-              inglês, obtido via Free Use Bible API (HelloAO Lab). Não cobre Cânticos dos Cânticos, que
-              não recebeu comentário na fonte original.
+              Fonte: Matthew Henry, Comentário Bíblico (falecido em 1714), domínio público, obtido via
+              Free Use Bible API (HelloAO Lab). Não cobre Cânticos dos Cânticos, que não recebeu
+              comentário na fonte original. Tradução para o português em andamento, livro por livro —
+              onde ainda não chegou, o texto aparece em inglês.
             </p>
           </div>
         )}
