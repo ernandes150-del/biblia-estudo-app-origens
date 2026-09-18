@@ -62,3 +62,13 @@ export function getCommentaryForVerse(
 export function getCommentaryIntro(bookName: string): string | null {
   return cache.get(bookName)?.intro || null;
 }
+
+// A fonte em inglês traz 38 blocos (~0,9% do total) cujo texto termina
+// truncado, às vezes no meio de uma palavra. É um defeito do próprio
+// texto-fonte, não do nosso processamento: sinalizamos isso ao leitor em
+// vez de deixá-lo achar que falta conteúdo por erro do app.
+export function isBlockTruncated(block: CommentaryBlock): boolean {
+  const text = (block.t_pt || block.t).trim();
+  if (!text) return false;
+  return !/[.!?"'’”)\]]$/.test(text);
+}

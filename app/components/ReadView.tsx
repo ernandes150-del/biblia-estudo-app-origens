@@ -15,7 +15,7 @@ import { translateGloss, splitCompoundGloss } from "../lib/glossTranslation";
 import { loadOccurrencesForClassic, type Occurrence } from "../lib/occurrences";
 import { classicStrongOf, loadClassicGroups, loadDictionaryEntry, type DictionaryEntry } from "../lib/dictionary";
 import { getCuratedEntry } from "../lib/curatedDictionary";
-import { loadCommentaryBook, getCommentaryForVerse, getCommentaryIntro, type CommentaryBlock } from "../lib/commentary";
+import { loadCommentaryBook, getCommentaryForVerse, getCommentaryIntro, isBlockTruncated, type CommentaryBlock } from "../lib/commentary";
 import { formatTranslit } from "../lib/format";
 import { studyBlocksToPlainText, parseStudyBlocks } from "../lib/studyBlocks";
 import StudyEditor from "./StudyEditor";
@@ -330,6 +330,12 @@ export default function ReadView({
                     <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
                       {block.t_pt || block.t}
                     </p>
+                    {isBlockTruncated(block) && (
+                      <p className="mt-2 text-[10px] text-[var(--text-muted)] italic border-l-2 border-[var(--border-strong)] pl-2">
+                        O texto termina aqui de forma abrupta na própria fonte original — não é falha do
+                        app nem da tradução.
+                      </p>
+                    )}
                   </div>
                 );
               })()
